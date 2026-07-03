@@ -634,3 +634,93 @@ body {
     gap: 7px;
   }
 }
+
+/* ===== Lv Tier Glow — ProfileCard 装飾 ===== */
+/* data-level-tier 属性で card ごとに適用 */
+
+[data-level-tier="glow"] {
+  box-shadow: 0 0 14px rgba(111, 255, 224, 0.12);
+}
+[data-level-tier="glow"] .avatar-ring-out {
+  border-color: rgba(111, 255, 224, 0.6);
+  box-shadow: 0 0 8px rgba(111, 255, 224, 0.3);
+}
+
+[data-level-tier="glow-strong"] {
+  box-shadow: 0 0 22px rgba(111, 255, 224, 0.22);
+}
+[data-level-tier="glow-strong"] .avatar-ring-out {
+  border-color: var(--mint);
+  box-shadow: 0 0 12px rgba(111, 255, 224, 0.5);
+}
+[data-level-tier="glow-strong"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: radial-gradient(
+    ellipse at 50% -10%,
+    rgba(111, 255, 224, 0.08) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-level-tier="special"] {
+  box-shadow: 0 0 28px rgba(111, 255, 224, 0.3);
+  outline-color: rgba(111, 255, 224, 0.4);
+}
+[data-level-tier="special"] .avatar-ring-out {
+  border-color: var(--mint);
+  box-shadow: 0 0 16px rgba(111, 255, 224, 0.7);
+}
+[data-level-tier="special"] .logo {
+  color: rgba(7, 17, 14, 0.6);
+  text-shadow: 0 0 8px rgba(111, 255, 224, 0.4);
+}
+[data-level-tier="special"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: radial-gradient(
+    ellipse at 50% -5%,
+    rgba(111, 255, 224, 0.13) 0%,
+    transparent 55%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-level-tier="max"] {
+  box-shadow: 0 0 36px rgba(111, 255, 224, 0.4), 0 0 2px rgba(111, 255, 224, 0.6);
+  outline-color: rgba(111, 255, 224, 0.6);
+}
+[data-level-tier="max"] .avatar-ring-out {
+  border-color: var(--mint);
+  box-shadow: 0 0 20px rgba(111, 255, 224, 0.9);
+}
+[data-level-tier="max"] .avatar-dot {
+  width: 9px;
+  height: 9px;
+  box-shadow: 0 0 10px 3px rgba(111, 255, 224, 1);
+}
+[data-level-tier="max"] .logo {
+  color: rgba(7, 17, 14, 0.7);
+  text-shadow: 0 0 10px rgba(111, 255, 224, 0.6);
+  letter-spacing: 0.5em;
+}
+[data-level-tier="max"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: radial-gradient(
+    ellipse at 50% -5%,
+    rgba(111, 255, 224, 0.18) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  z-index: 0;
+}

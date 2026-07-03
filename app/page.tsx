@@ -5,6 +5,7 @@ import { getIllustrationCards } from '@/lib/illustrations'
 import { getActiveDecorations } from '@/lib/decorations'
 import { getUnreadCount } from '@/lib/notifications'
 import { yapyProfile, YAPI_USER_ID } from '@/lib/staticData'
+import { getUserLevel } from '@/lib/level'
 import ProfileCard from '@/components/profile/ProfileCard'
 import LogoutButton from '@/components/auth/LogoutButton'
 import GiftBox from '@/components/gift/GiftBox'
@@ -22,6 +23,7 @@ export default async function HomePage() {
   ])
 
   const userPoints = profile?.points ?? 0
+  const userLevel = getUserLevel(profile?.charisma ?? 0)
 
   // ======================================================
   // mergedProfile: DBのユーザー情報を優先し、未設定項目は
@@ -38,9 +40,15 @@ export default async function HomePage() {
     // yapyProfile の静的項目を初期値として展開
     ...yapyProfile,
     // DBのユーザー情報で上書き（未設定時は静的データを維持）
-    name:    profile?.name            ?? yapyProfile.name,
-    photoUrl: profile?.avatar_url     ?? yapyProfile.photoUrl,
-    comment: profile?.profile_comment ?? yapyProfile.comment,
+    name:     profile?.name            ?? yapyProfile.name,
+    photoUrl: profile?.avatar_url      ?? yapyProfile.photoUrl,
+    comment:  profile?.profile_comment ?? yapyProfile.comment,
+    // stats.charisma は DB の実値を表示用にフォーマット
+    // rank は ProfileCard 側で userLevel.tierName に一本化済みのため静的値のまま残す（表示には使わない）
+    stats: {
+      ...yapyProfile.stats,
+      charisma: Number(profile?.charisma ?? 0).toLocaleString(),
+    },
   }
 
   return (
@@ -51,6 +59,7 @@ export default async function HomePage() {
           cards={cards}
           userPoints={userPoints}
           targetUserId={YAPI_USER_ID}
+          userLevel={userLevel}
           activeDecorations={activeDecorations}
           logoutButton={<LogoutButton />}
           giftBox={<GiftBox />}

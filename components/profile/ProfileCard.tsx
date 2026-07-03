@@ -2,10 +2,13 @@ import type { ReactNode } from 'react'
 import type { ProfileData } from '@/lib/staticData'
 import type { IllustrationCard } from '@/lib/illustrationTypes'
 import type { ActiveDecorations } from '@/lib/decorationTypes'
+import type { UserLevel } from '@/lib/level'
 import Avatar from './Avatar'
 import BadgeRow from './BadgeRow'
 import StatsRow from './StatsRow'
 import TopSupporters from './TopSupporters'
+import LevelBadge from './LevelBadge'
+import LevelRewards from './LevelRewards'
 import IllustCollection from './IllustCollection'
 import {
   ProfileBackgroundDecoration,
@@ -22,6 +25,7 @@ type Props = {
   logoutButton?: ReactNode
   giftBox?: ReactNode
   editLink?: ReactNode
+  userLevel?: UserLevel
 }
 
 export default function ProfileCard({
@@ -33,10 +37,11 @@ export default function ProfileCard({
   logoutButton,
   giftBox,
   editLink,
+  userLevel,
 }: Props) {
   const {
     name,
-    rank,
+    rank: _rank, // userLevel.tierName に一本化。静的値は使用しない
     comment,
     photoUrl,
     tags,
@@ -51,7 +56,7 @@ export default function ProfileCard({
     <main className="app">
       {/* ===== Main Card ===== */}
       {/* profile_background スロット: card の直下に absolute で敷く */}
-      <div className="card" style={{ position: 'relative', overflow: 'hidden' }}>
+      <div className="card" data-level-tier={userLevel?.tier ?? 'base'} style={{ position: 'relative', overflow: 'hidden' }}>
         <ProfileBackgroundDecoration decoration={activeDecorations.profile_background} />
 
         {/* 以下のコンテンツは background の上に乗る（z-index: 1） */}
@@ -77,8 +82,12 @@ export default function ProfileCard({
             {/* above_name スロット */}
             <AboveNameDecoration decoration={activeDecorations.above_name} />
 
-            <div className="rank-plain">{rank}</div>
+            {/* rank-plain: userLevel がある場合は tierName を表示、なければ非表示 */}
+            {userLevel && (
+              <div className="rank-plain">{userLevel.tierName}</div>
+            )}
             <div className="name">{name}</div>
+            {userLevel && <LevelBadge userLevel={userLevel} />}
             <div className="id-meta tag-row">
               {tags.map((tag) => (
                 <span key={tag.label} className={`tag-chip ${tag.variant}`}>
@@ -174,6 +183,9 @@ export default function ProfileCard({
 
       {/* 30分プレゼント */}
       {giftBox}
+
+      {/* Lv報酬 */}
+      {userLevel && <LevelRewards currentLv={userLevel.lv} />}
 
       {/* イラストコレクション */}
       <IllustCollection
