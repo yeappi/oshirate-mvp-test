@@ -6,6 +6,7 @@ import { getActiveDecorations } from '@/lib/decorations'
 import { getUnreadCount } from '@/lib/notifications'
 import { yapyProfile, YAPI_USER_ID } from '@/lib/staticData'
 import { getUserLevel } from '@/lib/level'
+import { getProfileBackgroundById } from '@/lib/backgrounds'
 import ProfileCard from '@/components/profile/ProfileCard'
 import LogoutButton from '@/components/auth/LogoutButton'
 import GiftBox from '@/components/gift/GiftBox'
@@ -24,6 +25,7 @@ export default async function HomePage() {
 
   const userPoints = profile?.points ?? 0
   const userLevel = getUserLevel(profile?.charisma ?? 0)
+  const selectedBackground = await getProfileBackgroundById(profile?.selected_background_id)
 
   // ======================================================
   // mergedProfile: DBのユーザー情報を優先し、未設定項目は
@@ -60,19 +62,31 @@ export default async function HomePage() {
           userPoints={userPoints}
           targetUserId={YAPI_USER_ID}
           userLevel={userLevel}
+          selectedBackground={selectedBackground}
           activeDecorations={activeDecorations}
           logoutButton={<LogoutButton />}
           giftBox={<GiftBox />}
           editLink={
-            <Link href="/profile/edit" style={{
-              fontSize: 10,
-              color: 'var(--ink-faint)',
-              textDecoration: 'none',
-              fontFamily: 'Orbitron, sans-serif',
-              letterSpacing: '0.08em',
-            }}>
-              編集
-            </Link>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
+              <Link href="/profile/edit" style={{
+                fontSize: 10,
+                color: 'var(--ink-faint)',
+                textDecoration: 'none',
+                fontFamily: 'Orbitron, sans-serif',
+                letterSpacing: '0.08em',
+              }}>
+                編集
+              </Link>
+              <Link href="/profile/background" style={{
+                fontSize: 10,
+                color: 'var(--ink-faint)',
+                textDecoration: 'none',
+                fontFamily: 'Orbitron, sans-serif',
+                letterSpacing: '0.08em',
+              }}>
+                背景
+              </Link>
+            </div>
           }
         />
       </div>

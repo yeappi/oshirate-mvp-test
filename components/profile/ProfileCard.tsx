@@ -3,6 +3,7 @@ import type { ProfileData } from '@/lib/staticData'
 import type { IllustrationCard } from '@/lib/illustrationTypes'
 import type { ActiveDecorations } from '@/lib/decorationTypes'
 import type { UserLevel } from '@/lib/level'
+import type { ProfileBackground } from '@/lib/backgrounds'
 import Avatar from './Avatar'
 import BadgeRow from './BadgeRow'
 import StatsRow from './StatsRow'
@@ -26,6 +27,7 @@ type Props = {
   giftBox?: ReactNode
   editLink?: ReactNode
   userLevel?: UserLevel
+  selectedBackground?: ProfileBackground | null
 }
 
 export default function ProfileCard({
@@ -38,6 +40,7 @@ export default function ProfileCard({
   giftBox,
   editLink,
   userLevel,
+  selectedBackground,
 }: Props) {
   const {
     name,
@@ -56,7 +59,12 @@ export default function ProfileCard({
     <main className="app">
       {/* ===== Main Card ===== */}
       {/* profile_background スロット: card の直下に absolute で敷く */}
-      <div className="card" data-level-tier={userLevel?.tier ?? 'base'} style={{ position: 'relative', overflow: 'hidden' }}>
+      <div
+        className="card profile-bg-card"
+        data-level-tier={userLevel?.tier ?? 'base'}
+        data-profile-bg={selectedBackground?.css_key ?? 'starter'}
+        style={{ position: 'relative', overflow: 'hidden' }}
+      >
         <ProfileBackgroundDecoration decoration={activeDecorations.profile_background} />
 
         {/* 以下のコンテンツは background の上に乗る（z-index: 1） */}

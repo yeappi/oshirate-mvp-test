@@ -5,6 +5,7 @@ export type Profile = {
   name: string | null
   avatar_url: string | null
   profile_comment: string | null
+  selected_background_id: string | null
   is_admin: boolean
   points: number
   charisma: number

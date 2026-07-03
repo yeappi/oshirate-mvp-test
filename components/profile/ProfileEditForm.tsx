@@ -334,6 +334,17 @@ export default function ProfileEditForm({
         </div>
       )}
 
+      <Link href="/profile/background" style={{
+        display: 'block', textAlign: 'center',
+        fontSize: 11, fontWeight: 700,
+        color: 'var(--ink-soft)', textDecoration: 'none',
+        letterSpacing: '0.08em',
+        border: '1px solid var(--hair-strong)',
+        borderRadius: 2, padding: '10px 0',
+      }}>
+        背景を選ぶ →
+      </Link>
+
       {saved && (
         <Link href="/" style={{
           display: 'block', textAlign: 'center',

@@ -1,0 +1,58 @@
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { getUser, getProfile } from '@/lib/auth'
+import { getUserLevel } from '@/lib/level'
+import { DEFAULT_BACKGROUND_ID, getProfileBackgrounds } from '@/lib/backgrounds'
+import BackgroundSelectForm from '@/components/profile/background/BackgroundSelectForm'
+
+export default async function ProfileBackgroundPage() {
+  const user = await getUser()
+  if (!user) redirect('/login')
+
+  const [profile, backgrounds] = await Promise.all([
+    getProfile(user.id),
+    getProfileBackgrounds(),
+  ])
+
+  const userLevel = getUserLevel(profile?.charisma ?? 0)
+  const selectedBackgroundId = profile?.selected_background_id ?? DEFAULT_BACKGROUND_ID
+
+  return (
+    <main className="app">
+      <div className="card">
+        <header className="nav">
+          <Link href="/profile/edit" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }}>
+            ←
+          </Link>
+          <div className="logo">背景選択</div>
+          <div style={{ width: 20 }} />
+        </header>
+
+        <div style={{ marginTop: 20 }}>
+          <div style={{
+            marginBottom: 14,
+            padding: '10px 0',
+            borderTop: '1px solid var(--hair)',
+            borderBottom: '1px solid var(--hair)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+          }}>
+            <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--ink-soft)', letterSpacing: '0.1em' }}>
+              CURRENT LV
+            </span>
+            <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 18, fontWeight: 800 }}>
+              Lv{userLevel.lv}
+            </span>
+          </div>
+
+          <BackgroundSelectForm
+            backgrounds={backgrounds}
+            selectedBackgroundId={selectedBackgroundId}
+            currentLv={userLevel.lv}
+          />
+        </div>
+      </div>
+    </main>
+  )
+}
