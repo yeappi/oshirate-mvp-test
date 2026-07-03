@@ -3,7 +3,10 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import type { ProfileBackground } from '@/lib/backgrounds'
-import { isBackgroundUnlocked } from '@/lib/backgrounds'
+
+function isBackgroundUnlocked(background: Pick<ProfileBackground, 'required_level'>, currentLv: number): boolean {
+  return currentLv >= background.required_level
+}
 
 type Props = {
   backgrounds: ProfileBackground[]
