@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { getUser, getProfile } from '@/lib/auth'
 import { getIllustrationCards } from '@/lib/illustrations'
 import { getActiveDecorations } from '@/lib/decorations'
@@ -22,18 +23,48 @@ export default async function HomePage() {
 
   const userPoints = profile?.points ?? 0
 
+  // ======================================================
+  // mergedProfile: DBのユーザー情報を優先し、未設定項目は
+  // yapyProfile (静的データ) をfallbackとして使う。
+  //
+  // 今後の拡張予定:
+  //   - tags      → ユーザー別タグに差し替え
+  //   - rank      → charismaベースのLv計算に差し替え
+  //   - badges    → 解放報酬に差し替え
+  //   - stats     → DB集計値に差し替え
+  //   - favorites → 購入履歴ベースに差し替え
+  // ======================================================
+  const mergedProfile = {
+    // yapyProfile の静的項目を初期値として展開
+    ...yapyProfile,
+    // DBのユーザー情報で上書き（未設定時は静的データを維持）
+    name:    profile?.name            ?? yapyProfile.name,
+    photoUrl: profile?.avatar_url     ?? yapyProfile.photoUrl,
+    comment: profile?.profile_comment ?? yapyProfile.comment,
+  }
+
   return (
     <>
-      {/* BottomNav 分の余白 */}
       <div style={{ paddingBottom: 64 }}>
         <ProfileCard
-          profile={yapyProfile}
+          profile={mergedProfile}
           cards={cards}
           userPoints={userPoints}
           targetUserId={YAPI_USER_ID}
           activeDecorations={activeDecorations}
           logoutButton={<LogoutButton />}
           giftBox={<GiftBox />}
+          editLink={
+            <Link href="/profile/edit" style={{
+              fontSize: 10,
+              color: 'var(--ink-faint)',
+              textDecoration: 'none',
+              fontFamily: 'Orbitron, sans-serif',
+              letterSpacing: '0.08em',
+            }}>
+              編集
+            </Link>
+          }
         />
       </div>
       <BottomNav unreadCount={unreadCount} />

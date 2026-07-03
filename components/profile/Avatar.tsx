@@ -1,4 +1,6 @@
-import Image from 'next/image'
+'use client'
+
+import { useState, useEffect } from 'react'
 import type { Decoration } from '@/lib/decorationTypes'
 import {
   AvatarAroundDecoration,
@@ -8,26 +10,43 @@ import {
 type Props = {
   photoUrl: string | null
   name: string
-  // 装飾スロット（なければ何も描画しない）
   avatarAround?: Decoration
   avatarFrame?: Decoration
 }
 
 export default function Avatar({ photoUrl, name, avatarAround, avatarFrame }: Props) {
+  const [imgError, setImgError] = useState(false)
+
+  // photoUrl が変わったらエラー状態をリセット
+  useEffect(() => {
+    setImgError(false)
+  }, [photoUrl])
+
+  // photoUrl があり読み込み成功している場合だけ画像表示
+  const showImg = photoUrl && !imgError
+
   return (
     <div className="avatar-wrap">
       {/* avatar_around スロット */}
       <AvatarAroundDecoration decoration={avatarAround} />
 
       <div className="avatar-ring-out" />
-      <div className={`avatar-mono ${photoUrl ? 'avatar-photo' : ''}`}>
-        {photoUrl ? (
-          <Image
+      <div className={`avatar-mono ${showImg ? 'avatar-photo' : ''}`}>
+        {showImg ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={photoUrl}
             src={photoUrl}
             alt={`${name} icon`}
-            width={112}
-            height={112}
-            style={{ objectFit: 'cover', objectPosition: 'center 38%', transform: 'scale(1.22)' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'block',
+              objectFit: 'cover',
+              objectPosition: 'center 38%',
+              transform: 'scale(1.22)',
+            }}
+            onError={() => setImgError(true)}
           />
         ) : (
           name.charAt(0)

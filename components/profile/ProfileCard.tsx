@@ -21,6 +21,7 @@ type Props = {
   activeDecorations?: ActiveDecorations
   logoutButton?: ReactNode
   giftBox?: ReactNode
+  editLink?: ReactNode
 }
 
 export default function ProfileCard({
@@ -31,6 +32,7 @@ export default function ProfileCard({
   activeDecorations = {},
   logoutButton,
   giftBox,
+  editLink,
 }: Props) {
   const {
     name,
@@ -57,7 +59,10 @@ export default function ProfileCard({
           <header className="nav">
             <div className="nav-btn">☰</div>
             <div className="logo">推されーと</div>
-            <div className="nav-btn">{logoutButton ?? <span>↗</span>}</div>
+            <div className="nav-btn" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+              {logoutButton ?? <span>↗</span>}
+              {editLink}
+            </div>
           </header>
 
           <section className="hero">
@@ -125,6 +130,24 @@ export default function ProfileCard({
           <div className="rule" />
 
           <TopSupporters supporters={topSupporters} />
+
+          {/* 所持pt */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            padding: '10px 0 0',
+            borderTop: '1px solid var(--hair)',
+            marginTop: 14,
+          }}>
+            <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--ink-soft)', letterSpacing: '0.1em' }}>
+              所持PT
+            </div>
+            <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 20, fontWeight: 800 }}>
+              {userPoints.toLocaleString()}
+              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-soft)', marginLeft: 3 }}>pt</span>
+            </div>
+          </div>
 
           <section className="metrics">
             <div className="metric">
