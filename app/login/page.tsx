@@ -31,7 +31,11 @@ export default async function LoginPage() {
 
         <LoginButton />
 
-        <p style={{ marginTop: 20, fontSize: 9, color: 'var(--ink-faint)', letterSpacing: '0.04em' }}>
+        <p style={{ marginTop: 18, fontSize: 9, color: 'var(--ink-faint)', letterSpacing: '0.04em', lineHeight: 1.7 }}>
+          ログインがうまくいかない場合は、LINE/Instagram等のアプリ内ブラウザではなく、Safariで開き直してください。
+        </p>
+
+        <p style={{ marginTop: 12, fontSize: 9, color: 'var(--ink-faint)', letterSpacing: '0.04em' }}>
           ログインすることで利用規約に同意したとみなします
         </p>
       </div>

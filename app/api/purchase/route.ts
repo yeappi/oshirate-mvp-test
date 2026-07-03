@@ -6,6 +6,7 @@ import {
   notifyIllustrationPurchased,
   notifyRankUp,
   notifyDecorationUnlocked,
+  notifyTagUnlocked,
 } from '@/lib/notifications'
 
 // ============================================================
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
   // イラスト情報を取得（通知タイトル用）
   const { data: illust } = await supabase
     .from('illustrations')
-    .select('title, price')
+    .select('title, price, reward_tag_id')
     .eq('id', illustrationId)
     .single()
 
@@ -56,7 +57,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'unknown' }, { status: 500 })
   }
 
-  const result = data as { ok: boolean; error?: string; price?: number }
+  const result = data as {
+    ok: boolean
+    error?: string
+    price?: number
+    reward_tag_id?: string | null
+    reward_tag_granted?: boolean
+  }
 
   if (!result.ok) {
     return NextResponse.json({ ok: false, error: result.error }, { status: 400 })
@@ -105,6 +112,29 @@ export async function POST(request: Request) {
     )
   }
 
+  // イラスト購入特典タグ通知（新規獲得時のみ）
+  let rewardTag: { id: string; label: string; variant: string } | null = null
+  if (result.reward_tag_id && result.reward_tag_granted) {
+    const { data: tag } = await supabase
+      .from('profile_tags')
+      .select('id, label, variant')
+      .eq('id', result.reward_tag_id)
+      .eq('is_active', true)
+      .single()
+
+    if (tag) {
+      rewardTag = {
+        id: String(tag.id),
+        label: String(tag.label),
+        variant: String(tag.variant ?? 'mid'),
+      }
+      notifyPromises.push(
+        notifyTagUnlocked(user.id, rewardTag.id, rewardTag.label, 'illustration_purchase')
+          .catch((e) => console.error('[purchase] notify tag error:', e))
+      )
+    }
+  }
+
   await Promise.all(notifyPromises)
 
   return NextResponse.json({
@@ -112,5 +142,6 @@ export async function POST(request: Request) {
     price: result.price,
     rankUp,
     unlockedDecorations,
+    rewardTag,
   })
 }

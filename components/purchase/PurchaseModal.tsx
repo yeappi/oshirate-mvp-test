@@ -13,6 +13,7 @@ type Props = {
 }
 
 type RankUp = { from: number; to: number }
+type RewardTag = { id: string; label: string; variant: string }
 
 type PurchasePhase =
   | 'confirm'
@@ -45,6 +46,7 @@ export default function PurchaseModal({
   const [errorType, setErrorType] = useState<ErrorType | null>(null)
   const [rankUp, setRankUp] = useState<RankUp | null>(null)
   const [unlockedDecorations, setUnlockedDecorations] = useState<Decoration[]>([])
+  const [rewardTag, setRewardTag] = useState<RewardTag | null>(null)
 
   const canAfford = userPoints >= card.price
   const alreadyAtLimit = card.owned && card.max_per_user !== null && !card.canBuyMore
@@ -68,6 +70,7 @@ export default function PurchaseModal({
       }
 
       onSuccess(card.id, card.price)
+      setRewardTag(json.rewardTag ?? null)
 
       // ランクアップがあれば rankup フェーズへ
       if (json.rankUp) {
@@ -128,13 +131,14 @@ export default function PurchaseModal({
           />
         )}
         {phase === 'success' && (
-          <SuccessView card={card} onClose={onClose} />
+          <SuccessView card={card} rewardTag={rewardTag} onClose={onClose} />
         )}
         {phase === 'rankup' && rankUp && (
           <RankUpView
             card={card}
             rankUp={rankUp}
             unlockedDecorations={unlockedDecorations}
+            rewardTag={rewardTag}
             onClose={onClose}
           />
         )}
@@ -275,7 +279,15 @@ function ConfirmView({
 // ============================================================
 // 成功画面（ランクアップなし）
 // ============================================================
-function SuccessView({ card, onClose }: { card: IllustrationCard; onClose: () => void }) {
+function SuccessView({
+  card,
+  rewardTag,
+  onClose,
+}: {
+  card: IllustrationCard
+  rewardTag: RewardTag | null
+  onClose: () => void
+}) {
   return (
     <div style={{ textAlign: 'center', padding: '8px 0' }}>
       <div style={{
@@ -293,10 +305,13 @@ function SuccessView({ card, onClose }: { card: IllustrationCard; onClose: () =>
       </div>
       <div style={{
         fontSize: 10, fontWeight: 700, color: 'var(--ink-soft)',
-        marginBottom: 28, letterSpacing: '0.06em',
+        marginBottom: rewardTag ? 16 : 28, letterSpacing: '0.06em',
       }}>
         を受け取りました
       </div>
+
+      {rewardTag && <RewardTagNotice rewardTag={rewardTag} />}
+
       <ModalButton onClick={onClose} variant="primary">OK</ModalButton>
     </div>
   )
@@ -309,11 +324,13 @@ function RankUpView({
   card,
   rankUp,
   unlockedDecorations,
+  rewardTag,
   onClose,
 }: {
   card: IllustrationCard
   rankUp: RankUp
   unlockedDecorations: Decoration[]
+  rewardTag: RewardTag | null
   onClose: () => void
 }) {
   return (
@@ -372,7 +389,46 @@ function RankUpView({
         )}
       </div>
 
+      {rewardTag && <RewardTagNotice rewardTag={rewardTag} />}
+
       <ModalButton onClick={onClose} variant="primary">OK</ModalButton>
+    </div>
+  )
+}
+
+function RewardTagNotice({ rewardTag }: { rewardTag: RewardTag }) {
+  return (
+    <div style={{
+      border: '1px solid rgba(111,255,224,0.45)',
+      background: 'rgba(111,255,224,0.07)',
+      borderRadius: 2,
+      padding: '10px 12px',
+      marginBottom: 20,
+    }}>
+      <div style={{
+        fontFamily: 'Orbitron, sans-serif',
+        fontSize: 9,
+        fontWeight: 800,
+        color: 'var(--mint)',
+        letterSpacing: '0.18em',
+        marginBottom: 6,
+      }}>
+        TAG GET
+      </div>
+      <div style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '4px 10px',
+        border: '1px solid var(--hair-strong)',
+        borderRadius: 999,
+        fontSize: 11,
+        fontWeight: 800,
+        color: 'var(--ink)',
+        background: 'rgba(255,255,255,0.55)',
+      }}>
+        # {rewardTag.label}
+      </div>
     </div>
   )
 }

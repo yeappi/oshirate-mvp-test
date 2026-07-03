@@ -13,6 +13,7 @@ const TYPE_CONFIG: Record<NotificationType, { icon: string; color: string }> = {
   illustration_purchased:   { icon: '◈', color: 'var(--ink-soft)' },
   rank_up:                  { icon: '▲', color: '#b48000' },
   decoration_unlocked:      { icon: '◇', color: 'var(--ink-soft)' },
+  tag_unlocked:             { icon: 'TAG', color: 'var(--mint)' },
   admin_point_adjusted:     { icon: '⊕', color: 'var(--ink-soft)' },
 }
 

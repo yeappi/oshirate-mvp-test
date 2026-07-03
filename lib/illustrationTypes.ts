@@ -8,6 +8,7 @@ export type IllustrationRow = {
   price: number
   image_url: string | null
   max_per_user: number | null
+  reward_tag_id: string | null
   is_active: boolean
   sort_order: number
   created_at: string
@@ -58,5 +59,9 @@ export type IllustrationCard =
 // 購入APIレスポンス
 // ============================================================
 export type PurchaseResult =
-  | { ok: true; price: number }
+  | {
+      ok: true
+      price: number
+      rewardTag?: { id: string; label: string; variant: string } | null
+    }
   | { ok: false; error: 'insufficient_points' | 'purchase_limit_reached' | 'illustration_not_found' | 'unknown' }

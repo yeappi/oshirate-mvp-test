@@ -8,6 +8,7 @@ export type NotificationType =
   | 'illustration_purchased'
   | 'rank_up'
   | 'decoration_unlocked'
+  | 'tag_unlocked'
   | 'admin_point_adjusted'
 
 // ============================================================
@@ -32,6 +33,7 @@ export type NotificationMetadata =
   | { type: 'illustration_purchased';    illustrationId: string; illustrationTitle: string; price: number }
   | { type: 'rank_up';                   rankBefore: number; rankAfter: number }
   | { type: 'decoration_unlocked';       decorationIds: string[]; decorationNames: string[] }
+  | { type: 'tag_unlocked';              tagId: string; tagLabel: string; source: 'illustration_purchase' | 'level_reward' | 'admin' | 'unknown' }
   | { type: 'admin_point_adjusted';      amount: number; direction: 'add' | 'subtract'; reason: string }
 
 // ============================================================
@@ -97,6 +99,27 @@ export async function notifyDecorationUnlocked(
     p_title:    '新しい装飾が解放されました',
     p_body:     decorationNames.join('、'),
     p_metadata: { type: 'decoration_unlocked', decorationIds, decorationNames },
+  })
+}
+
+
+export async function notifyTagUnlocked(
+  userId: string,
+  tagId: string,
+  tagLabel: string,
+  source: 'illustration_purchase' | 'level_reward' | 'admin' | 'unknown' = 'unknown'
+) {
+  const supabase = createSupabaseServerClient()
+  const body = source === 'illustration_purchase'
+    ? 'イラスト購入特典として獲得しました'
+    : null
+
+  await supabase.rpc('create_notification', {
+    p_user_id:  userId,
+    p_type:     'tag_unlocked',
+    p_title:    `タグ「${tagLabel}」を獲得しました`,
+    p_body:     body,
+    p_metadata: { type: 'tag_unlocked', tagId, tagLabel, source },
   })
 }
 
