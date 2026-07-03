@@ -1,21 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { createSupabaseClient } from '@/lib/supabase'
 
 export default function LoginButton() {
   const [loading, setLoading] = useState(false)
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setLoading(true)
-    const supabase = createSupabaseClient()
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${location.origin}/auth/callback`,
-      },
-    })
-    // リダイレクト後なのでここには戻らない
+    window.location.assign('/auth/login')
   }
 
   return (

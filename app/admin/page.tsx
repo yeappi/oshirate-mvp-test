@@ -86,7 +86,7 @@ export default async function AdminPage() {
       </section>
 
       {/* ===== 3. 告知変更 ===== */}
-      <section style={s.section}>
+      <section id="announcement" style={s.section}>
         <div style={s.sectionTitle}>ANNOUNCEMENT</div>
         <AnnouncementForm
           initial={announcement ? {

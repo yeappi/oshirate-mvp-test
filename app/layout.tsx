@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import QuickNav from '@/components/layout/QuickNav'
 
 export const metadata: Metadata = {
   title: '推されーと',
@@ -31,7 +32,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <QuickNav />
+        {children}
+      </body>
     </html>
   )
 }
