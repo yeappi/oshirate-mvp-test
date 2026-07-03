@@ -11,8 +11,10 @@ export default function BottomNav({ unreadCount }: Props) {
   const pathname = usePathname()
 
   const tabs = [
-    { href: '/',              label: 'ホーム',  icon: '⌂' },
-    { href: '/notifications', label: '通知',    icon: '◈', badge: unreadCount },
+    { href: '/',                   label: 'ホーム', icon: '⌂' },
+    { href: '/profile/background', label: '背景',   icon: '◌' },
+    { href: '/profile/tags',       label: 'タグ',   icon: '◇' },
+    { href: '/notifications',      label: '通知',   icon: '◈', badge: unreadCount },
   ]
 
   return (
@@ -26,7 +28,7 @@ export default function BottomNav({ unreadCount }: Props) {
       background: 'rgba(251,255,253,0.96)',
       backdropFilter: 'blur(8px)',
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
+      gridTemplateColumns: `repeat(${tabs.length}, 1fr)`,
       zIndex: 50,
     }}>
       {tabs.map((tab) => {

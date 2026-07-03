@@ -7,6 +7,7 @@ import { getUnreadCount } from '@/lib/notifications'
 import { yapyProfile, YAPI_USER_ID } from '@/lib/staticData'
 import { getUserLevel } from '@/lib/level'
 import { getProfileBackgroundById } from '@/lib/backgrounds'
+import { getProfileDisplayTags } from '@/lib/tags'
 import ProfileCard from '@/components/profile/ProfileCard'
 import LogoutButton from '@/components/auth/LogoutButton'
 import GiftBox from '@/components/gift/GiftBox'
@@ -16,11 +17,12 @@ export default async function HomePage() {
   const user = await getUser()
   if (!user) redirect('/login')
 
-  const [profile, cards, activeDecorations, unreadCount] = await Promise.all([
+  const [profile, cards, activeDecorations, unreadCount, displayTags] = await Promise.all([
     getProfile(user.id),
     YAPI_USER_ID ? getIllustrationCards(user.id, YAPI_USER_ID) : Promise.resolve([]),
     getActiveDecorations(user.id),
     getUnreadCount(user.id),
+    getProfileDisplayTags(user.id),
   ])
 
   const userPoints = profile?.points ?? 0
@@ -32,7 +34,7 @@ export default async function HomePage() {
   // yapyProfile (静的データ) をfallbackとして使う。
   //
   // 今後の拡張予定:
-  //   - tags      → ユーザー別タグに差し替え
+  //   - tags      → profile_display_tags から取得した表示タグを使う
   //   - rank      → charismaベースのLv計算に差し替え
   //   - badges    → 解放報酬に差し替え
   //   - stats     → DB集計値に差し替え
@@ -45,6 +47,7 @@ export default async function HomePage() {
     name:     profile?.name            ?? yapyProfile.name,
     photoUrl: profile?.avatar_url      ?? yapyProfile.photoUrl,
     comment:  profile?.profile_comment ?? yapyProfile.comment,
+    tags: displayTags.map((tag) => ({ label: tag.label, variant: tag.variant })),
     // stats.charisma は DB の実値を表示用にフォーマット
     // rank は ProfileCard 側で userLevel.tierName に一本化済みのため静的値のまま残す（表示には使わない）
     stats: {
@@ -85,6 +88,15 @@ export default async function HomePage() {
                 letterSpacing: '0.08em',
               }}>
                 背景
+              </Link>
+              <Link href="/profile/tags" style={{
+                fontSize: 10,
+                color: 'var(--ink-faint)',
+                textDecoration: 'none',
+                fontFamily: 'Orbitron, sans-serif',
+                letterSpacing: '0.08em',
+              }}>
+                タグ
               </Link>
             </div>
           }

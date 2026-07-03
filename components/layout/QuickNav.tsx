@@ -3,6 +3,7 @@ import Link from 'next/link'
 const links = [
   { href: '/', label: '通常' },
   { href: '/profile/background', label: '背景' },
+  { href: '/profile/tags', label: 'タグ' },
   { href: '/admin', label: 'Admin' },
   { href: '/admin#announcement', label: '告知' },
   { href: '/notifications', label: '通知' },
