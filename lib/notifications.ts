@@ -8,6 +8,7 @@ export type NotificationType =
   | 'illustration_purchased'
   | 'rank_up'
   | 'decoration_unlocked'
+  | 'admin_point_adjusted'
 
 // ============================================================
 // DB 行型
@@ -31,6 +32,7 @@ export type NotificationMetadata =
   | { type: 'illustration_purchased';    illustrationId: string; illustrationTitle: string; price: number }
   | { type: 'rank_up';                   rankBefore: number; rankAfter: number }
   | { type: 'decoration_unlocked';       decorationIds: string[]; decorationNames: string[] }
+  | { type: 'admin_point_adjusted';      amount: number; direction: 'add' | 'subtract'; reason: string }
 
 // ============================================================
 // 通知生成ヘルパー（サーバー側専用 — RPC 経由で insert）
@@ -95,6 +97,25 @@ export async function notifyDecorationUnlocked(
     p_title:    '新しい装飾が解放されました',
     p_body:     decorationNames.join('、'),
     p_metadata: { type: 'decoration_unlocked', decorationIds, decorationNames },
+  })
+}
+
+export async function notifyAdminPointAdjusted(
+  userId: string,
+  amount: number,
+  direction: 'add' | 'subtract',
+  reason: string
+) {
+  const supabase = createSupabaseServerClient()
+  const title = direction === 'add'
+    ? `管理者から${amount.toLocaleString()}pt付与されました`
+    : `管理者により${amount.toLocaleString()}pt調整されました`
+  await supabase.rpc('create_notification', {
+    p_user_id:  userId,
+    p_type:     'admin_point_adjusted',
+    p_title:    title,
+    p_body:     reason,
+    p_metadata: { type: 'admin_point_adjusted', amount, direction, reason },
   })
 }
 

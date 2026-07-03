@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { requireAdmin } from '@/lib/adminAuth'
+import { notifyAdminPointAdjusted } from '@/lib/notifications'
 
 export async function POST(request: Request) {
   const check = await requireAdmin()
@@ -38,6 +39,13 @@ export async function POST(request: Request) {
 
   const result = data as { ok: boolean; error?: string; previousPoints?: number; newPoints?: number }
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 })
+
+  // 対象ユーザーへ通知（fire-and-forget）
+  const direction = amount > 0 ? 'add' : 'subtract'
+  const absAmount = Math.abs(amount)
+  notifyAdminPointAdjusted(targetUserId, absAmount, direction, reason.trim()).catch(
+    (e) => console.error('[admin/points] notify error:', e)
+  )
 
   return NextResponse.json(result)
 }
