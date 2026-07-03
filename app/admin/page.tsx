@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { adminStyles as s } from '@/components/admin/adminStyles'
 import PointAdjustForm from '@/components/admin/PointAdjustForm'
 import AnnouncementForm from '@/components/admin/AnnouncementForm'
+import IllustrationManager from '@/components/admin/IllustrationManager'
 
 // 管理者チェックは app/admin/layout.tsx が担当
 export default async function AdminPage() {
@@ -20,6 +21,31 @@ export default async function AdminPage() {
     .order('created_at', { ascending: false })
     .limit(1)
     .single()
+
+  const { data: illustrationsRaw } = await supabase
+    .from('illustrations')
+    .select('id, title, description, price, image_url, max_per_user, reward_tag_id, is_active, sort_order')
+    .order('sort_order', { ascending: true })
+
+  const illustrations = (illustrationsRaw ?? []) as Array<{
+    id: string
+    title: string
+    description: string | null
+    price: number
+    image_url: string | null
+    max_per_user: number | null
+    reward_tag_id: string | null
+    is_active: boolean
+    sort_order: number
+  }>
+
+  const { data: rewardTagsRaw } = await supabase
+    .from('profile_tags')
+    .select('id, label')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  const rewardTags = (rewardTagsRaw ?? []) as Array<{ id: string; label: string }>
 
   return (
     <div>
@@ -85,7 +111,13 @@ export default async function AdminPage() {
         />
       </section>
 
-      {/* ===== 3. 告知変更 ===== */}
+
+      {/* ===== 3. イラスト管理 ===== */}
+      <section id="illustrations" style={{ marginBottom: 16 }}>
+        <IllustrationManager initialIllustrations={illustrations} rewardTags={rewardTags} />
+      </section>
+
+      {/* ===== 4. 告知変更 ===== */}
       <section id="announcement" style={s.section}>
         <div style={s.sectionTitle}>ANNOUNCEMENT</div>
         <AnnouncementForm

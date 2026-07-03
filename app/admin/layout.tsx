@@ -58,6 +58,7 @@ export default async function AdminLayout({
       }}>
         {[
           { href: '/admin',              label: 'ユーザー一覧' },
+          { href: '/admin#illustrations', label: 'イラスト' },
           { href: '/admin#announcement', label: '告知' },
         ].map((item) => (
           <Link key={item.href} href={item.href} style={{

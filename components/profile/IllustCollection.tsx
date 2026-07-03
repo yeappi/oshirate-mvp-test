@@ -83,6 +83,23 @@ function IllustPiece({
       onClick={onClick}
       style={{ cursor: 'pointer' }}
     >
+      {card.image_url && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={card.image_url}
+          alt={card.title}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: isLocked ? 0.42 : 1,
+            filter: isLocked ? 'grayscale(0.9) contrast(0.82)' : 'none',
+            transform: isLocked ? 'scale(1.04)' : 'scale(1)',
+          }}
+        />
+      )}
       <div className="art-shine" />
 
       {isLocked ? (
