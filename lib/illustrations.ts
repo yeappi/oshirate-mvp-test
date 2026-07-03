@@ -5,9 +5,11 @@ import type { IllustrationCard, IllustrationRow, UserIllustrationRow } from './i
 // getIllustrationCards
 // やぴのプロフィールページで使うイラストカードを組み立てる
 //
-// 引数:
-//   userId     — 現在ログイン中のユーザーID
-//   targetId   — やぴの profiles.id
+// 表示順:
+//   1. 所有済み
+//   2. 未所有
+//   3. それぞれの中で高額順
+//   4. 同価格なら sort_order 小さい順
 // ============================================================
 export async function getIllustrationCards(
   userId: string,
@@ -15,11 +17,12 @@ export async function getIllustrationCards(
 ): Promise<IllustrationCard[]> {
   const supabase = createSupabaseServerClient()
 
-  // 1. イラスト一覧（全件・sort_order昇順）
+  // 1. イラスト一覧（activeのみ）
   const { data: illusts, error: illustErr } = await supabase
     .from('illustrations')
     .select('*')
     .eq('is_active', true)
+    .order('price', { ascending: false })
     .order('sort_order', { ascending: true })
 
   if (illustErr || !illusts) return []
@@ -37,46 +40,66 @@ export async function getIllustrationCards(
     ])
   )
 
-  // 3. TOP購入者判定
-  //    illustration_purchases から各イラストのTOP購入者IDを取得
+  // 3. お気に入り状況
+  const { data: favorites } = await supabase
+    .from('user_favorite_illustrations')
+    .select('illustration_id, favorite_order')
+    .eq('user_id', userId)
+
+  const favoriteMap = new Map<string, number>(
+    ((favorites ?? []) as Array<{ illustration_id: string; favorite_order: number }>).map((r) => [
+      r.illustration_id,
+      r.favorite_order,
+    ])
+  )
+
+  // 4. TOP購入者判定
   //    自分かどうかだけ判定すれば良い（他人名は出さない）
   const illustIds = (illusts as IllustrationRow[]).map((i) => i.id)
-
-  // illustration_id ごとに最多購入者のIDを取得（自分かどうかだけわかればいい）
   const topBuyerMap = await resolveTopBuyers(supabase, illustIds, userId)
 
-  // 4. 組み立て
-  return (illusts as IllustrationRow[]).map((illust): IllustrationCard => {
+  // 5. 組み立て
+  const cards = (illusts as IllustrationRow[]).map((illust): IllustrationCard => {
     const qty = ownedMap.get(illust.id) ?? 0
+    const favoriteOrder = favoriteMap.get(illust.id) ?? null
     const topBuyerLabel = topBuyerMap.get(illust.id) ?? 'なし'
-    const canBuyMore =
-      illust.max_per_user === null || qty < illust.max_per_user
-
-    if (qty > 0) {
-      return {
-        owned: true,
-        id: illust.id,
-        title: illust.title,
-        price: illust.price,
-        image_url: illust.image_url,
-        max_per_user: illust.max_per_user,
-        quantity: qty,
-        canBuyMore,
-        topBuyerLabel,
-      }
-    }
-
-    return {
-      owned: false,
+    const canBuyMore = illust.max_per_user === null || qty < illust.max_per_user
+    const base = {
       id: illust.id,
       title: illust.title,
       price: illust.price,
       image_url: illust.image_url,
       max_per_user: illust.max_per_user,
-      canBuy: true, // ptチェックはクライアント側
+      sort_order: illust.sort_order,
       topBuyerLabel,
+      isFavorite: favoriteOrder !== null,
+      favoriteOrder,
+    }
+
+    if (qty > 0) {
+      return {
+        ...base,
+        owned: true,
+        quantity: qty,
+        canBuyMore,
+      }
+    }
+
+    return {
+      ...base,
+      owned: false,
+      canBuy: true, // ptチェックはクライアント側
     }
   })
+
+  return cards.sort(compareIllustrationCards)
+}
+
+function compareIllustrationCards(a: IllustrationCard, b: IllustrationCard): number {
+  if (a.owned !== b.owned) return a.owned ? -1 : 1
+  if (a.price !== b.price) return b.price - a.price
+  if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order
+  return a.title.localeCompare(b.title, 'ja')
 }
 
 // ============================================================

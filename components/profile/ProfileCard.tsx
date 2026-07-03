@@ -50,7 +50,6 @@ export default function ProfileCard({
     tags,
     badges,
     stats,
-    favorites,
     topSupporters,
     metrics,
   } = profile
@@ -126,23 +125,6 @@ export default function ProfileCard({
           />
 
           <BadgeRow badges={badges} />
-
-          <div className="rule" />
-
-          <section>
-            <div className="favorite-title">お気に入りの記念</div>
-            <div className="fav-grid">
-              {favorites.map((fav, i) => (
-                <div key={i} className="fav">
-                  <div className="art-shine" />
-                  <div className="fav-num">
-                    <small>×</small>
-                    {fav.count}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
 
           <div className="rule" />
 

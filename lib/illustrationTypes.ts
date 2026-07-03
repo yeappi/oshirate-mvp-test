@@ -29,31 +29,31 @@ export type UserIllustrationRow = {
 
 // ============================================================
 // フロントで使う統合型
-// owned=true  → quantity, isTopBuyer を持つ
+// owned=true  → quantity, is_favorite を持つ
 // owned=false → 購入可能かどうかを持つ
 // ============================================================
+type IllustrationCardBase = {
+  id: string
+  title: string
+  price: number
+  image_url: string | null
+  max_per_user: number | null
+  sort_order: number
+  topBuyerLabel: string
+  isFavorite: boolean
+  favoriteOrder: number | null
+}
+
 export type IllustrationCard =
-  | {
+  | (IllustrationCardBase & {
       owned: true
-      id: string
-      title: string
-      price: number
-      image_url: string | null
-      max_per_user: number | null
       quantity: number
       canBuyMore: boolean      // max_per_user制限に引っかかっていないか
-      topBuyerLabel: string    // 'あなた' | '非公開' | 'なし'
-    }
-  | {
+    })
+  | (IllustrationCardBase & {
       owned: false
-      id: string
-      title: string
-      price: number
-      image_url: string | null
-      max_per_user: number | null
       canBuy: boolean          // ptが足りるか（クライアント側で計算）
-      topBuyerLabel: string
-    }
+    })
 
 // ============================================================
 // 購入APIレスポンス

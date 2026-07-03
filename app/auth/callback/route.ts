@@ -23,27 +23,38 @@ export async function GET(request: Request) {
 
   const user = data.user
 
-  // 初回ログイン時に profiles レコードを作成
-  // upsert: 既存レコードがあれば何もしない（name/avatar_url は上書きしない）
-  const { error: profileError } = await supabase
-    .from('profiles')
-    .upsert(
-      {
-        id: user.id,
-        name: user.user_metadata?.full_name ?? null,
-        avatar_url: user.user_metadata?.avatar_url ?? null,
-        // is_admin は DB デフォルト(false)のまま
-        // 管理者設定は Supabase ダッシュボードから手動で true に変更
-      },
-      {
-        onConflict: 'id',
-        ignoreDuplicates: true, // 既存レコードは触らない
-      }
-    )
+  // 初回ログイン時に profiles / 初期背景 / 初期タグをまとめて整える。
+  // RPCが未適用のデプロイ直後でもログイン自体を止めないよう、失敗時は最低限のprofile upsertへfallbackする。
+  const displayName = user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? null
+  const avatarUrl = user.user_metadata?.avatar_url ?? null
 
-  if (profileError) {
-    console.error('[auth/callback] profile upsert error:', profileError)
-    // プロフィール作成失敗してもログイン自体は通す
+  const { error: bootstrapError } = await supabase.rpc('bootstrap_user_profile', {
+    p_user_id: user.id,
+    p_name: displayName,
+    p_avatar_url: avatarUrl,
+  })
+
+  if (bootstrapError) {
+    console.error('[auth/callback] bootstrap_user_profile error:', bootstrapError)
+
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .upsert(
+        {
+          id: user.id,
+          name: displayName,
+          avatar_url: avatarUrl,
+        },
+        {
+          onConflict: 'id',
+          ignoreDuplicates: true,
+        }
+      )
+
+    if (profileError) {
+      console.error('[auth/callback] fallback profile upsert error:', profileError)
+      // プロフィール作成失敗してもログイン自体は通す
+    }
   }
 
   return NextResponse.redirect(`${origin}/`)

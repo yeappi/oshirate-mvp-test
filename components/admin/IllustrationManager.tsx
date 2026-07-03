@@ -375,7 +375,7 @@ export default function IllustrationManager({ initialIllustrations, rewardTags }
               />
             </div>
             <div>
-              <label style={s.label}>並び順</label>
+              <label style={s.label}>同価格内の順番</label>
               <input
                 type="number"
                 value={form.sort_order}
@@ -459,7 +459,7 @@ export default function IllustrationManager({ initialIllustrations, rewardTags }
               <div style={{ minWidth: 0, textAlign: 'left' }}>
                 <div style={{ fontWeight: 800, fontSize: 12, color: 'var(--ink)' }}>{item.title}</div>
                 <div style={{ marginTop: 2, fontSize: 9, color: 'var(--ink-faint)', fontFamily: 'Orbitron, sans-serif' }}>
-                  {item.price.toLocaleString()}pt / order {item.sort_order} / {item.is_active ? '表示中' : '非表示'}
+                  {item.price.toLocaleString()}pt / same price order {item.sort_order} / {item.is_active ? '表示中' : '非表示'}
                 </div>
               </div>
               <div style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 800, color: 'var(--ink-soft)' }}>

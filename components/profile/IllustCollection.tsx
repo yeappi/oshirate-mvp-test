@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { IllustrationCard } from '@/lib/illustrationTypes'
 import PurchaseModal from '@/components/purchase/PurchaseModal'
 
@@ -11,40 +11,135 @@ type Props = {
   onPurchaseSuccess?: (illustrationId: string, price: number) => void
 }
 
+const FAVORITE_LIMIT = 3
+
 export default function IllustCollection({
   cards,
   userPoints,
   targetUserId,
   onPurchaseSuccess,
 }: Props) {
+  const [items, setItems] = useState(cards)
   const [selectedCard, setSelectedCard] = useState<IllustrationCard | null>(null)
+  const [favoriteStatus, setFavoriteStatus] = useState<string | null>(null)
+
+  const sortedItems = useMemo(() => sortIllustrationCards(items), [items])
+  const favorites = useMemo(
+    () => sortedItems
+      .filter((card) => card.owned && card.isFavorite)
+      .sort((a, b) => {
+        const ao = a.favoriteOrder ?? 999
+        const bo = b.favoriteOrder ?? 999
+        if (ao !== bo) return ao - bo
+        if (a.price !== b.price) return b.price - a.price
+        return a.sort_order - b.sort_order
+      })
+      .slice(0, FAVORITE_LIMIT),
+    [sortedItems]
+  )
 
   const handleSuccess = (illustrationId: string, price: number) => {
     setSelectedCard(null)
     onPurchaseSuccess?.(illustrationId, price)
   }
 
-  const ownedCount = cards.filter((c) => c.owned).length
+  const toggleFavorite = async (card: IllustrationCard) => {
+    if (!card.owned) return
+    setFavoriteStatus(null)
+
+    try {
+      const res = await fetch('/api/profile/favorite-illustrations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ illustrationId: card.id }),
+      })
+      const json = await res.json()
+      if (!res.ok || !json.ok) {
+        if (json.error === 'favorite_limit_reached') {
+          setFavoriteStatus('お気に入りは最大3つまでです')
+        } else if (json.error === 'not_owned') {
+          setFavoriteStatus('購入済みイラストだけお気に入りにできます')
+        } else {
+          setFavoriteStatus('お気に入り更新に失敗しました')
+        }
+        return
+      }
+
+      setItems((current) => {
+        const next = current.map((item) => {
+          if (item.id !== card.id) return item
+          return {
+            ...item,
+            isFavorite: Boolean(json.isFavorite),
+            favoriteOrder: json.isFavorite ? nextFavoriteOrder(current) : null,
+          } as IllustrationCard
+        })
+        return normalizeFavoriteOrders(next)
+      })
+      setFavoriteStatus(json.isFavorite ? 'お気に入りに追加しました' : 'お気に入りを外しました')
+    } catch {
+      setFavoriteStatus('お気に入り更新に失敗しました')
+    }
+  }
+
+  const ownedCount = sortedItems.filter((c) => c.owned).length
 
   return (
     <>
+      <section className="collection-card" style={{ marginBottom: 12 }}>
+        <div className="collection-head">
+          <div className="collection-title">FAVORITE ILLUST</div>
+          <div className="collection-count">{favorites.length}/{FAVORITE_LIMIT}</div>
+        </div>
+        {favorites.length > 0 ? (
+          <div className="favorite-illust-grid">
+            {favorites.map((card) => (
+              <button
+                type="button"
+                key={card.id}
+                className="favorite-illust-card"
+                onClick={() => setSelectedCard(card)}
+              >
+                {card.image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={card.image_url} alt={card.title} />
+                ) : (
+                  <span>✦</span>
+                )}
+                <div className="favorite-illust-label">{card.title}</div>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div style={{ fontSize: 10, color: 'var(--ink-faint)', fontWeight: 700, lineHeight: 1.8 }}>
+            購入済みイラストの ☆ を押すと、ここに最大3つまで表示できます。
+          </div>
+        )}
+      </section>
+
       <section className="collection-card">
         <div className="collection-head">
           <div className="collection-title">ILLUST COLLECTION</div>
           <div className="collection-count">{ownedCount}</div>
         </div>
         <div className="collection-grid">
-          {cards.map((card) => (
+          {sortedItems.map((card) => (
             <IllustPiece
               key={card.id}
               card={card}
               userPoints={userPoints}
               onClick={() => setSelectedCard(card)}
+              onFavoriteToggle={() => toggleFavorite(card)}
             />
           ))}
         </div>
+        {favoriteStatus && (
+          <div style={{ marginTop: 9, fontSize: 10, fontWeight: 700, color: 'var(--ink-soft)' }}>
+            {favoriteStatus}
+          </div>
+        )}
         <div className="collection-note">
-          高額所有 → 通常所有 → 高額未所持 → 通常未所持
+          所有済み → 高額順 → 同価格内は管理順 / 未所有も同じルール
         </div>
       </section>
 
@@ -68,10 +163,12 @@ function IllustPiece({
   card,
   userPoints,
   onClick,
+  onFavoriteToggle,
 }: {
   card: IllustrationCard
   userPoints: number
   onClick: () => void
+  onFavoriteToggle: () => void
 }) {
   const isLocked = !card.owned
   const cantAfford = isLocked && userPoints < card.price
@@ -102,6 +199,20 @@ function IllustPiece({
       )}
       <div className="art-shine" />
 
+      {card.owned && (
+        <button
+          type="button"
+          aria-label={card.isFavorite ? 'お気に入りを外す' : 'お気に入りに追加'}
+          onClick={(event) => {
+            event.stopPropagation()
+            onFavoriteToggle()
+          }}
+          className={`favorite-toggle${card.isFavorite ? ' active' : ''}`}
+        >
+          ★
+        </button>
+      )}
+
       {isLocked ? (
         <>
           <div className="lock" style={{ opacity: cantAfford ? 0.6 : 1 }}>⌁</div>
@@ -127,6 +238,45 @@ function IllustPiece({
       )}
     </div>
   )
+}
+
+function sortIllustrationCards(cards: IllustrationCard[]): IllustrationCard[] {
+  return [...cards].sort((a, b) => {
+    if (a.owned !== b.owned) return a.owned ? -1 : 1
+    if (a.price !== b.price) return b.price - a.price
+    if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order
+    return a.title.localeCompare(b.title, 'ja')
+  })
+}
+
+function nextFavoriteOrder(cards: IllustrationCard[]): number {
+  const orders = cards
+    .filter((card) => card.owned && card.isFavorite && typeof card.favoriteOrder === 'number')
+    .map((card) => card.favoriteOrder ?? 0)
+  return orders.length === 0 ? 1 : Math.max(...orders) + 1
+}
+
+function normalizeFavoriteOrders(cards: IllustrationCard[]): IllustrationCard[] {
+  const favoriteIds = cards
+    .filter((card) => card.owned && card.isFavorite)
+    .sort((a, b) => {
+      const ao = a.favoriteOrder ?? 999
+      const bo = b.favoriteOrder ?? 999
+      if (ao !== bo) return ao - bo
+      if (a.price !== b.price) return b.price - a.price
+      return a.sort_order - b.sort_order
+    })
+    .slice(0, FAVORITE_LIMIT)
+    .map((card) => card.id)
+
+  return cards.map((card) => {
+    const idx = favoriteIds.indexOf(card.id)
+    return {
+      ...card,
+      isFavorite: idx >= 0,
+      favoriteOrder: idx >= 0 ? idx + 1 : null,
+    } as IllustrationCard
+  })
 }
 
 function formatPrice(pt: number): string {

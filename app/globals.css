@@ -796,3 +796,79 @@ body {
 [data-profile-bg="legend"] .name {
   text-shadow: 0 0 10px rgba(111,255,224,0.48);
 }
+
+/* ===== Phase 4I: Favorite illustrations ===== */
+.favorite-illust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.favorite-illust-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--hair-strong);
+  background: rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  color: var(--ink);
+}
+
+.favorite-illust-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.favorite-illust-card > span {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+  color: var(--ink-faint);
+}
+
+.favorite-illust-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 5px 4px;
+  background: linear-gradient(180deg, transparent, rgba(7, 17, 14, 0.68));
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.favorite-toggle {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  z-index: 3;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(7, 17, 14, 0.16);
+  background: rgba(255, 255, 255, 0.78);
+  color: rgba(7, 17, 14, 0.34);
+  font-size: 13px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(7, 17, 14, 0.08);
+}
+
+.favorite-toggle.active {
+  color: #d89b00;
+  border-color: rgba(216, 155, 0, 0.36);
+  background: rgba(255, 249, 218, 0.9);
+}
