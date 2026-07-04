@@ -63,6 +63,7 @@ export async function POST(request: Request) {
     price?: number
     reward_tag_id?: string | null
     reward_tag_granted?: boolean
+    level_reward_tag_ids?: string[] | null
   }
 
   if (!result.ok) {
@@ -94,9 +95,10 @@ export async function POST(request: Request) {
   }
 
   // ランクアップ通知
+  // charisma が上がるのは購入対象プロフィールなので、通知先は targetUserId。
   if (rankUp) {
     notifyPromises.push(
-      notifyRankUp(user.id, rankUp.from, rankUp.to)
+      notifyRankUp(targetUserId, rankUp.from, rankUp.to)
         .catch((e) => console.error('[purchase] notify rankup error:', e))
     )
   }
@@ -105,7 +107,7 @@ export async function POST(request: Request) {
   if (unlockedDecorations.length > 0) {
     notifyPromises.push(
       notifyDecorationUnlocked(
-        user.id,
+        targetUserId,
         unlockedDecorations.map((d) => d.id),
         unlockedDecorations.map((d) => d.name)
       ).catch((e) => console.error('[purchase] notify decoration error:', e))
@@ -131,6 +133,27 @@ export async function POST(request: Request) {
       notifyPromises.push(
         notifyTagUnlocked(user.id, rewardTag.id, rewardTag.label, 'illustration_purchase')
           .catch((e) => console.error('[purchase] notify tag error:', e))
+      )
+    }
+  }
+
+  // Lv到達報酬タグ通知（新規獲得時のみ）。
+  // Lv報酬は購入対象プロフィールの成長報酬なので、通知先は targetUserId。
+  const levelRewardTagIds = Array.isArray(result.level_reward_tag_ids)
+    ? result.level_reward_tag_ids.filter((id): id is string => typeof id === 'string')
+    : []
+
+  if (levelRewardTagIds.length > 0) {
+    const { data: levelTags } = await supabase
+      .from('profile_tags')
+      .select('id, label')
+      .in('id', levelRewardTagIds)
+      .eq('is_active', true)
+
+    for (const tag of levelTags ?? []) {
+      notifyPromises.push(
+        notifyTagUnlocked(targetUserId, String(tag.id), String(tag.label), 'level_reward')
+          .catch((e) => console.error('[purchase] notify level tag error:', e))
       )
     }
   }

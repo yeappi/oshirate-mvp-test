@@ -49,19 +49,30 @@ export function getLevelTier(lv: number): LevelTier {
   return 'base'
 }
 
-// 報酬テーブル（仮。後で実際の報酬IDを紐付け）
+// Lv報酬テーブル
+// 背景とタグだけをLv報酬として扱う。
+// アイコンフレームは累計使用pt報酬なので、Lv報酬には混ぜない。
+export type LevelRewardKind = 'background' | 'tag'
+
 export type LevelReward = {
   lv: number
+  kind: LevelRewardKind
   label: string
+  detail: string
+  rewardId: string
 }
 
 export const LEVEL_REWARDS: LevelReward[] = [
-  { lv:  2, label: 'タグ解放予定' },
-  { lv:  3, label: '背景解放予定' },
-  { lv:  5, label: '特別タグ予定' },
-  { lv: 10, label: '特別背景予定' },
-  { lv: 15, label: 'プロフィール装飾予定' },
-  { lv: 20, label: '限定背景 + 限定タグ予定' },
+  { lv:  2, kind: 'tag',        label: 'タグ', detail: '見守られ中',       rewardId: 'watching_over' },
+  { lv:  3, kind: 'background', label: '背景', detail: 'ミントグロー',     rewardId: 'mint_glow' },
+  { lv:  5, kind: 'background', label: '背景', detail: 'ネオンナイト',     rewardId: 'neon_night' },
+  { lv:  5, kind: 'tag',        label: 'タグ', detail: 'きらめき',         rewardId: 'level_05_kirameki' },
+  { lv: 10, kind: 'background', label: '背景', detail: 'ゴールドステージ', rewardId: 'gold_stage' },
+  { lv: 10, kind: 'tag',        label: 'タグ', detail: '注目株',           rewardId: 'level_10_attention' },
+  { lv: 15, kind: 'background', label: '背景', detail: 'オーロラ',         rewardId: 'aurora' },
+  { lv: 15, kind: 'tag',        label: 'タグ', detail: '推され星',         rewardId: 'level_15_oshi_star' },
+  { lv: 20, kind: 'background', label: '背景', detail: '殿堂',             rewardId: 'legend' },
+  { lv: 20, kind: 'tag',        label: 'タグ', detail: '殿堂入り',         rewardId: 'level_20_legend' },
 ]
 
 // ============================================================

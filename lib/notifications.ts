@@ -112,7 +112,9 @@ export async function notifyTagUnlocked(
   const supabase = createSupabaseServerClient()
   const body = source === 'illustration_purchase'
     ? 'イラスト購入特典として獲得しました'
-    : null
+    : source === 'level_reward'
+      ? 'Lv到達報酬として解放されました'
+      : null
 
   await supabase.rpc('create_notification', {
     p_user_id:  userId,
