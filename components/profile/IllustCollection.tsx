@@ -22,6 +22,7 @@ export default function IllustCollection({
   const [items, setItems] = useState(cards)
   const [selectedCard, setSelectedCard] = useState<IllustrationCard | null>(null)
   const [favoriteStatus, setFavoriteStatus] = useState<string | null>(null)
+  const [favoriteLoadingId, setFavoriteLoadingId] = useState<string | null>(null)
 
   const sortedItems = useMemo(() => sortIllustrationCards(items), [items])
   const favorites = useMemo(
@@ -44,8 +45,31 @@ export default function IllustCollection({
   }
 
   const toggleFavorite = async (card: IllustrationCard) => {
-    if (!card.owned) return
+    if (!card.owned || favoriteLoadingId) return
+
+    const favoriteCount = items.filter((item) => item.owned && item.isFavorite).length
+    const willFavorite = !card.isFavorite
+
+    if (willFavorite && favoriteCount >= FAVORITE_LIMIT) {
+      setFavoriteStatus('お気に入りは最大3つまでです')
+      return
+    }
+
+    const previousItems = items
     setFavoriteStatus(null)
+    setFavoriteLoadingId(card.id)
+
+    const optimisticItems = normalizeFavoriteOrders(
+      items.map((item) => {
+        if (item.id !== card.id) return item
+        return {
+          ...item,
+          isFavorite: willFavorite,
+          favoriteOrder: willFavorite ? nextFavoriteOrder(items) : null,
+        } as IllustrationCard
+      })
+    )
+    setItems(optimisticItems)
 
     try {
       const res = await fetch('/api/profile/favorite-illustrations', {
@@ -55,6 +79,7 @@ export default function IllustCollection({
       })
       const json = await res.json()
       if (!res.ok || !json.ok) {
+        setItems(previousItems)
         if (json.error === 'favorite_limit_reached') {
           setFavoriteStatus('お気に入りは最大3つまでです')
         } else if (json.error === 'not_owned') {
@@ -65,20 +90,25 @@ export default function IllustCollection({
         return
       }
 
-      setItems((current) => {
-        const next = current.map((item) => {
-          if (item.id !== card.id) return item
-          return {
-            ...item,
-            isFavorite: Boolean(json.isFavorite),
-            favoriteOrder: json.isFavorite ? nextFavoriteOrder(current) : null,
-          } as IllustrationCard
-        })
-        return normalizeFavoriteOrders(next)
-      })
+      // サーバー側の結果とズレた場合だけ合わせる。通常は押した瞬間の表示を維持する。
+      if (Boolean(json.isFavorite) !== willFavorite) {
+        setItems((current) => normalizeFavoriteOrders(
+          current.map((item) => {
+            if (item.id !== card.id) return item
+            return {
+              ...item,
+              isFavorite: Boolean(json.isFavorite),
+              favoriteOrder: json.isFavorite ? nextFavoriteOrder(current) : null,
+            } as IllustrationCard
+          })
+        ))
+      }
       setFavoriteStatus(json.isFavorite ? 'お気に入りに追加しました' : 'お気に入りを外しました')
     } catch {
+      setItems(previousItems)
       setFavoriteStatus('お気に入り更新に失敗しました')
+    } finally {
+      setFavoriteLoadingId(null)
     }
   }
 
@@ -130,6 +160,7 @@ export default function IllustCollection({
               userPoints={userPoints}
               onClick={() => setSelectedCard(card)}
               onFavoriteToggle={() => toggleFavorite(card)}
+              favoriteBusy={favoriteLoadingId === card.id}
             />
           ))}
         </div>
@@ -164,11 +195,13 @@ function IllustPiece({
   userPoints,
   onClick,
   onFavoriteToggle,
+  favoriteBusy,
 }: {
   card: IllustrationCard
   userPoints: number
   onClick: () => void
   onFavoriteToggle: () => void
+  favoriteBusy: boolean
 }) {
   const isLocked = !card.owned
   const cantAfford = isLocked && userPoints < card.price
@@ -207,9 +240,11 @@ function IllustPiece({
             event.stopPropagation()
             onFavoriteToggle()
           }}
+          disabled={favoriteBusy}
           className={`favorite-toggle${card.isFavorite ? ' active' : ''}`}
+          style={{ opacity: favoriteBusy ? 0.55 : 1, cursor: favoriteBusy ? 'wait' : 'pointer' }}
         >
-          ★
+          {favoriteBusy ? '…' : '★'}
         </button>
       )}
 

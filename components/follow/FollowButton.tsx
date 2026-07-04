@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 type Props = {
@@ -8,41 +9,55 @@ type Props = {
   compact?: boolean
 }
 
+type FollowAction = 'follow' | 'unfollow'
+
 export default function FollowButton({ targetUserId, initialFollowing, compact = false }: Props) {
+  const router = useRouter()
   const [isFollowing, setIsFollowing] = useState(initialFollowing)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
-  const toggleFollow = async () => {
+  const updateFollow = async (action: FollowAction) => {
     if (loading) return
+
+    const previous = isFollowing
+    const optimistic = action === 'follow'
+
     setLoading(true)
     setMessage(null)
+    setIsFollowing(optimistic)
 
     try {
       const res = await fetch('/api/follows', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ targetUserId }),
+        body: JSON.stringify({ targetUserId, action }),
       })
       const json = await res.json()
       if (!res.ok || !json.ok) {
+        setIsFollowing(previous)
         setMessage(json.error === 'cannot_follow_self' ? '自分はフォローできません' : '更新に失敗しました')
         return
       }
+
       setIsFollowing(Boolean(json.isFollowing))
       setMessage(json.isFollowing ? 'フォローしました' : 'フォロー解除しました')
+      router.refresh()
     } catch {
+      setIsFollowing(previous)
       setMessage('更新に失敗しました')
     } finally {
       setLoading(false)
     }
   }
 
+  const action: FollowAction = isFollowing ? 'unfollow' : 'follow'
+
   return (
     <div style={{ display: 'grid', gap: 4, justifyItems: compact ? 'end' : 'stretch' }}>
       <button
         type="button"
-        onClick={toggleFollow}
+        onClick={() => updateFollow(action)}
         disabled={loading}
         style={{
           border: '1px solid var(--hair-strong)',
@@ -55,10 +70,12 @@ export default function FollowButton({ targetUserId, initialFollowing, compact =
           fontWeight: 900,
           letterSpacing: '0.08em',
           cursor: loading ? 'wait' : 'pointer',
-          opacity: loading ? 0.7 : 1,
+          opacity: loading ? 0.72 : 1,
+          transition: 'opacity 160ms ease, transform 160ms ease, background 160ms ease',
+          transform: loading ? 'scale(0.98)' : 'scale(1)',
         }}
       >
-        {loading ? '...' : isFollowing ? 'FOLLOWING' : 'FOLLOW'}
+        {loading ? 'SAVING...' : isFollowing ? 'FOLLOWING / 解除' : 'FOLLOW'}
       </button>
       {message && !compact && (
         <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--ink-faint)' }}>{message}</div>

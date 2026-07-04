@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase-server'
 
 type Body = {
   targetUserId?: unknown
+  action?: unknown
 }
 
 export async function POST(request: Request) {
@@ -12,6 +13,8 @@ export async function POST(request: Request) {
 
   const body = (await request.json()) as Body
   const targetUserId = typeof body.targetUserId === 'string' ? body.targetUserId : ''
+  const action = body.action === 'unfollow' ? 'unfollow' : 'follow'
+
   if (!targetUserId) {
     return NextResponse.json({ ok: false, error: 'invalid_target' }, { status: 400 })
   }
@@ -30,33 +33,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'target_not_found' }, { status: 404 })
   }
 
-  const { data: existing } = await supabase
-    .from('user_follows')
-    .select('id')
-    .eq('follower_id', user.id)
-    .eq('followed_id', targetUserId)
-    .maybeSingle()
-
-  if (existing) {
+  if (action === 'unfollow') {
     const { error } = await supabase
       .from('user_follows')
       .delete()
-      .eq('id', existing.id)
       .eq('follower_id', user.id)
+      .eq('followed_id', targetUserId)
 
     if (error) {
-      console.error('[follows DELETE]', error)
+      console.error('[follows UNFOLLOW]', error)
       return NextResponse.json({ ok: false, error: 'unknown' }, { status: 500 })
     }
+
     return NextResponse.json({ ok: true, isFollowing: false })
   }
 
   const { error } = await supabase
     .from('user_follows')
-    .insert({ follower_id: user.id, followed_id: targetUserId })
+    .upsert(
+      { follower_id: user.id, followed_id: targetUserId },
+      { onConflict: 'follower_id,followed_id', ignoreDuplicates: true }
+    )
 
   if (error) {
-    console.error('[follows INSERT]', error)
+    console.error('[follows FOLLOW]', error)
     return NextResponse.json({ ok: false, error: 'unknown' }, { status: 500 })
   }
 
