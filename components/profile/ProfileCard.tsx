@@ -4,6 +4,7 @@ import type { IllustrationCard } from '@/lib/illustrationTypes'
 import type { ActiveDecorations } from '@/lib/decorationTypes'
 import type { UserLevel } from '@/lib/level'
 import type { ProfileBackground } from '@/lib/backgrounds'
+import type { AvatarFrame } from '@/lib/avatarFrames'
 import Avatar from './Avatar'
 import BadgeRow from './BadgeRow'
 import StatsRow from './StatsRow'
@@ -30,6 +31,7 @@ type Props = {
   editLink?: ReactNode
   userLevel?: UserLevel
   selectedBackground?: ProfileBackground | null
+  selectedAvatarFrame?: AvatarFrame | null
 }
 
 export default function ProfileCard({
@@ -43,6 +45,7 @@ export default function ProfileCard({
   editLink,
   userLevel,
   selectedBackground,
+  selectedAvatarFrame,
   showUserPoints = true,
   isPublicView = false,
 }: Props) {
@@ -92,6 +95,7 @@ export default function ProfileCard({
               name={name}
               avatarAround={activeDecorations.avatar_around}
               avatarFrame={activeDecorations.avatar_frame}
+              cssFrameKey={selectedAvatarFrame?.css_key ?? 'black'}
             />
 
             {/* above_name スロット */}

@@ -4,6 +4,7 @@ import { getIllustrationCards } from '@/lib/illustrations'
 import { getUnreadCount } from '@/lib/notifications'
 import { getUserLevel } from '@/lib/level'
 import { getProfileBackgroundById } from '@/lib/backgrounds'
+import { getAvatarFrameById } from '@/lib/avatarFrames'
 import { getProfileDisplayTags } from '@/lib/tags'
 import { isFollowingUser } from '@/lib/follows'
 import { yapyProfile } from '@/lib/staticData'
@@ -32,9 +33,10 @@ export default async function PublicProfilePage({ params }: Props) {
 
   if (!targetProfile) notFound()
 
-  const [cards, selectedBackground] = await Promise.all([
+  const [cards, selectedBackground, selectedAvatarFrame] = await Promise.all([
     getIllustrationCards(user.id, targetUserId),
     getProfileBackgroundById(targetProfile.selected_background_id),
+    getAvatarFrameById(targetProfile.selected_avatar_frame_id),
   ])
 
   const userLevel = getUserLevel(targetProfile.charisma ?? 0)
@@ -62,6 +64,7 @@ export default async function PublicProfilePage({ params }: Props) {
           targetUserId={targetUserId}
           userLevel={userLevel}
           selectedBackground={selectedBackground}
+          selectedAvatarFrame={selectedAvatarFrame}
           showUserPoints={false}
           isPublicView
           editLink={<FollowButton targetUserId={targetUserId} initialFollowing={isFollowing} compact />}

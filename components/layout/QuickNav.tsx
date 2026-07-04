@@ -4,6 +4,7 @@ const links = [
   { href: '/', label: '通常' },
   { href: '/profile/background', label: '背景' },
   { href: '/profile/tags', label: 'タグ' },
+  { href: '/profile/frame', label: '枠' },
   { href: '/discover', label: '探す' },
   { href: '/following', label: 'フォロー' },
   { href: '/admin', label: 'Admin' },

@@ -6,6 +6,8 @@ export type Profile = {
   avatar_url: string | null
   profile_comment: string | null
   selected_background_id: string | null
+  selected_avatar_frame_id: string | null
+  total_spent_points: number
   is_admin: boolean
   points: number
   charisma: number

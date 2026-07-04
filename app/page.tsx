@@ -7,6 +7,7 @@ import { getUnreadCount } from '@/lib/notifications'
 import { yapyProfile, YAPI_USER_ID } from '@/lib/staticData'
 import { getUserLevel } from '@/lib/level'
 import { getProfileBackgroundById } from '@/lib/backgrounds'
+import { getAvatarFrameById } from '@/lib/avatarFrames'
 import { getProfileDisplayTags } from '@/lib/tags'
 import ProfileCard from '@/components/profile/ProfileCard'
 import LogoutButton from '@/components/auth/LogoutButton'
@@ -27,7 +28,10 @@ export default async function HomePage() {
 
   const userPoints = profile?.points ?? 0
   const userLevel = getUserLevel(profile?.charisma ?? 0)
-  const selectedBackground = await getProfileBackgroundById(profile?.selected_background_id)
+  const [selectedBackground, selectedAvatarFrame] = await Promise.all([
+    getProfileBackgroundById(profile?.selected_background_id),
+    getAvatarFrameById(profile?.selected_avatar_frame_id),
+  ])
 
   // ======================================================
   // mergedProfile: DBのユーザー情報を優先し、未設定項目は
@@ -66,6 +70,7 @@ export default async function HomePage() {
           targetUserId={YAPI_USER_ID}
           userLevel={userLevel}
           selectedBackground={selectedBackground}
+          selectedAvatarFrame={selectedAvatarFrame}
           activeDecorations={activeDecorations}
           logoutButton={<LogoutButton />}
           giftBox={<GiftBox />}
@@ -88,6 +93,15 @@ export default async function HomePage() {
                 letterSpacing: '0.08em',
               }}>
                 背景
+              </Link>
+              <Link href="/profile/frame" style={{
+                fontSize: 10,
+                color: 'var(--ink-faint)',
+                textDecoration: 'none',
+                fontFamily: 'Orbitron, sans-serif',
+                letterSpacing: '0.08em',
+              }}>
+                枠
               </Link>
               <Link href="/profile/tags" style={{
                 fontSize: 10,
