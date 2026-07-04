@@ -196,6 +196,7 @@ export default function ProfileCard({
         cards={cards}
         userPoints={userPoints}
         targetUserId={targetUserId}
+        canEditFavorites={!isPublicView}
       />
     </main>
   )

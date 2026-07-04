@@ -8,6 +8,7 @@ type Props = {
   cards: IllustrationCard[]
   userPoints: number
   targetUserId: string
+  canEditFavorites?: boolean
   onPurchaseSuccess?: (illustrationId: string, price: number) => void
 }
 
@@ -17,6 +18,7 @@ export default function IllustCollection({
   cards,
   userPoints,
   targetUserId,
+  canEditFavorites = true,
   onPurchaseSuccess,
 }: Props) {
   const [items, setItems] = useState(cards)
@@ -45,7 +47,7 @@ export default function IllustCollection({
   }
 
   const toggleFavorite = async (card: IllustrationCard) => {
-    if (!card.owned || favoriteLoadingId) return
+    if (!canEditFavorites || !card.owned || favoriteLoadingId) return
 
     const favoriteCount = items.filter((item) => item.owned && item.isFavorite).length
     const willFavorite = !card.isFavorite
@@ -142,7 +144,9 @@ export default function IllustCollection({
           </div>
         ) : (
           <div style={{ fontSize: 10, color: 'var(--ink-faint)', fontWeight: 700, lineHeight: 1.8 }}>
-            購入済みイラストの ☆ を押すと、ここに最大3つまで表示できます。
+            {canEditFavorites
+              ? '購入済みイラストの ☆ を押すと、ここに最大3つまで表示できます。'
+              : 'このプロフィールの持ち主が選んだお気に入りイラストがここに表示されます。'}
           </div>
         )}
       </section>
@@ -161,6 +165,7 @@ export default function IllustCollection({
               onClick={() => setSelectedCard(card)}
               onFavoriteToggle={() => toggleFavorite(card)}
               favoriteBusy={favoriteLoadingId === card.id}
+              canEditFavorite={canEditFavorites}
             />
           ))}
         </div>
@@ -196,12 +201,14 @@ function IllustPiece({
   onClick,
   onFavoriteToggle,
   favoriteBusy,
+  canEditFavorite,
 }: {
   card: IllustrationCard
   userPoints: number
   onClick: () => void
   onFavoriteToggle: () => void
   favoriteBusy: boolean
+  canEditFavorite: boolean
 }) {
   const isLocked = !card.owned
   const cantAfford = isLocked && userPoints < card.price
@@ -232,7 +239,7 @@ function IllustPiece({
       )}
       <div className="art-shine" />
 
-      {card.owned && (
+      {card.owned && canEditFavorite && (
         <button
           type="button"
           aria-label={card.isFavorite ? 'お気に入りを外す' : 'お気に入りに追加'}

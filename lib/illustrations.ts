@@ -3,17 +3,22 @@ import type { IllustrationCard, IllustrationRow, UserIllustrationRow } from './i
 
 // ============================================================
 // getIllustrationCards
-// やぴのプロフィールページで使うイラストカードを組み立てる
+// プロフィール表示用のイラストカードを組み立てる。
+//
+// profileUserId:
+//   そのプロフィールの持ち主。所有済み/お気に入り表示はこのユーザー基準。
+// viewerUserId:
+//   いま見ているログインユーザー。TOP購入者の「あなた」判定に使う。
 //
 // 表示順:
-//   1. 所有済み
+//   1. プロフィール持ち主の所有済み
 //   2. 未所有
 //   3. それぞれの中で高額順
 //   4. 同価格なら sort_order 小さい順
 // ============================================================
 export async function getIllustrationCards(
-  userId: string,
-  targetId: string
+  profileUserId: string,
+  viewerUserId: string
 ): Promise<IllustrationCard[]> {
   const supabase = createSupabaseServerClient()
 
@@ -27,11 +32,11 @@ export async function getIllustrationCards(
 
   if (illustErr || !illusts) return []
 
-  // 2. 自分の所持状況
+  // 2. プロフィール持ち主の所持状況
   const { data: owned } = await supabase
     .from('user_illustrations')
     .select('illustration_id, quantity')
-    .eq('user_id', userId)
+    .eq('user_id', profileUserId)
 
   const ownedMap = new Map<string, number>(
     (owned ?? []).map((r: Pick<UserIllustrationRow, 'illustration_id' | 'quantity'>) => [
@@ -40,11 +45,11 @@ export async function getIllustrationCards(
     ])
   )
 
-  // 3. お気に入り状況
+  // 3. プロフィール持ち主のお気に入り状況
   const { data: favorites } = await supabase
     .from('user_favorite_illustrations')
     .select('illustration_id, favorite_order')
-    .eq('user_id', userId)
+    .eq('user_id', profileUserId)
 
   const favoriteMap = new Map<string, number>(
     ((favorites ?? []) as Array<{ illustration_id: string; favorite_order: number }>).map((r) => [
@@ -54,9 +59,9 @@ export async function getIllustrationCards(
   )
 
   // 4. TOP購入者判定
-  //    自分かどうかだけ判定すれば良い（他人名は出さない）
+  //    viewerUserId が1位なら「あなた」、それ以外の個人名は出さない。
   const illustIds = (illusts as IllustrationRow[]).map((i) => i.id)
-  const topBuyerMap = await resolveTopBuyers(supabase, illustIds, userId)
+  const topBuyerMap = await resolveTopBuyers(supabase, illustIds, viewerUserId)
 
   // 5. 組み立て
   const cards = (illusts as IllustrationRow[]).map((illust): IllustrationCard => {
@@ -105,14 +110,14 @@ function compareIllustrationCards(a: IllustrationCard, b: IllustrationCard): num
 // ============================================================
 // 各イラストのTOP購入者ラベルを解決する
 //   '購入なし'   → 'なし'
-//   自分が1位    → 'あなた'
+//   viewer が1位 → 'あなた'
 //   他人が1位    → '非公開'
 // ============================================================
 async function resolveTopBuyers(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: any,
   illustIds: string[],
-  currentUserId: string
+  viewerUserId: string
 ): Promise<Map<string, string>> {
   const result = new Map<string, string>()
 
@@ -148,7 +153,7 @@ async function resolveTopBuyers(
         topId = buyerId
       }
     }
-    result.set(illustId, topId === currentUserId ? 'あなた' : '非公開')
+    result.set(illustId, topId === viewerUserId ? 'あなた' : '非公開')
   }
 
   return result

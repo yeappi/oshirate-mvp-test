@@ -4,7 +4,7 @@ import { getUser, getProfile } from '@/lib/auth'
 import { getIllustrationCards } from '@/lib/illustrations'
 import { getActiveDecorations } from '@/lib/decorations'
 import { getUnreadCount } from '@/lib/notifications'
-import { yapyProfile, YAPI_USER_ID } from '@/lib/staticData'
+import { yapyProfile } from '@/lib/staticData'
 import { getUserLevel } from '@/lib/level'
 import { getProfileBackgroundById } from '@/lib/backgrounds'
 import { getAvatarFrameById } from '@/lib/avatarFrames'
@@ -20,7 +20,7 @@ export default async function HomePage() {
 
   const [profile, cards, activeDecorations, unreadCount, displayTags] = await Promise.all([
     getProfile(user.id),
-    YAPI_USER_ID ? getIllustrationCards(user.id, YAPI_USER_ID) : Promise.resolve([]),
+    getIllustrationCards(user.id, user.id),
     getActiveDecorations(user.id),
     getUnreadCount(user.id),
     getProfileDisplayTags(user.id),
@@ -67,7 +67,7 @@ export default async function HomePage() {
           profile={mergedProfile}
           cards={cards}
           userPoints={userPoints}
-          targetUserId={YAPI_USER_ID}
+          targetUserId={user.id}
           userLevel={userLevel}
           selectedBackground={selectedBackground}
           selectedAvatarFrame={selectedAvatarFrame}

@@ -34,7 +34,7 @@ export default async function PublicProfilePage({ params }: Props) {
   if (!targetProfile) notFound()
 
   const [cards, selectedBackground, selectedAvatarFrame] = await Promise.all([
-    getIllustrationCards(user.id, targetUserId),
+    getIllustrationCards(targetUserId, user.id),
     getProfileBackgroundById(targetProfile.selected_background_id),
     getAvatarFrameById(targetProfile.selected_avatar_frame_id),
   ])
