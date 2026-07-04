@@ -22,6 +22,8 @@ type Props = {
   cards: IllustrationCard[]
   userPoints: number
   targetUserId: string
+  showUserPoints?: boolean
+  isPublicView?: boolean
   activeDecorations?: ActiveDecorations
   logoutButton?: ReactNode
   giftBox?: ReactNode
@@ -41,6 +43,8 @@ export default function ProfileCard({
   editLink,
   userLevel,
   selectedBackground,
+  showUserPoints = true,
+  isPublicView = false,
 }: Props) {
   const {
     name,
@@ -53,6 +57,10 @@ export default function ProfileCard({
     topSupporters,
     metrics,
   } = profile
+
+  const displayedSupporters = isPublicView
+    ? topSupporters.map((s) => ({ ...s, name: '匿名', points: '非公開' }))
+    : topSupporters
 
   return (
     <main className="app">
@@ -128,25 +136,27 @@ export default function ProfileCard({
 
           <div className="rule" />
 
-          <TopSupporters supporters={topSupporters} />
+          <TopSupporters supporters={displayedSupporters} />
 
-          {/* 所持pt */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'baseline',
-            padding: '10px 0 0',
-            borderTop: '1px solid var(--hair)',
-            marginTop: 14,
-          }}>
-            <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--ink-soft)', letterSpacing: '0.1em' }}>
-              所持PT
+          {/* 所持pt: 自分のホームだけ表示。他人から見える公開プロフィールでは非表示。 */}
+          {showUserPoints && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              padding: '10px 0 0',
+              borderTop: '1px solid var(--hair)',
+              marginTop: 14,
+            }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--ink-soft)', letterSpacing: '0.1em' }}>
+                所持PT
+              </div>
+              <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 20, fontWeight: 800 }}>
+                {userPoints.toLocaleString()}
+                <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-soft)', marginLeft: 3 }}>pt</span>
+              </div>
             </div>
-            <div style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 20, fontWeight: 800 }}>
-              {userPoints.toLocaleString()}
-              <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink-soft)', marginLeft: 3 }}>pt</span>
-            </div>
-          </div>
+          )}
 
           <section className="metrics">
             <div className="metric">
