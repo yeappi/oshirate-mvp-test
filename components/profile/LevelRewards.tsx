@@ -12,7 +12,9 @@ function RewardRow({ reward, currentLv }: { reward: (typeof LEVEL_REWARDS)[numbe
   const achieved = currentLv >= reward.lv
   return (
     <div
-      className={`reward-row${achieved ? ' achieved' : ' locked'}`}
+      className={`reward-row${achieved ? ' achieved' : ' locked'} reward-kind-${reward.kind}`}
+      data-reward-lv={reward.lv}
+      data-reward-kind={reward.kind}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -68,6 +70,8 @@ function RewardRow({ reward, currentLv }: { reward: (typeof LEVEL_REWARDS)[numbe
           {reward.detail}
         </div>
       </div>
+
+      <span className="reward-motion" aria-hidden="true" />
 
       {achieved && (
         <div style={{

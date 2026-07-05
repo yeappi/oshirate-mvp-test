@@ -1757,3 +1757,225 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ===== Phase4s: profile visual polish ===== */
+.logo,
+.profile-nav-clean .logo,
+.profile-edit-page-nav .logo {
+  color: #111111 !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.36em !important;
+}
+
+.tag-chip,
+.tag-chip.rare,
+.tag-chip.high,
+.tag-chip.mid,
+.tag-chip.low {
+  color: #333333 !important;
+  background: rgba(17, 17, 17, 0.055) !important;
+  border-color: rgba(17, 17, 17, 0.14) !important;
+}
+
+.profile-comment {
+  margin: 12px auto 18px !important;
+  max-width: 304px !important;
+  color: #111111 !important;
+  font-size: 16px !important;
+  line-height: 1.64 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.015em !important;
+  padding: 12px 16px 13px !important;
+  border: 1px solid rgba(17, 17, 17, 0.1) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.58) !important;
+  backdrop-filter: blur(12px) saturate(1.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
+}
+.profile-comment::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%) rotate(45deg);
+  background: rgba(255, 255, 255, 0.58);
+  border-left: 1px solid rgba(17, 17, 17, 0.1);
+  border-top: 1px solid rgba(17, 17, 17, 0.1);
+}
+.profile-comment .comment-mark {
+  left: 13px !important;
+  top: 4px !important;
+  transform: none !important;
+  font-family: 'Noto Sans JP', sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  color: rgba(61, 219, 184, 0.42) !important;
+  line-height: 1 !important;
+}
+.profile-comment.empty {
+  color: #666666 !important;
+  border-style: dashed !important;
+  background: rgba(255, 255, 255, 0.46) !important;
+}
+
+.points-strip {
+  margin-top: 16px !important;
+  padding-top: 13px !important;
+  border-top: 1px solid rgba(17, 17, 17, 0.1) !important;
+  display: block !important;
+  text-align: left !important;
+}
+.points-label {
+  margin-bottom: 2px !important;
+  color: #666666 !important;
+}
+.points-value {
+  color: #111111 !important;
+}
+
+.favorite-section.collection-card {
+  border-radius: 16px !important;
+  padding: 16px !important;
+}
+.favorite-section .favorite-illust-grid {
+  gap: 8px !important;
+}
+.favorite-section .favorite-illust-card {
+  border-radius: 8px !important;
+}
+
+/* Reward motion: unlocked rows get richer as Lv rises. */
+.reward-row {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.reward-row .reward-motion {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: -1;
+}
+.reward-row.achieved .reward-motion {
+  opacity: 1;
+  background: linear-gradient(90deg, transparent, rgba(61, 219, 184, 0.1), transparent);
+  animation: rewardSweep 4.2s ease-in-out infinite;
+}
+.reward-row.achieved[data-reward-lv="10"] .reward-motion,
+.reward-row.achieved[data-reward-lv="15"] .reward-motion {
+  background:
+    radial-gradient(circle at 14% 40%, rgba(61, 219, 184, 0.18), transparent 26%),
+    linear-gradient(100deg, transparent, rgba(255, 216, 112, 0.16), transparent);
+  animation: rewardSweep 3.8s ease-in-out infinite, rewardFloat 5.6s ease-in-out infinite;
+}
+.reward-row.achieved[data-reward-lv="20"] .reward-motion {
+  background:
+    conic-gradient(from 0deg at 50% 50%, rgba(61,219,184,.13), rgba(255,216,112,.15), rgba(169,116,255,.13), rgba(61,219,184,.13));
+  animation: rewardHolo 8s linear infinite;
+}
+
+/* Background unlock feeling, layered over the already-selected profile background. */
+.profile-bg-card[data-level-tier="mid"]::before,
+.profile-bg-card[data-level-tier="high"]::before,
+.profile-bg-card[data-level-tier="legend"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  opacity: 0.72;
+}
+.profile-bg-card[data-level-tier="mid"]::before {
+  background: linear-gradient(110deg, transparent 18%, rgba(61,219,184,0.12) 50%, transparent 82%);
+  animation: bgGlide 7s ease-in-out infinite;
+}
+.profile-bg-card[data-level-tier="high"]::before {
+  background:
+    radial-gradient(circle at 16% 20%, rgba(61,219,184,0.16), transparent 30%),
+    radial-gradient(circle at 82% 12%, rgba(255,216,112,0.14), transparent 28%),
+    linear-gradient(110deg, transparent 12%, rgba(255,255,255,0.16) 50%, transparent 88%);
+  animation: bgGlide 6s ease-in-out infinite, bgPulse 4.8s ease-in-out infinite;
+}
+.profile-bg-card[data-level-tier="legend"]::before {
+  background:
+    conic-gradient(from 0deg at 50% 50%, rgba(61,219,184,.12), rgba(255,216,112,.13), rgba(169,116,255,.12), rgba(61,219,184,.12));
+  animation: bgHolo 10s linear infinite;
+}
+.profile-inner-plate {
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.045) !important;
+}
+
+/* Avatar frame motion: higher frames become more alive. */
+.avatar-wrap[data-avatar-frame="gold"]::before,
+.avatar-wrap[data-avatar-frame="cyan_aura"]::before,
+.avatar-wrap[data-avatar-frame="purple_aura"]::before,
+.avatar-wrap[data-avatar-frame="rainbow_aura"]::before {
+  animation: framePulse 3.6s ease-in-out infinite;
+}
+.avatar-wrap[data-avatar-frame="cyan_aura"]::after,
+.avatar-wrap[data-avatar-frame="purple_aura"]::after {
+  animation: auraBreathe 4.8s ease-in-out infinite;
+}
+.avatar-wrap[data-avatar-frame="rainbow_aura"]::before {
+  background-size: 220% 220% !important;
+  animation: framePulse 3.4s ease-in-out infinite, frameGradient 8s linear infinite;
+}
+.avatar-wrap[data-avatar-frame="rainbow_aura"]::after {
+  animation: auraSpin 12s linear infinite;
+}
+
+@keyframes rewardSweep {
+  0%, 100% { transform: translateX(-28%); opacity: 0.42; }
+  50% { transform: translateX(28%); opacity: 0.9; }
+}
+@keyframes rewardFloat {
+  0%, 100% { filter: saturate(1); }
+  50% { filter: saturate(1.3); }
+}
+@keyframes rewardHolo {
+  from { transform: rotate(0deg) scale(1.28); }
+  to { transform: rotate(360deg) scale(1.28); }
+}
+@keyframes bgGlide {
+  0%, 100% { transform: translateX(-10%); opacity: 0.42; }
+  50% { transform: translateX(10%); opacity: 0.78; }
+}
+@keyframes bgPulse {
+  0%, 100% { filter: saturate(1); }
+  50% { filter: saturate(1.35); }
+}
+@keyframes bgHolo {
+  from { transform: rotate(0deg) scale(1.18); }
+  to { transform: rotate(360deg) scale(1.18); }
+}
+@keyframes framePulse {
+  0%, 100% { filter: saturate(1); }
+  50% { filter: saturate(1.35) brightness(1.05); }
+}
+@keyframes auraBreathe {
+  0%, 100% { transform: scale(0.96); opacity: 0.62; }
+  50% { transform: scale(1.05); opacity: 0.88; }
+}
+@keyframes frameGradient {
+  from { background-position: 0% 50%; }
+  to { background-position: 220% 50%; }
+}
+@keyframes auraSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reward-row .reward-motion,
+  .profile-bg-card::before,
+  .avatar-wrap::before,
+  .avatar-wrap::after {
+    animation: none !important;
+  }
+}

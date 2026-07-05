@@ -97,16 +97,20 @@ export default function ProfileCard({
             </div>
           </section>
 
-          <section className="profile-comment" style={{ position: 'relative' }}>
+          <section className={`profile-comment${comment.trim() ? '' : ' empty'}`} style={{ position: 'relative' }}>
             <CommentDecoration decoration={activeDecorations.comment_decoration} />
-            <div className="comment-mark" style={{ position: 'relative', zIndex: 1 }}>&quot;</div>
+            <div className="comment-mark" style={{ position: 'relative', zIndex: 1 }}>「</div>
             <p style={{ position: 'relative', zIndex: 1 }}>
-              {comment.split('\n').map((line, i, arr) => (
-                <span key={i}>
-                  {line}
-                  {i < arr.length - 1 && <br />}
-                </span>
-              ))}
+              {comment.trim() ? (
+                comment.split('\n').map((line, i, arr) => (
+                  <span key={i}>
+                    {line}
+                    {i < arr.length - 1 && <br />}
+                  </span>
+                ))
+              ) : (
+                editLink ? '一言を書く +' : 'まだ一言はありません'
+              )}
             </p>
           </section>
 
