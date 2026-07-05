@@ -2896,3 +2896,166 @@ body {
   .tag-chip.mid,
   .tag-chip.low { font-size: 7px !important; padding-inline: 6px !important; }
 }
+
+/* ===== Phase4z: profile micro-adjustments ===== */
+/* 1/2/6/8/9) Avatar area: more top air, remove inner cyan UI, enlarge actual icon. */
+.hero {
+  padding-top: 18px !important;
+}
+.avatar-wrap {
+  width: 112px !important;
+  height: 112px !important;
+}
+.avatar-mono {
+  inset: 0 !important;
+  border: 1px solid rgba(17, 17, 17, 0.12) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+}
+.avatar-photo img,
+.avatar-mono img {
+  transform: scale(1.12) !important;
+  object-position: center 38% !important;
+}
+.avatar-ring-out,
+.avatar-ring-in,
+.avatar-tick,
+.avatar-dot {
+  display: none !important;
+}
+.avatar-wrap[data-avatar-frame]::before,
+.avatar-wrap[data-avatar-frame]::after {
+  inset: -5px !important;
+}
+
+/* 1/2/3) Tags: centered text, slightly smaller, and a touch closer to the name. */
+.id-meta.tag-row,
+.tag-row {
+  margin-top: 5px !important;
+  gap: 4px !important;
+  align-items: center !important;
+}
+.tag-chip,
+.tag-chip.rare,
+.tag-chip.high,
+.tag-chip.mid,
+.tag-chip.low {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 16px !important;
+  height: 16px !important;
+  padding: 0 7px !important;
+  font-size: 7.5px !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+}
+
+/* 3/4/5) Comment box: wider/taller fixed default, left-aligned, with details for long text. */
+.profile-comment,
+.profile-comment.empty {
+  width: min(92%, 340px) !important;
+  min-height: 62px !important;
+  margin: 12px auto 24px !important;
+  padding: 12px 16px !important;
+  border: 1.5px solid rgba(17, 17, 17, 0.82) !important;
+  border-radius: 14px !important;
+  text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
+}
+.profile-comment p {
+  width: 100% !important;
+  text-align: left !important;
+  font-size: 12.5px !important;
+  line-height: 1.45 !important;
+  font-weight: 650 !important;
+}
+.profile-comment.is-long {
+  align-items: flex-start !important;
+  height: 70px !important;
+  overflow: hidden !important;
+}
+.profile-comment.is-long .profile-comment-details {
+  width: 100% !important;
+  position: relative !important;
+}
+.profile-comment.is-long .profile-comment-details p {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  padding-right: 58px !important;
+}
+.profile-comment.is-long .profile-comment-details[open] p {
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  padding-right: 0 !important;
+}
+.profile-comment.is-long .profile-comment-details[open] {
+  padding-bottom: 20px !important;
+}
+.profile-comment.is-long:has(.profile-comment-details[open]) {
+  height: auto !important;
+  overflow: visible !important;
+}
+.profile-comment-details summary {
+  position: absolute !important;
+  right: 0 !important;
+  bottom: -2px !important;
+  z-index: 2 !important;
+  list-style: none !important;
+  cursor: pointer !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: #666 !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  padding-left: 8px !important;
+}
+.profile-comment-details summary::-webkit-details-marker {
+  display: none !important;
+}
+.profile-comment-details[open] summary {
+  bottom: -20px !important;
+}
+.profile-comment-details[open] summary::before {
+  content: '閉じる' !important;
+}
+.profile-comment-details[open] summary {
+  color: transparent !important;
+}
+.profile-comment-details[open] summary::before {
+  color: #666 !important;
+}
+
+/* 7) Favorite tiles: no gold glow. Use a stronger black outline per tile. */
+.favorite-section .favorite-illust-card {
+  border: 2px solid rgba(17, 17, 17, 0.84) !important;
+  box-shadow: none !important;
+  animation: none !important;
+  background: #fff !important;
+}
+.favorite-section .favorite-illust-card:nth-child(2),
+.favorite-section .favorite-illust-card:nth-child(3) {
+  animation: none !important;
+}
+
+/* 4) Points stay inside level/reward card and align with that section. */
+.level-suite-card .level-points-strip {
+  display: block !important;
+  margin: 13px 0 0 !important;
+  padding: 13px 0 0 !important;
+  border-top: 1px solid rgba(17, 17, 17, .1) !important;
+  text-align: left !important;
+}
+
+@media (max-width: 380px) {
+  .profile-comment,
+  .profile-comment.empty {
+    width: min(94%, 324px) !important;
+    min-height: 60px !important;
+    padding: 11px 14px !important;
+  }
+  .profile-comment p {
+    font-size: 12px !important;
+  }
+}

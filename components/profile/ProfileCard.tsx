@@ -55,6 +55,23 @@ export default function ProfileCard({
     stats,
   } = profile
 
+  const commentText = comment.trim()
+  const commentLines = commentText ? commentText.split('\n') : []
+  const isLongComment = commentText.length > 58 || commentLines.length > 2
+
+  const renderCommentText = () => (
+    commentText ? (
+      commentLines.map((line, i, arr) => (
+        <span key={i}>
+          {line}
+          {i < arr.length - 1 && <br />}
+        </span>
+      ))
+    ) : (
+      editLink ? '一言を書く +' : 'まだ一言はありません'
+    )
+  )
+
   return (
     <main className="app">
       {/* ===== Main Card ===== */}
@@ -97,20 +114,20 @@ export default function ProfileCard({
             </div>
           </section>
 
-          <section className={`profile-comment${comment.trim() ? '' : ' empty'}`} style={{ position: 'relative' }}>
+          <section className={`profile-comment${commentText ? '' : ' empty'}${isLongComment ? ' is-long' : ''}`} style={{ position: 'relative' }}>
             <CommentDecoration decoration={activeDecorations.comment_decoration} />
-            <p style={{ position: 'relative', zIndex: 1 }}>
-              {comment.trim() ? (
-                comment.split('\n').map((line, i, arr) => (
-                  <span key={i}>
-                    {line}
-                    {i < arr.length - 1 && <br />}
-                  </span>
-                ))
-              ) : (
-                editLink ? '一言を書く +' : 'まだ一言はありません'
-              )}
-            </p>
+            {isLongComment ? (
+              <details className="profile-comment-details">
+                <summary>もっと見る</summary>
+                <p style={{ position: 'relative', zIndex: 1 }}>
+                  {renderCommentText()}
+                </p>
+              </details>
+            ) : (
+              <p style={{ position: 'relative', zIndex: 1 }}>
+                {renderCommentText()}
+              </p>
+            )}
           </section>
 
           <StatsRow
