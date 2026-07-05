@@ -21,6 +21,9 @@ export async function getCharismaRanking(userId: string): Promise<CharismaRankin
   }
 
   // RPC未適用の環境でも画面を落とさないためのfallback。
+  // 注意: fallbackは通常のRLS下でprofilesをcountするため、一般ユーザーでは
+  // 全体順位/全体人数が正確にならない場合がある。正しいランキングは
+  // migration_phase4s_hardening.sql の get_charisma_ranking() 適用後のRPC結果。
   const { data: profile } = await supabase
     .from('profiles')
     .select('charisma')

@@ -141,7 +141,7 @@ export async function POST(request: Request) {
   }
 
   const selectedPoint = Number(result.selectedPoint ?? 0)
-  const tableType = String(result.tableType ?? 'normal')
+  const tableType: 'normal' | 'gold' = result.tableType === 'gold' ? 'gold' : 'normal'
 
   // 通知生成（失敗してもギフト受取は成立）
   await notifyGiftClaimed(user.id, selectedPoint, tableType).catch(

@@ -266,3 +266,12 @@ end;
 $$;
 
 grant execute on function public.get_charisma_ranking(uuid) to authenticated;
+
+-- ------------------------------------------------------
+-- 5. Remove legacy unsafe increment_points RPC
+-- ------------------------------------------------------
+-- 30分プレゼント受取は claim_gift_slot() に統合済み。
+-- 旧 increment_points() は auth.uid() チェックなしの security definer だったため、
+-- 使われていない状態で残すと直接RPC実行による任意pt付与リスクになる。
+drop function if exists public.increment_points(uuid, bigint);
+
