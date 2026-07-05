@@ -1725,3 +1725,125 @@ body {
   font-size: 8px !important;
   font-weight: 800;
 }
+
+/* ===== Phase 4R: restore visible profile backgrounds after flat card cleanup ===== */
+.profile-bg-card[data-profile-bg] {
+  background-color: transparent !important;
+  background-clip: padding-box;
+}
+.profile-bg-card[data-profile-bg="starter"] {
+  background:
+    radial-gradient(circle at 50% -12%, rgba(61, 219, 184, 0.22), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.68), rgba(246,255,251,0.5)) !important;
+}
+.profile-bg-card[data-profile-bg="mint_glow"] {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(61,219,184,0.38), transparent 34%),
+    radial-gradient(circle at 86% 0%, rgba(61,219,184,0.22), transparent 30%),
+    linear-gradient(180deg, rgba(244,255,252,0.78), rgba(230,255,248,0.52)) !important;
+}
+.profile-bg-card[data-profile-bg="neon_night"] {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(61,219,184,0.42), transparent 31%),
+    radial-gradient(circle at 84% 18%, rgba(130,120,255,0.28), transparent 32%),
+    linear-gradient(180deg, rgba(8,18,22,0.92), rgba(19,38,42,0.74) 52%, rgba(246,255,251,0.3)) !important;
+}
+.profile-bg-card[data-profile-bg="gold_stage"] {
+  background:
+    radial-gradient(circle at 50% -6%, rgba(255,214,120,0.48), transparent 38%),
+    linear-gradient(135deg, rgba(255,248,221,0.82), rgba(255,255,255,0.48) 48%, rgba(255,229,156,0.42)) !important;
+}
+.profile-bg-card[data-profile-bg="aurora"] {
+  background:
+    radial-gradient(circle at 20% 2%, rgba(61,219,184,0.34), transparent 33%),
+    radial-gradient(circle at 82% 8%, rgba(255,140,220,0.25), transparent 30%),
+    linear-gradient(135deg, rgba(244,255,252,0.78), rgba(231,238,255,0.5), rgba(255,242,250,0.56)) !important;
+}
+.profile-bg-card[data-profile-bg="legend"] {
+  background:
+    radial-gradient(circle at 50% -7%, rgba(61,219,184,0.48), transparent 32%),
+    radial-gradient(circle at 18% 14%, rgba(255,214,120,0.32), transparent 28%),
+    radial-gradient(circle at 84% 10%, rgba(255,255,255,0.56), transparent 28%),
+    linear-gradient(145deg, rgba(7,17,14,0.9), rgba(28,46,42,0.7) 42%, rgba(255,242,190,0.44)) !important;
+}
+.profile-bg-card[data-profile-bg] .profile-inner-plate {
+  background: rgba(255, 255, 255, 0.72);
+  outline: 1px solid rgba(255, 255, 255, 0.78);
+}
+.profile-bg-card[data-profile-bg="neon_night"] .profile-inner-plate,
+.profile-bg-card[data-profile-bg="legend"] .profile-inner-plate {
+  background: rgba(255, 255, 255, 0.78);
+}
+
+/* ===== Phase 4R: make avatar frames read as intentional custom items ===== */
+.avatar-wrap[data-avatar-frame] {
+  --frame-color: rgba(5, 10, 11, 0.94);
+  --frame-glow: rgba(7, 17, 14, 0.16);
+}
+.avatar-wrap[data-avatar-frame="black"] { --frame-color: rgba(5, 10, 11, 0.96); --frame-glow: rgba(7, 17, 14, 0.2); }
+.avatar-wrap[data-avatar-frame="blue"] { --frame-color: rgba(45, 118, 255, 0.96); --frame-glow: rgba(45, 118, 255, 0.36); }
+.avatar-wrap[data-avatar-frame="red"] { --frame-color: rgba(255, 65, 74, 0.98); --frame-glow: rgba(255, 65, 74, 0.38); }
+.avatar-wrap[data-avatar-frame="bronze"] { --frame-color: rgba(174, 101, 43, 0.98); --frame-glow: rgba(174, 101, 43, 0.38); }
+.avatar-wrap[data-avatar-frame="silver"] { --frame-color: rgba(202, 214, 218, 1); --frame-glow: rgba(180, 206, 214, 0.48); }
+.avatar-wrap[data-avatar-frame="gold"] { --frame-color: rgba(255, 196, 50, 1); --frame-glow: rgba(255, 196, 50, 0.56); }
+.avatar-wrap[data-avatar-frame="cyan_aura"] { --frame-color: rgba(61, 219, 184, 1); --frame-glow: rgba(61, 219, 184, 0.7); }
+.avatar-wrap[data-avatar-frame="purple_aura"] { --frame-color: rgba(180, 92, 255, 1); --frame-glow: rgba(180, 92, 255, 0.7); }
+.avatar-wrap[data-avatar-frame]::before {
+  inset: -8px;
+  border: 4px solid var(--frame-color);
+  box-shadow:
+    0 0 0 2px rgba(5, 10, 11, 0.94),
+    0 0 0 5px rgba(255, 255, 255, 0.48),
+    0 0 16px var(--frame-glow),
+    inset 0 0 0 1px rgba(255,255,255,0.5);
+  z-index: 3;
+}
+.avatar-wrap[data-avatar-frame="rainbow_aura"]::before {
+  inset: -8px;
+  border: 4px solid transparent;
+  background: linear-gradient(135deg, #ff4d6d, #ffd166, #3ddbb8, #5b8cff, #c77dff, #ff4d6d) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  box-shadow:
+    0 0 0 2px rgba(5, 10, 11, 0.94),
+    0 0 0 5px rgba(255, 255, 255, 0.48),
+    0 0 24px rgba(61, 219, 184, 0.64),
+    0 0 48px rgba(199, 125, 255, 0.28);
+}
+.avatar-wrap[data-avatar-frame] .avatar-ring-out {
+  border-color: rgba(5, 10, 11, 0.88);
+}
+
+.frame-preview[data-avatar-frame] {
+  --frame-color: rgba(5, 10, 11, 0.94);
+  --frame-glow: rgba(7, 17, 14, 0.16);
+}
+.frame-preview[data-avatar-frame="black"] { --frame-color: rgba(5, 10, 11, 0.96); --frame-glow: rgba(7, 17, 14, 0.2); }
+.frame-preview[data-avatar-frame="blue"] { --frame-color: rgba(45, 118, 255, 0.96); --frame-glow: rgba(45, 118, 255, 0.36); }
+.frame-preview[data-avatar-frame="red"] { --frame-color: rgba(255, 65, 74, 0.98); --frame-glow: rgba(255, 65, 74, 0.38); }
+.frame-preview[data-avatar-frame="bronze"] { --frame-color: rgba(174, 101, 43, 0.98); --frame-glow: rgba(174, 101, 43, 0.38); }
+.frame-preview[data-avatar-frame="silver"] { --frame-color: rgba(202, 214, 218, 1); --frame-glow: rgba(180, 206, 214, 0.48); }
+.frame-preview[data-avatar-frame="gold"] { --frame-color: rgba(255, 196, 50, 1); --frame-glow: rgba(255, 196, 50, 0.56); }
+.frame-preview[data-avatar-frame="cyan_aura"] { --frame-color: rgba(61, 219, 184, 1); --frame-glow: rgba(61, 219, 184, 0.7); }
+.frame-preview[data-avatar-frame="purple_aura"] { --frame-color: rgba(180, 92, 255, 1); --frame-glow: rgba(180, 92, 255, 0.7); }
+.frame-preview[data-avatar-frame]::before {
+  inset: 7px;
+  border: 4px solid var(--frame-color);
+  box-shadow:
+    0 0 0 2px rgba(5, 10, 11, 0.92),
+    0 0 0 4px rgba(255, 255, 255, 0.5),
+    0 0 14px var(--frame-glow);
+}
+.frame-preview[data-avatar-frame="rainbow_aura"]::before {
+  inset: 7px;
+  border: 4px solid transparent;
+  background: linear-gradient(135deg, #ff4d6d, #ffd166, #3ddbb8, #5b8cff, #c77dff, #ff4d6d) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  box-shadow:
+    0 0 0 2px rgba(5, 10, 11, 0.92),
+    0 0 0 4px rgba(255, 255, 255, 0.5),
+    0 0 18px rgba(61, 219, 184, 0.58);
+}
