@@ -99,7 +99,6 @@ export default function ProfileCard({
 
           <section className={`profile-comment${comment.trim() ? '' : ' empty'}`} style={{ position: 'relative' }}>
             <CommentDecoration decoration={activeDecorations.comment_decoration} />
-            <div className="comment-mark" style={{ position: 'relative', zIndex: 1 }}>「</div>
             <p style={{ position: 'relative', zIndex: 1 }}>
               {comment.trim() ? (
                 comment.split('\n').map((line, i, arr) => (
