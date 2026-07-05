@@ -127,15 +127,6 @@ export default function ProfileCard({
             showCollection={false}
           />
 
-          {showUserPoints && (
-            <div className="points-strip">
-              <div className="points-label">所持PT</div>
-              <div className="points-value">
-                {userPoints.toLocaleString()}
-                <span>pt</span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -147,6 +138,15 @@ export default function ProfileCard({
         <section className="level-suite-card">
           <LevelBadge userLevel={userLevel} />
           <LevelRewards currentLv={userLevel.lv} />
+          {showUserPoints && (
+            <div className="points-strip level-points-strip">
+              <div className="points-label">所持PT</div>
+              <div className="points-value">
+                {userPoints.toLocaleString()}
+                <span>pt</span>
+              </div>
+            </div>
+          )}
         </section>
       )}
 
