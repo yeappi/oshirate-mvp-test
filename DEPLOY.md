@@ -72,12 +72,28 @@ Supabase Dashboard →「SQL Editor」を開き、以下のファイルの内容
 | 順番 | ファイル | 内容 |
 |------|---------|------|
 | 1 | `supabase/schema.sql` | テーブル全体の土台 |
-| 2 | `supabase/migration_phase1_gift.sql` | プレゼントスロット更新 |
-| 3 | `supabase/migration_phase2_illustrations.sql` | イラスト・購入テーブル |
-| 4 | `supabase/migration_phase2.5_decorations.sql` | 装飾テーブル |
-| 5 | `supabase/migration_phase3a_notifications.sql` | 通知テーブル更新 |
-| 6 | `supabase/migration_phase3b_admin.sql` | 管理画面用テーブル・RPC |
-| 7 | `supabase/seed_illustrations.sql` | イラスト初期データ15件 |
+| 2 | `supabase/migration_phase1_gift.sql` | 30分プレゼント |
+| 3 | `supabase/migration_phase2_illustrations.sql` | イラスト・購入 |
+| 4 | `supabase/migration_phase2.5_decorations.sql` | 旧装飾スロット |
+| 5 | `supabase/migration_phase3a_notifications.sql` | 通知 |
+| 6 | `supabase/migration_phase3b_admin.sql` | 管理画面/RPC |
+| 7 | `supabase/migration_phase4a_profile_edit.sql` | プロフィール編集 |
+| 8 | `supabase/migration_phase4d_backgrounds.sql` | 背景 |
+| 9 | `supabase/migration_phase4e_tags.sql` | タグ |
+| 10 | `supabase/migration_phase4f_illustration_reward_tags.sql` | イラスト報酬タグ |
+| 11 | `supabase/migration_phase4h_stability.sql` | 初期化/安定化 |
+| 12 | `supabase/migration_phase4i_pwa_favorites.sql` | お気に入り/PWA補助 |
+| 13 | `supabase/migration_phase4j_public_profiles_follow.sql` | 公開プロフィール/フォロー |
+| 14 | `supabase/migration_phase4k_avatar_frames.sql` | アイコンフレーム |
+| 15 | `supabase/migration_phase4l_level_rewards.sql` | Lv報酬 |
+| 16 | `supabase/migration_phase4n_public_profile_illustrations.sql` | 公開プロフィールのイラスト所有修正 |
+| 17 | `supabase/migration_phase4r_items.sql` | もちもの/アイテム券 |
+| 18 | `supabase/migration_phase4s_hardening.sql` | ギフト/購入/ランキング安定化 |
+| 19 | `supabase/storage_avatars_policy.sql` | アバターStorage policy |
+| 20 | `supabase/storage_illustrations_policy.sql` | イラストStorage policy |
+| 21 | `supabase/seed_illustrations.sql` | 初期イラストデータ |
+
+> 既存環境に追加適用する場合は、まだ実行していない migration だけを上から実行してください。最新の `purchase_illustration` RPC は `migration_phase4s_hardening.sql` が最終形です。
 
 ### 実行方法
 
@@ -263,15 +279,12 @@ where id = 'ここにコピーしたUUID';
 [ ] Supabase プロジェクト作成
 [ ] Google OAuth 設定（Google Cloud + Supabase）
 [ ] schema.sql 実行
-[ ] migration_phase1_gift.sql 実行
-[ ] migration_phase2_illustrations.sql 実行
-[ ] migration_phase2.5_decorations.sql 実行
-[ ] migration_phase3a_notifications.sql 実行
-[ ] migration_phase3b_admin.sql 実行
+[ ] phase1〜phase4s の migration を順番に実行
+[ ] storage policy SQL を実行
 [ ] seed_illustrations.sql 実行
 [ ] GitHub にプッシュ
 [ ] Vercel でデプロイ
-[ ] 環境変数 2つ設定（SUPABASE_URL、ANON_KEY）
+[ ] 環境変数 3つ設定（SUPABASE_URL、ANON_KEY、YAPI_USER_ID）
 [ ] Vercel URL を Supabase に登録
 [ ] やぴアカウントでログイン
 [ ] is_admin = true に設定

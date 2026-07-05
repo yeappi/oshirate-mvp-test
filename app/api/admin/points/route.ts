@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   const { data, error } = await supabase.rpc('admin_adjust_points', {
     p_admin_id:  check.userId,
     p_target_id: targetUserId,
-    p_amount:    BigInt(amount),
+    p_amount:    amount,
     p_reason:    reason.trim(),
   })
 

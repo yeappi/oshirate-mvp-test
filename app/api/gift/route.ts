@@ -24,7 +24,7 @@ export async function GET() {
     .eq('status', 'pending')
     .order('created_at', { ascending: false })
     .limit(1)
-    .single()
+    .maybeSingle()
 
   if (pending) {
     return NextResponse.json({ state: 'pending', slot: pending })
@@ -37,7 +37,7 @@ export async function GET() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
-    .single()
+    .maybeSingle()
 
   const now = new Date()
 
@@ -68,7 +68,23 @@ export async function GET() {
     .select()
     .single()
 
+  // 2タブ同時アクセスなどで pending が競合した場合は、既にできた方を返す。
   if (error) {
+    if (error.code === '23505') {
+      const { data: existingPending } = await supabase
+        .from('gift_slots')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      if (existingPending) {
+        return NextResponse.json({ state: 'pending', slot: existingPending })
+      }
+    }
+
     console.error('[gift GET] insert error:', error)
     return NextResponse.json({ error: 'Failed to create gift' }, { status: 500 })
   }
@@ -101,56 +117,41 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid params' }, { status: 400 })
   }
 
-  // スロット取得（自分のものか確認）
-  const { data: slot, error: fetchError } = await supabase
-    .from('gift_slots')
-    .select('*')
-    .eq('id', slotId)
-    .eq('user_id', user.id)
-    .eq('status', 'pending')
-    .single()
+  const { data, error } = await supabase.rpc('claim_gift_slot', {
+    p_slot_id: slotId,
+    p_selected_index: selectedIndex,
+  })
 
-  if (fetchError || !slot) {
-    return NextResponse.json({ error: 'Slot not found' }, { status: 404 })
-  }
-
-  const selectedPoint = slot.options[selectedIndex] as number
-
-  // トランザクション的に更新（Supabaseは本来RPC推奨だがMVPはこれで十分）
-  const { error: updateError } = await supabase
-    .from('gift_slots')
-    .update({
-      selected_index: selectedIndex,
-      selected_point: selectedPoint,
-      status: 'claimed',
-      claimed_at: new Date().toISOString(),
-    })
-    .eq('id', slotId)
-
-  if (updateError) {
-    console.error('[gift POST] update error:', updateError)
+  if (error) {
+    console.error('[gift POST] rpc error:', error)
     return NextResponse.json({ error: 'Failed to claim' }, { status: 500 })
   }
 
-  // points 加算
-  const { error: pointError } = await supabase.rpc('increment_points', {
-    p_user_id: user.id,
-    p_delta: selectedPoint,
-  })
-
-  if (pointError) {
-    console.error('[gift POST] point increment error:', pointError)
+  const result = data as {
+    ok: boolean
+    error?: string
+    selectedPoint?: number
+    allOptions?: number[]
+    tableType?: string
   }
 
+  if (!result.ok) {
+    const status = result.error === 'slot_not_found' ? 404 : 400
+    return NextResponse.json({ error: result.error }, { status })
+  }
+
+  const selectedPoint = Number(result.selectedPoint ?? 0)
+  const tableType = String(result.tableType ?? 'normal')
+
   // 通知生成（失敗してもギフト受取は成立）
-  await notifyGiftClaimed(user.id, selectedPoint, slot.table_type).catch(
+  await notifyGiftClaimed(user.id, selectedPoint, tableType).catch(
     (e) => console.error('[gift POST] notify error:', e)
   )
 
   return NextResponse.json({
     success: true,
     selectedPoint,
-    allOptions: slot.options,
-    tableType: slot.table_type,
+    allOptions: result.allOptions ?? [],
+    tableType,
   })
 }

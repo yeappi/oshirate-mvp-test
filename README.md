@@ -1,117 +1,63 @@
 # 推されーと MVP
 
-## Phase 状況
+推し/ユーザーのプロフィールを「シール帳」のように埋めていくMVPです。
+Googleログイン、30分プレゼント、イラスト購入、公開プロフィール、フォロー、背景/タグ/枠、もちものアイテム券、admin管理を含みます。
 
-| Phase | 内容 | 状態 |
-|-------|------|------|
-| 0 | プロジェクト骨格 + プロフィール画面（静的） | ✅ |
-| 0.5 | Googleログイン + ログアウト + profiles 自動作成 | ✅ |
-| 1 | 30分プレゼント | - |
-| 2 | イラスト購入フロー | - |
-| 3 | 通知 + 管理画面 | - |
+## 現在の主な機能
 
----
+| 領域 | 内容 | 状態 |
+|---|---|---|
+| Auth | Googleログイン / プロフィール自動作成 | ✅ |
+| Profile | 名前・一言・アバター・背景・タグ・枠 | ✅ |
+| Gift | 30分プレゼント / pt付与 | ✅ |
+| Illustration | 購入 / 所持 / お気に入り / 限定イラスト | ✅ |
+| Public | 公開プロフィール / フォロー / フォロー一覧 | ✅ |
+| Level | charisma → Lv / Lv報酬 | ✅ |
+| Items | もちもの / イラスト券・背景券・枠券・タグ券 | ✅ |
+| Admin | ユーザー確認 / pt調整 / イラスト管理 / アイテム配布 | ✅ |
 
-## セットアップ手順
-
-### 1. クローン & インストール
+## セットアップ
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/oshirate.git
-cd oshirate
 npm install
-```
-
-### 2. Supabase プロジェクト作成
-
-1. [supabase.com](https://supabase.com) でプロジェクト作成
-2. SQL Editor に `supabase/schema.sql` の内容を貼り付けて実行
-3. Authentication > Providers > Google を有効化
-   - Google Cloud Console で OAuth クライアントを作成
-   - 承認済みリダイレクトURIに `https://<your-project>.supabase.co/auth/v1/callback` を追加
-
-### 3. 環境変数を設定
-
-```bash
-cp .env.local.example .env.local
-```
-
-`.env.local` を編集：
-
-```
-NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-```
-
-### 4. 開発サーバー起動
-
-```bash
 npm run dev
 ```
 
-`http://localhost:3000` → ログイン画面 → Googleログイン → プロフィール画面
+`.env.local` を作成して以下を設定します。
 
----
-
-## 管理者ユーザーの設定
-
-自動設定はない。初回ログイン後、Supabase ダッシュボードで手動設定する。
-
-```sql
--- Supabase SQL Editor で実行
-update public.profiles
-set is_admin = true
-where id = 'ここにuserのUUID';
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxx
+NEXT_PUBLIC_YAPI_USER_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
-対象 UUID は Authentication > Users から確認できる。
+`NEXT_PUBLIC_YAPI_USER_ID` は、開発者プロフィール導線に使います。初回ログイン後、Supabase Authentication のユーザーUUIDを入れてください。
 
----
+## Supabase
 
-## アイコン画像の置き方
+新規環境では `supabase/schema.sql` の後、`supabase/migration_phase*.sql` を番号順に実行してください。
+詳しい順番は `DEPLOY.md` を参照してください。
 
-`public/img/yapi.jpeg` に配置。ファイル名を変える場合は `lib/staticData.ts` の `photoUrl` を合わせる。
+最新の重要RPCは以下です。
 
----
+- `purchase_illustration` : 最新定義は `migration_phase4s_hardening.sql`
+- `claim_gift_slot` : 30分プレゼント受取のatomic処理
+- `use_owned_item` : もちもの使用
+- `get_charisma_ranking` : 魅力値ランキング
+- `bootstrap_user_profile` : 初回ログイン補助
 
-## ディレクトリ構成
+## ディレクトリ
 
-```
-oshirate/
-├── app/
-│   ├── auth/callback/route.ts   # OAuth コールバック + profiles 自動作成
-│   ├── login/page.tsx           # ログイン画面
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx                 # / → プロフィール画面（要ログイン）
-├── components/
-│   ├── auth/
-│   │   ├── LoginButton.tsx      # Google OAuth 起動
-│   │   └── LogoutButton.tsx
-│   └── profile/
-│       ├── ProfileCard.tsx
-│       ├── Avatar.tsx
-│       ├── BadgeRow.tsx
-│       ├── StatsRow.tsx
-│       ├── TopSupporters.tsx
-│       └── IllustCollection.tsx
-├── lib/
-│   ├── auth.ts                  # getUser / getProfile
-│   ├── staticData.ts            # Phase 0: 静的データ + 型定義
-│   ├── supabase.ts              # ブラウザ用クライアント
-│   └── supabase-server.ts       # Server Components 用クライアント
-├── middleware.ts                 # 未ログイン → /login リダイレクト
-├── supabase/schema.sql
-└── public/img/
+```text
+app/          Next.js App Router pages / API routes
+components/   UI components
+lib/          Supabase helpers / domain logic
+public/       PWA icons / static assets
+supabase/     schema, migrations, storage policies, seeds
 ```
 
----
+## 注意
 
-## Vercel デプロイ
-
-1. GitHub にプッシュ
-2. Vercel でリポジトリをインポート
-3. Environment Variables に `.env.local` の値を入力
-4. Supabase ダッシュボード > Authentication > URL Configuration に
-   `https://your-vercel-app.vercel.app/auth/callback` を追加
-5. デプロイ
+- `tsconfig.tsbuildinfo` や `.next/` はコミットしません。
+- `rank.ts` は旧装飾解放/通知用の内部ランク、`level.ts` は画面表示用Lvです。
+- 画面仕様を変える前に、公開プロフィール・購入・もちもの・adminの動作確認をしてください。

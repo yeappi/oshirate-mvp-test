@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
-import { getCharmRank, detectRankUp } from '@/lib/rank'
+import { detectRankUp } from '@/lib/rank'
 import { getNewlyUnlockedDecorations } from '@/lib/decorations'
 import {
   notifyIllustrationPurchased,
@@ -36,15 +36,6 @@ export async function POST(request: Request) {
     .eq('id', illustrationId)
     .single()
 
-  // 購入前のやぴの魅力度（ランクアップ判定用）
-  const { data: targetBefore } = await supabase
-    .from('profiles')
-    .select('charisma')
-    .eq('id', targetUserId)
-    .single()
-
-  const charmBefore = targetBefore?.charisma ?? 0
-
   // 購入実行
   const { data, error } = await supabase.rpc('purchase_illustration', {
     p_buyer_id: user.id,
@@ -64,20 +55,16 @@ export async function POST(request: Request) {
     reward_tag_id?: string | null
     reward_tag_granted?: boolean
     level_reward_tag_ids?: string[] | null
+    charm_before?: number | null
+    charm_after?: number | null
   }
 
   if (!result.ok) {
     return NextResponse.json({ ok: false, error: result.error }, { status: 400 })
   }
 
-  // 購入後のやぴの魅力度
-  const { data: targetAfter } = await supabase
-    .from('profiles')
-    .select('charisma')
-    .eq('id', targetUserId)
-    .single()
-
-  const charmAfter = targetAfter?.charisma ?? 0
+  const charmBefore = Number(result.charm_before ?? 0)
+  const charmAfter = Number(result.charm_after ?? charmBefore)
   const rankUp = detectRankUp(charmBefore, charmAfter)
   const unlockedDecorations = rankUp
     ? await getNewlyUnlockedDecorations(rankUp.to)
