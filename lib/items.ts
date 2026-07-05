@@ -134,10 +134,10 @@ export async function getItemTargetCandidates(userId: string): Promise<ItemTarge
     self,
     ...following.map((profile) => ({
       id: profile.id,
-      name: profile.name,
+      name: profile.name ?? 'ユーザー',
       avatar_url: profile.avatar_url,
-      is_admin: profile.is_admin,
-      charisma: profile.charisma,
+      is_admin: Boolean(profile.is_admin),
+      charisma: Number(profile.charisma ?? 0),
       isSelf: false,
     })),
   ]

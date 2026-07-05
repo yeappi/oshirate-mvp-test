@@ -115,7 +115,9 @@ export default function ItemsClient({ initialItems, candidates }: Props) {
             {selected.itemType === 'ILLUST_TICKET' ? (
               <div style={{ display: 'grid', gap: 8, marginBottom: 18 }}>
                 <div style={{ fontSize: 10, fontWeight: 900, color: 'var(--ink-soft)', letterSpacing: '0.12em' }}>贈る相手</div>
-                {candidates.map((candidate) => (
+                {candidates.map((candidate) => {
+                  const candidateName = candidate.name ?? 'ユーザー'
+                  return (
                   <label key={candidate.id} style={{
                     border: targetUserId === candidate.id ? '1px solid var(--mint)' : '1px solid var(--hair-strong)',
                     padding: 10, display: 'grid', gridTemplateColumns: '32px 1fr auto', gap: 10, alignItems: 'center',
@@ -126,17 +128,18 @@ export default function ItemsClient({ initialItems, candidates }: Props) {
                       {candidate.avatar_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={candidate.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      ) : candidate.name.slice(0, 1)}
+                      ) : candidateName.slice(0, 1)}
                     </span>
                     <span style={{ minWidth: 0 }}>
-                      <span style={{ display: 'block', fontSize: 12, fontWeight: 900 }}>{candidate.isSelf ? '自分' : candidate.name}</span>
+                      <span style={{ display: 'block', fontSize: 12, fontWeight: 900 }}>{candidate.isSelf ? '自分' : candidateName}</span>
                       <span style={{ display: 'block', fontSize: 9, fontFamily: 'Orbitron, sans-serif', color: 'var(--ink-faint)', fontWeight: 800 }}>
-                        {candidate.charisma.toLocaleString()} CHARISMA
+                        {Number(candidate.charisma ?? 0).toLocaleString()} CHARISMA
                       </span>
                     </span>
                     <input type="radio" checked={targetUserId === candidate.id} onChange={() => setTargetUserId(candidate.id)} />
                   </label>
-                ))}
+                  )
+                })}
               </div>
             ) : (
               <div style={{ fontSize: 11, lineHeight: 1.8, color: 'var(--ink-soft)', fontWeight: 700, marginBottom: 18 }}>
