@@ -64,7 +64,7 @@ export default async function HomePage() {
   }
 
   return (
-    <>
+    <div className="profile-theme-page" data-profile-bg={selectedBackground?.css_key ?? 'starter'}>
       <div style={{ paddingBottom: 64 }}>
         <ProfileCard
           profile={mergedProfile}
@@ -84,6 +84,6 @@ export default async function HomePage() {
         />
       </div>
       <BottomNav unreadCount={unreadCount} />
-    </>
+    </div>
   )
 }

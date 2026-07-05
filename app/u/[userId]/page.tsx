@@ -59,7 +59,7 @@ export default async function PublicProfilePage({ params }: Props) {
   }
 
   return (
-    <>
+    <div className="profile-theme-page" data-profile-bg={selectedBackground?.css_key ?? 'starter'}>
       <div style={{ paddingBottom: 64 }}>
         <ProfileCard
           profile={mergedProfile}
@@ -75,6 +75,6 @@ export default async function PublicProfilePage({ params }: Props) {
         />
       </div>
       <BottomNav unreadCount={unreadCount} />
-    </>
+    </div>
   )
 }
