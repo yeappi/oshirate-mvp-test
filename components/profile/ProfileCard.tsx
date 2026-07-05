@@ -67,13 +67,13 @@ export default function ProfileCard({
         <ProfileBackgroundDecoration decoration={activeDecorations.profile_background} />
 
         <div className="profile-inner-plate" style={{ position: 'relative', zIndex: 1 }}>
-          <header className="nav">
-            <div className="nav-btn">☰</div>
+          <header className="nav profile-nav-clean">
             <div className="logo">推されーと</div>
-            <div className="nav-actions">
-              {logoutButton ?? <span>↗</span>}
-              {editLink}
-            </div>
+            {editLink && (
+              <div className="nav-actions profile-edit-action">
+                {editLink}
+              </div>
+            )}
           </header>
 
           <section className="hero">

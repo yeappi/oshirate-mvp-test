@@ -11,7 +11,6 @@ import { getAvatarFrameById } from '@/lib/avatarFrames'
 import { getProfileDisplayTags } from '@/lib/tags'
 import { getCharismaRanking } from '@/lib/ranking'
 import ProfileCard from '@/components/profile/ProfileCard'
-import LogoutButton from '@/components/auth/LogoutButton'
 import GiftBox from '@/components/gift/GiftBox'
 import BottomNav from '@/components/layout/BottomNav'
 
@@ -76,15 +75,11 @@ export default async function HomePage() {
           selectedBackground={selectedBackground}
           selectedAvatarFrame={selectedAvatarFrame}
           activeDecorations={activeDecorations}
-          logoutButton={<LogoutButton />}
           giftBox={<GiftBox />}
           editLink={
-            <div className="profile-edit-pills">
-              <Link href="/profile/edit">編集</Link>
-              <Link href="/profile/background">背景</Link>
-              <Link href="/profile/frame">枠</Link>
-              <Link href="/profile/tags">タグ</Link>
-            </div>
+            <Link href="/profile/edit" className="profile-edit-icon" aria-label="プロフィールを編集">
+              ✎
+            </Link>
           }
         />
       </div>

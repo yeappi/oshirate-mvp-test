@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import { getUser, getProfile } from '@/lib/auth'
 import ProfileEditForm from '@/components/profile/ProfileEditForm'
+import LogoutButton from '@/components/auth/LogoutButton'
 
 export default async function ProfileEditPage() {
   const user = await getUser()
@@ -12,12 +12,9 @@ export default async function ProfileEditPage() {
   return (
     <main className="app">
       <div className="card">
-        <header className="nav">
-          <Link href="/" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }}>
-            ←
-          </Link>
+        <header className="nav profile-edit-page-nav">
           <div className="logo">プロフィール編集</div>
-          <div style={{ width: 20 }} />
+          <LogoutButton label="LOGOUT" />
         </header>
 
         <div style={{ marginTop: 20 }}>

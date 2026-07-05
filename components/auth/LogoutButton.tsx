@@ -4,7 +4,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createSupabaseClient } from '@/lib/supabase'
 
-export default function LogoutButton() {
+type Props = {
+  label?: string
+}
+
+export default function LogoutButton({ label = '↩' }: Props) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
@@ -31,7 +35,7 @@ export default function LogoutButton() {
         opacity: loading ? 0.5 : 1,
       }}
     >
-      {loading ? '...' : '↩'}
+      {loading ? '...' : label}
     </button>
   )
 }
