@@ -79,43 +79,11 @@ export default async function HomePage() {
           logoutButton={<LogoutButton />}
           giftBox={<GiftBox />}
           editLink={
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
-              <Link href="/profile/edit" style={{
-                fontSize: 10,
-                color: 'var(--ink-faint)',
-                textDecoration: 'none',
-                fontFamily: 'Orbitron, sans-serif',
-                letterSpacing: '0.08em',
-              }}>
-                編集
-              </Link>
-              <Link href="/profile/background" style={{
-                fontSize: 10,
-                color: 'var(--ink-faint)',
-                textDecoration: 'none',
-                fontFamily: 'Orbitron, sans-serif',
-                letterSpacing: '0.08em',
-              }}>
-                背景
-              </Link>
-              <Link href="/profile/frame" style={{
-                fontSize: 10,
-                color: 'var(--ink-faint)',
-                textDecoration: 'none',
-                fontFamily: 'Orbitron, sans-serif',
-                letterSpacing: '0.08em',
-              }}>
-                枠
-              </Link>
-              <Link href="/profile/tags" style={{
-                fontSize: 10,
-                color: 'var(--ink-faint)',
-                textDecoration: 'none',
-                fontFamily: 'Orbitron, sans-serif',
-                letterSpacing: '0.08em',
-              }}>
-                タグ
-              </Link>
+            <div className="profile-edit-pills">
+              <Link href="/profile/edit">編集</Link>
+              <Link href="/profile/background">背景</Link>
+              <Link href="/profile/frame">枠</Link>
+              <Link href="/profile/tags">タグ</Link>
             </div>
           }
         />

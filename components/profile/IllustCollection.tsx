@@ -265,7 +265,7 @@ function IllustPiece({
 
       {isLocked ? (
         <>
-          <div className="lock" style={{ opacity: cantAfford ? 0.6 : 1 }}>⌁</div>
+          <div className="lock" style={{ opacity: cantAfford ? 0.72 : 1 }}>LOCK</div>
           <div className="price">{formatPrice(card.price)}</div>
         </>
       ) : (

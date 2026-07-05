@@ -70,7 +70,7 @@ export default function ProfileCard({
           <header className="nav">
             <div className="nav-btn">☰</div>
             <div className="logo">推されーと</div>
-            <div className="nav-btn" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+            <div className="nav-actions">
               {logoutButton ?? <span>↗</span>}
               {editLink}
             </div>

@@ -1187,3 +1187,477 @@ body {
 .favorite-section {
   margin-top: 14px !important;
 }
+
+/* ===== Phase 4P: Professional visual system pass ===== */
+:root {
+  --paper: #fbfffd;
+  --ink: #111111;
+  --ink-mid: #666666;
+  --ink-soft: #666666;
+  --ink-faint: #aaaaaa;
+  --hair: rgba(0, 0, 0, 0.08);
+  --hair-strong: rgba(0, 0, 0, 0.16);
+  --mint: #3DDBB8;
+  --r-card: 16px;
+  --r-thumb: 8px;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 16px;
+  --s-4: 24px;
+  --s-5: 40px;
+}
+
+/* Flat surfaces + hairlines. Elevation is reserved for modals/selected states. */
+.card,
+.collection-card,
+.profile-inner-plate,
+.present-box,
+.level-badge-card,
+.favorite-illust-card,
+.piece,
+.more-rewards summary,
+.points-strip,
+.bottom-nav,
+.favorite-toggle,
+.profile-edit-pills a,
+.reward-row,
+.cta {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfffd 56%, #f7fffc 100%);
+  color: var(--ink);
+  padding-top: var(--s-2);
+}
+
+.app {
+  width: min(100%, 420px);
+  margin: 0 auto;
+  padding: 0 var(--s-3) var(--s-5);
+}
+
+.card,
+.collection-card {
+  border-radius: var(--r-card) !important;
+  outline: 0 !important;
+  border: 1px solid var(--hair);
+  background: rgba(255, 255, 255, 0.78);
+  padding: var(--s-3) !important;
+}
+
+.profile-bg-card {
+  padding: var(--s-2) !important;
+  border-radius: calc(var(--r-card) + 2px) !important;
+  border: 1px solid var(--hair);
+}
+.profile-inner-plate {
+  border-radius: var(--r-card) !important;
+  padding: var(--s-3) !important;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px) saturate(1.04);
+  -webkit-backdrop-filter: blur(16px) saturate(1.04);
+  outline: 1px solid rgba(255, 255, 255, 0.72);
+}
+[data-profile-bg="neon_night"] .profile-inner-plate,
+[data-profile-bg="legend"] .profile-inner-plate {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.nav {
+  grid-template-columns: 44px 1fr minmax(44px, auto);
+  min-height: 32px;
+  margin-bottom: var(--s-2);
+}
+.nav-btn,
+.nav-actions button,
+.nav-actions span {
+  color: var(--ink-faint) !important;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--s-2);
+  min-width: 0;
+}
+.logo {
+  color: var(--ink-faint);
+}
+.hero {
+  padding-top: var(--s-2) !important;
+}
+.avatar-wrap {
+  width: 104px;
+  height: 104px;
+}
+.name {
+  margin-top: var(--s-3) !important;
+  color: var(--ink);
+}
+.profile-comment {
+  margin: var(--s-3) auto var(--s-3);
+  color: var(--ink-mid);
+}
+.profile-comment .comment-mark {
+  color: var(--ink-faint);
+}
+
+.profile-edit-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+  max-width: 154px;
+}
+.profile-edit-pills a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: rgba(255,255,255,0.68);
+  color: var(--ink-mid) !important;
+  text-decoration: none;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+/* Neutral rounded tags. */
+.tag-chip,
+.tag-chip.rare,
+.tag-chip.high,
+.tag-chip.mid,
+.tag-chip.low {
+  border-radius: 999px !important;
+  background: rgba(17, 17, 17, 0.045) !important;
+  color: var(--ink-mid) !important;
+  border: 1px solid var(--hair) !important;
+}
+
+.stats {
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.stat-title,
+.stat-sub,
+.collection-count,
+.collection-note,
+.favorite-title {
+  color: var(--ink-mid) !important;
+}
+.stat-sub.faint,
+.collection-count {
+  color: var(--ink-faint) !important;
+}
+.stat-main,
+.collection-title,
+.section-title {
+  color: var(--ink);
+}
+
+.points-strip {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 2px;
+  padding: var(--s-3) 0 0;
+  border-top: 1px solid var(--hair);
+  margin-top: var(--s-3);
+}
+.points-label {
+  color: var(--ink-mid);
+  font-size: 8px;
+}
+.points-value {
+  font-size: 24px;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.collection-card,
+.favorite-section {
+  margin-top: var(--s-4) !important;
+}
+.collection-head {
+  margin-bottom: var(--s-3);
+}
+.favorite-illust-grid,
+.collection-grid {
+  gap: var(--s-2);
+}
+.favorite-illust-card,
+.piece {
+  border-radius: var(--r-thumb) !important;
+  border: 1px solid var(--hair);
+  background: #f7f9f8;
+}
+.favorite-illust-label {
+  background: rgba(17, 17, 17, 0.72);
+}
+.favorite-toggle {
+  border: 1px solid var(--hair);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink-faint);
+}
+.favorite-toggle.active {
+  color: var(--mint);
+  border-color: rgba(61, 219, 184, 0.5);
+  background: rgba(61, 219, 184, 0.12);
+}
+
+/* Unowned illustrations: readable grayscale + explicit lock. */
+.piece.locked {
+  opacity: 1 !important;
+  filter: grayscale(1);
+  background: #f2f3f3;
+}
+.piece.locked img {
+  opacity: 0.3 !important;
+  filter: grayscale(1) contrast(0.92) !important;
+}
+.piece.locked .art-shine {
+  opacity: 0.18;
+}
+.piece.locked .lock {
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  color: var(--ink-mid);
+  background: rgba(255, 255, 255, 0.34);
+}
+.piece.locked .price {
+  bottom: 6px;
+  color: var(--ink-mid);
+  font-size: 8px;
+}
+
+/* Level card: no glow, mint only on progress/check. */
+.level-badge-card {
+  margin: var(--s-4) 0 0;
+  padding: var(--s-3);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-card);
+  background: rgba(255,255,255,0.78);
+}
+.level-badge-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-bottom: var(--s-2);
+}
+.level-badge-lv {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.level-badge-max {
+  margin-left: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--mint);
+  letter-spacing: 0.2em;
+}
+.level-badge-tier {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-mid);
+  letter-spacing: 0.1em;
+}
+.level-progress-track {
+  height: 4px;
+  background: rgba(17, 17, 17, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.level-progress-fill {
+  height: 100%;
+  background: var(--mint);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+.level-badge-next {
+  margin-top: var(--s-2);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--ink-mid);
+  letter-spacing: 0.06em;
+  text-align: right;
+}
+.reward-row.locked {
+  color: var(--ink-mid);
+  filter: grayscale(1);
+}
+.more-rewards summary {
+  background: #fff;
+  color: var(--ink-mid);
+}
+
+/* 30MIN PRESENT: real card-back feel, no placeholder stripes. */
+.present-box {
+  margin-top: var(--s-4);
+  border-radius: var(--r-card) !important;
+  border: 1px solid var(--hair);
+  outline: 0;
+  padding: var(--s-3) !important;
+  background: #ffffff;
+}
+.present-box.gold {
+  border-color: rgba(0,0,0,0.14);
+  background: #fffdf6;
+}
+.present-card-back {
+  border-radius: 14px !important;
+  border: 1px solid rgba(61, 219, 184, 0.48) !important;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(61,219,184,0.35) 0 14%, transparent 15% 100%),
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,0.08), transparent 30%),
+    linear-gradient(135deg, rgba(61,219,184,0.16), transparent 42%, rgba(255,255,255,0.05) 43%, rgba(61,219,184,0.12) 70%, transparent),
+    #07110e !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+.present-card-back::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(61,219,184,0.62);
+  background:
+    linear-gradient(90deg, transparent, rgba(61,219,184,0.22), transparent),
+    linear-gradient(180deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+.present-card-back::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.present-card-back.gold {
+  border-color: rgba(217, 175, 80, 0.62) !important;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(217,175,80,0.42) 0 14%, transparent 15% 100%),
+    linear-gradient(135deg, rgba(217,175,80,0.18), transparent 42%, rgba(255,255,255,0.08) 43%, rgba(217,175,80,0.14) 70%, transparent),
+    #111111 !important;
+}
+.present-card-corner,
+.present-card-mark,
+.present-card-line {
+  position: relative;
+  z-index: 2;
+}
+.present-card-corner {
+  position: absolute;
+  color: rgba(255,255,255,0.64) !important;
+}
+.present-card-mark {
+  border-color: rgba(61,219,184,0.68) !important;
+  background: rgba(61,219,184,0.08) !important;
+  color: #ffffff !important;
+  font-family: 'Orbitron', 'Noto Sans JP', sans-serif;
+}
+.present-card-line {
+  position: absolute;
+  background: rgba(61,219,184,0.5) !important;
+}
+
+/* Mint is reserved for active/progress/check/badges. */
+.avatar-dot,
+.badge-mark .pip,
+.bottom-tab-badge,
+.bottom-tab-dot {
+  background: var(--mint) !important;
+  box-shadow: none !important;
+}
+
+/* Bottom tab: filled active icon + mint dot. */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 420px);
+  border-top: 1px solid var(--hair);
+  background: rgba(251,255,253,0.96);
+  backdrop-filter: blur(8px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  z-index: 50;
+}
+.bottom-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 0 14px;
+  text-decoration: none;
+  color: var(--ink-faint);
+  position: relative;
+}
+.bottom-tab.active {
+  color: var(--ink);
+}
+.bottom-tab-icon {
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 800;
+}
+.bottom-tab-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+.bottom-tab-badge {
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 14px);
+  min-width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 8px;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  font-family: 'Orbitron', sans-serif;
+  line-height: 1;
+  padding: 0 3px;
+}
+.bottom-tab-dot {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+}
+
+@media (max-width: 380px) {
+  .profile-edit-pills {
+    max-width: 128px;
+  }
+  .profile-edit-pills a {
+    min-height: 20px;
+    padding: 0 6px;
+    font-size: 7px;
+  }
+  .avatar-wrap {
+    width: 96px;
+    height: 96px;
+  }
+}

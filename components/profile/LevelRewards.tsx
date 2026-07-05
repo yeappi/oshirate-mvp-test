@@ -12,11 +12,11 @@ function RewardRow({ reward, currentLv }: { reward: (typeof LEVEL_REWARDS)[numbe
   const achieved = currentLv >= reward.lv
   return (
     <div
+      className={`reward-row${achieved ? ' achieved' : ' locked'}`}
       style={{
         display: 'flex',
         alignItems: 'center',
         gap: 10,
-        opacity: achieved ? 1 : 0.45,
       }}
     >
       <div style={{
@@ -24,15 +24,14 @@ function RewardRow({ reward, currentLv }: { reward: (typeof LEVEL_REWARDS)[numbe
         height: 20,
         borderRadius: 999,
         border: `1px solid ${achieved ? 'var(--mint)' : 'var(--hair-strong)'}`,
-        background: achieved ? 'rgba(111,255,224,0.1)' : 'transparent',
+        background: achieved ? 'rgba(61,219,184,0.1)' : 'rgba(17,17,17,0.025)',
         display: 'grid',
         placeItems: 'center',
         flexShrink: 0,
         fontSize: 10,
-        color: achieved ? 'var(--mint)' : 'var(--ink-faint)',
-        boxShadow: achieved ? '0 0 5px rgba(111,255,224,0.3)' : 'none',
+        color: achieved ? 'var(--mint)' : 'var(--ink-mid)',
       }}>
-        {achieved ? '✓' : '⌁'}
+        {achieved ? '✓' : 'LOCK'}
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -41,7 +40,7 @@ function RewardRow({ reward, currentLv }: { reward: (typeof LEVEL_REWARDS)[numbe
             fontFamily: 'Orbitron, sans-serif',
             fontSize: 8,
             fontWeight: 700,
-            color: achieved ? 'var(--ink)' : 'var(--ink-faint)',
+            color: achieved ? 'var(--ink)' : 'var(--ink-mid)',
             letterSpacing: '0.1em',
           }}>
             Lv{reward.lv}
@@ -49,9 +48,9 @@ function RewardRow({ reward, currentLv }: { reward: (typeof LEVEL_REWARDS)[numbe
           <span style={{
             fontSize: 8,
             fontWeight: 800,
-            color: achieved ? 'var(--ink-soft)' : 'var(--ink-faint)',
+            color: achieved ? 'var(--ink-mid)' : 'var(--ink-mid)',
             border: `1px solid ${achieved ? 'var(--hair-strong)' : 'var(--hair)'}`,
-            background: achieved ? 'rgba(7,17,14,0.045)' : 'transparent',
+            background: achieved ? 'rgba(17,17,17,0.045)' : 'rgba(17,17,17,0.025)',
             padding: '1px 7px',
             borderRadius: 999,
             letterSpacing: '0.04em',
@@ -63,7 +62,7 @@ function RewardRow({ reward, currentLv }: { reward: (typeof LEVEL_REWARDS)[numbe
           marginTop: 3,
           fontSize: 11,
           fontWeight: 700,
-          color: achieved ? 'var(--ink-soft)' : 'var(--ink-faint)',
+          color: achieved ? 'var(--ink-mid)' : 'var(--ink-mid)',
           letterSpacing: '0.02em',
         }}>
           {reward.detail}
