@@ -13,6 +13,9 @@ type AdminIllustration = {
   image_url: string | null
   max_per_user: number | null
   reward_tag_id: string | null
+  is_special: boolean
+  requires_item_ticket: boolean
+  special_label: string | null
   is_active: boolean
   sort_order: number
 }
@@ -30,6 +33,9 @@ type FormState = {
   max_per_user: string
   sort_order: string
   is_active: boolean
+  is_special: boolean
+  requires_item_ticket: boolean
+  special_label: string
   reward_tag_id: string
   image_url: string
 }
@@ -47,6 +53,9 @@ const emptyForm: FormState = {
   max_per_user: '',
   sort_order: '0',
   is_active: true,
+  is_special: false,
+  requires_item_ticket: false,
+  special_label: '',
   reward_tag_id: '',
   image_url: '',
 }
@@ -173,6 +182,9 @@ export default function IllustrationManager({ initialIllustrations, rewardTags }
       max_per_user: item.max_per_user === null ? '' : String(item.max_per_user),
       sort_order: String(item.sort_order),
       is_active: item.is_active,
+      is_special: Boolean(item.is_special),
+      requires_item_ticket: Boolean(item.requires_item_ticket),
+      special_label: item.special_label ?? '',
       reward_tag_id: item.reward_tag_id ?? '',
       image_url: item.image_url ?? '',
     })
@@ -250,6 +262,9 @@ export default function IllustrationManager({ initialIllustrations, rewardTags }
         max_per_user: form.max_per_user,
         sort_order: form.sort_order,
         is_active: form.is_active,
+        is_special: form.is_special,
+        requires_item_ticket: form.requires_item_ticket,
+        special_label: form.special_label,
         reward_tag_id: form.reward_tag_id || null,
         image_url: imageUrl,
       }
@@ -280,6 +295,9 @@ export default function IllustrationManager({ initialIllustrations, rewardTags }
         max_per_user: saved.max_per_user === null ? '' : String(saved.max_per_user),
         sort_order: String(saved.sort_order),
         is_active: saved.is_active,
+        is_special: Boolean(saved.is_special),
+        requires_item_ticket: Boolean(saved.requires_item_ticket),
+        special_label: saved.special_label ?? '',
         reward_tag_id: saved.reward_tag_id ?? '',
         image_url: saved.image_url ?? '',
       })
@@ -412,6 +430,37 @@ export default function IllustrationManager({ initialIllustrations, rewardTags }
             </div>
           </div>
 
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: 'var(--ink-soft)' }}>
+              <input
+                type="checkbox"
+                checked={form.is_special}
+                onChange={(e) => updateForm('is_special', e.target.checked)}
+              />
+              特別イラスト（金グロー）
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: 'var(--ink-soft)' }}>
+              <input
+                type="checkbox"
+                checked={form.requires_item_ticket}
+                onChange={(e) => updateForm('requires_item_ticket', e.target.checked)}
+              />
+              チケット限定
+            </label>
+          </div>
+
+          <div>
+            <label style={s.label}>特別ラベル</label>
+            <input
+              type="text"
+              value={form.special_label}
+              onChange={(e) => updateForm('special_label', e.target.value)}
+              style={s.input}
+              maxLength={24}
+              placeholder="例: 初期限定"
+            />
+          </div>
+
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: 'var(--ink-soft)' }}>
             <input
               type="checkbox"
@@ -459,7 +508,7 @@ export default function IllustrationManager({ initialIllustrations, rewardTags }
               <div style={{ minWidth: 0, textAlign: 'left' }}>
                 <div style={{ fontWeight: 800, fontSize: 12, color: 'var(--ink)' }}>{item.title}</div>
                 <div style={{ marginTop: 2, fontSize: 9, color: 'var(--ink-faint)', fontFamily: 'Orbitron, sans-serif' }}>
-                  {item.price.toLocaleString()}pt / same price order {item.sort_order} / {item.is_active ? '表示中' : '非表示'}
+                  {item.price.toLocaleString()}pt / same price order {item.sort_order} / {item.is_special ? 'SPECIAL / ' : ''}{item.requires_item_ticket ? 'TICKET / ' : ''}{item.is_active ? '表示中' : '非表示'}
                 </div>
               </div>
               <div style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 800, color: 'var(--ink-soft)' }}>

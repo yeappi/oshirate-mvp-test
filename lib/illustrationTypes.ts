@@ -9,6 +9,9 @@ export type IllustrationRow = {
   image_url: string | null
   max_per_user: number | null
   reward_tag_id: string | null
+  is_special: boolean
+  requires_item_ticket: boolean
+  special_label: string | null
   is_active: boolean
   sort_order: number
   created_at: string
@@ -42,6 +45,9 @@ type IllustrationCardBase = {
   topBuyerLabel: string
   isFavorite: boolean
   favoriteOrder: number | null
+  isSpecial: boolean
+  requiresItemTicket: boolean
+  specialLabel: string | null
 }
 
 export type IllustrationCard =
@@ -64,4 +70,4 @@ export type PurchaseResult =
       price: number
       rewardTag?: { id: string; label: string; variant: string } | null
     }
-  | { ok: false; error: 'insufficient_points' | 'purchase_limit_reached' | 'illustration_not_found' | 'unknown' }
+  | { ok: false; error: 'insufficient_points' | 'purchase_limit_reached' | 'illustration_not_found' | 'requires_item_ticket' | 'unknown' }

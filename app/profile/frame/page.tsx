@@ -2,15 +2,17 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getUser, getProfile } from '@/lib/auth'
 import { DEFAULT_AVATAR_FRAME_ID, getAvatarFrames } from '@/lib/avatarFrames'
+import { getUserUnlockedAvatarFrameIds } from '@/lib/items'
 import FrameSelectForm from '@/components/profile/frame/FrameSelectForm'
 
 export default async function ProfileFramePage() {
   const user = await getUser()
   if (!user) redirect('/login')
 
-  const [profile, frames] = await Promise.all([
+  const [profile, frames, itemUnlockedIds] = await Promise.all([
     getProfile(user.id),
     getAvatarFrames(),
+    getUserUnlockedAvatarFrameIds(user.id),
   ])
 
   const selectedFrameId = profile?.selected_avatar_frame_id ?? DEFAULT_AVATAR_FRAME_ID
@@ -32,6 +34,7 @@ export default async function ProfileFramePage() {
             frames={frames}
             selectedFrameId={selectedFrameId}
             totalSpentPoints={totalSpentPoints}
+            itemUnlockedIds={Array.from(itemUnlockedIds)}
           />
         </div>
       </div>

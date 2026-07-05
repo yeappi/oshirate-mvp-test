@@ -3,6 +3,7 @@ import { adminStyles as s } from '@/components/admin/adminStyles'
 import PointAdjustForm from '@/components/admin/PointAdjustForm'
 import AnnouncementForm from '@/components/admin/AnnouncementForm'
 import IllustrationManager from '@/components/admin/IllustrationManager'
+import ItemManager from '@/components/admin/ItemManager'
 
 // 管理者チェックは app/admin/layout.tsx が担当
 export default async function AdminPage() {
@@ -24,7 +25,7 @@ export default async function AdminPage() {
 
   const { data: illustrationsRaw } = await supabase
     .from('illustrations')
-    .select('id, title, description, price, image_url, max_per_user, reward_tag_id, is_active, sort_order')
+    .select('id, title, description, price, image_url, max_per_user, reward_tag_id, is_special, requires_item_ticket, special_label, is_active, sort_order')
     .order('sort_order', { ascending: true })
 
   const illustrations = (illustrationsRaw ?? []) as Array<{
@@ -35,6 +36,9 @@ export default async function AdminPage() {
     image_url: string | null
     max_per_user: number | null
     reward_tag_id: string | null
+    is_special: boolean
+    requires_item_ticket: boolean
+    special_label: string | null
     is_active: boolean
     sort_order: number
   }>
@@ -46,6 +50,37 @@ export default async function AdminPage() {
     .order('sort_order', { ascending: true })
 
   const rewardTags = (rewardTagsRaw ?? []) as Array<{ id: string; label: string }>
+
+
+  const { data: backgroundsRaw } = await supabase
+    .from('profile_backgrounds')
+    .select('id, name')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  const { data: framesRaw } = await supabase
+    .from('avatar_frames')
+    .select('id, name')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  const { data: itemRowsRaw } = await supabase
+    .from('items')
+    .select('id, name, item_type, is_active, created_at')
+    .order('created_at', { ascending: false })
+
+  const itemRows = (itemRowsRaw ?? []) as Array<{
+    id: string
+    name: string
+    item_type: 'ILLUST_TICKET' | 'BACKGROUND_TICKET' | 'FRAME_TICKET' | 'TAG_TICKET'
+    is_active: boolean
+    created_at: string
+  }>
+
+  const backgroundOptions = (backgroundsRaw ?? []).map((b: any) => ({ id: String(b.id), label: String(b.name) }))
+  const frameOptions = (framesRaw ?? []).map((f: any) => ({ id: String(f.id), label: String(f.name) }))
+  const illustrationOptions = illustrations.map((i) => ({ id: i.id, label: `${i.title} / ${Number(i.price).toLocaleString()}pt` }))
+  const tagOptions = rewardTags.map((t) => ({ id: t.id, label: t.label }))
 
   return (
     <div>
@@ -117,7 +152,20 @@ export default async function AdminPage() {
         <IllustrationManager initialIllustrations={illustrations} rewardTags={rewardTags} />
       </section>
 
-      {/* ===== 4. 告知変更 ===== */}
+
+      {/* ===== 4. アイテム管理 ===== */}
+      <section id="items" style={{ marginBottom: 16 }}>
+        <ItemManager
+          users={users.map((u) => ({ id: u.id, name: u.name, email: u.email }))}
+          initialItems={itemRows}
+          illustrations={illustrationOptions}
+          backgrounds={backgroundOptions}
+          frames={frameOptions}
+          tags={tagOptions}
+        />
+      </section>
+
+      {/* ===== 5. 告知変更 ===== */}
       <section id="announcement" style={s.section}>
         <div style={s.sectionTitle}>ANNOUNCEMENT</div>
         <AnnouncementForm

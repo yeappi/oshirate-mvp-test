@@ -4,27 +4,29 @@ import { useState } from 'react'
 import Link from 'next/link'
 import type { ProfileBackground } from '@/lib/backgrounds'
 
-function isBackgroundUnlocked(background: Pick<ProfileBackground, 'required_level'>, currentLv: number): boolean {
-  return currentLv >= background.required_level
+function isBackgroundUnlocked(background: Pick<ProfileBackground, 'id' | 'required_level'>, currentLv: number, itemUnlockedIds: string[]): boolean {
+  return currentLv >= background.required_level || itemUnlockedIds.includes(background.id)
 }
 
 type Props = {
   backgrounds: ProfileBackground[]
   selectedBackgroundId: string
   currentLv: number
+  itemUnlockedIds: string[]
 }
 
 export default function BackgroundSelectForm({
   backgrounds,
   selectedBackgroundId,
   currentLv,
+  itemUnlockedIds,
 }: Props) {
   const [selectedId, setSelectedId] = useState(selectedBackgroundId)
   const [savingId, setSavingId] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
 
   const handleSelect = async (background: ProfileBackground) => {
-    if (!isBackgroundUnlocked(background, currentLv)) return
+    if (!isBackgroundUnlocked(background, currentLv, itemUnlockedIds)) return
 
     setSavingId(background.id)
     setMessage(null)
@@ -53,7 +55,7 @@ export default function BackgroundSelectForm({
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
         {backgrounds.map((background) => {
-          const unlocked = isBackgroundUnlocked(background, currentLv)
+          const unlocked = isBackgroundUnlocked(background, currentLv, itemUnlockedIds)
           const selected = selectedId === background.id
           const saving = savingId === background.id
 
@@ -103,7 +105,7 @@ export default function BackgroundSelectForm({
                   color: 'var(--ink-faint)',
                   letterSpacing: '0.06em',
                 }}>
-                  Lv{background.required_level} 解放
+                  {itemUnlockedIds.includes(background.id) ? 'アイテム解放済み' : `Lv${background.required_level} 解放`}
                 </span>
                 {background.description && (
                   <span style={{

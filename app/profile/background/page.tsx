@@ -3,15 +3,17 @@ import Link from 'next/link'
 import { getUser, getProfile } from '@/lib/auth'
 import { getUserLevel } from '@/lib/level'
 import { DEFAULT_BACKGROUND_ID, getProfileBackgrounds } from '@/lib/backgrounds'
+import { getUserUnlockedBackgroundIds } from '@/lib/items'
 import BackgroundSelectForm from '@/components/profile/background/BackgroundSelectForm'
 
 export default async function ProfileBackgroundPage() {
   const user = await getUser()
   if (!user) redirect('/login')
 
-  const [profile, backgrounds] = await Promise.all([
+  const [profile, backgrounds, itemUnlockedIds] = await Promise.all([
     getProfile(user.id),
     getProfileBackgrounds(),
+    getUserUnlockedBackgroundIds(user.id),
   ])
 
   const userLevel = getUserLevel(profile?.charisma ?? 0)
@@ -50,6 +52,7 @@ export default async function ProfileBackgroundPage() {
             backgrounds={backgrounds}
             selectedBackgroundId={selectedBackgroundId}
             currentLv={userLevel.lv}
+            itemUnlockedIds={Array.from(itemUnlockedIds)}
           />
         </div>
       </div>

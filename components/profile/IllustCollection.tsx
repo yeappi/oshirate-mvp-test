@@ -224,7 +224,7 @@ function IllustPiece({
 
   return (
     <div
-      className={`piece${isLocked ? ' locked' : ''}`}
+      className={`piece${isLocked ? ' locked' : ''}${card.isSpecial ? ' special' : ''}`}
       onClick={onClick}
       style={{ cursor: 'pointer' }}
     >
@@ -263,10 +263,16 @@ function IllustPiece({
         </button>
       )}
 
+      {card.isSpecial && (
+        <div className="special-ribbon">{card.specialLabel || 'SPECIAL'}</div>
+      )}
+
       {isLocked ? (
         <>
-          <div className="lock" style={{ opacity: cantAfford ? 0.72 : 1 }}>LOCK</div>
-          <div className="price">{formatPrice(card.price)}</div>
+          <div className="lock" style={{ opacity: card.requiresItemTicket ? 1 : cantAfford ? 0.72 : 1 }}>
+            {card.requiresItemTicket ? 'TICKET' : 'LOCK'}
+          </div>
+          <div className="price">{card.requiresItemTicket ? '限定券' : formatPrice(card.price)}</div>
         </>
       ) : (
         <>
@@ -292,6 +298,7 @@ function IllustPiece({
 
 function sortIllustrationCards(cards: IllustrationCard[]): IllustrationCard[] {
   return [...cards].sort((a, b) => {
+    if (a.isSpecial !== b.isSpecial) return a.isSpecial ? -1 : 1
     if (a.owned !== b.owned) return a.owned ? -1 : 1
     if (a.price !== b.price) return b.price - a.price
     if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order

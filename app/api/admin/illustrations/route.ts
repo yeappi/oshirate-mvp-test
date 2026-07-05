@@ -12,6 +12,9 @@ type Payload = {
   is_active?: unknown
   reward_tag_id?: unknown
   image_url?: unknown
+  is_special?: unknown
+  requires_item_ticket?: unknown
+  special_label?: unknown
 }
 
 function asTrimmedString(value: unknown): string {
@@ -56,6 +59,9 @@ async function handleSave(request: Request, mode: 'create' | 'update') {
   const rewardTagId = normalizeRewardTag(body.reward_tag_id)
   const imageUrl = normalizeImageUrl(body.image_url)
   const isActive = typeof body.is_active === 'boolean' ? body.is_active : true
+  const isSpecial = typeof body.is_special === 'boolean' ? body.is_special : false
+  const requiresItemTicket = typeof body.requires_item_ticket === 'boolean' ? body.requires_item_ticket : false
+  const specialLabel = asTrimmedString(body.special_label) || null
 
   if (!title) {
     return NextResponse.json({ error: 'タイトルを入力してください' }, { status: 400 })
@@ -96,13 +102,16 @@ async function handleSave(request: Request, mode: 'create' | 'update') {
     reward_tag_id: rewardTagId,
     is_active: isActive,
     sort_order: sortOrder,
+    is_special: isSpecial,
+    requires_item_ticket: requiresItemTicket,
+    special_label: specialLabel,
   }
 
   if (mode === 'create') {
     const { data, error } = await supabase
       .from('illustrations')
       .insert(values)
-      .select('id, title, description, price, image_url, max_per_user, reward_tag_id, is_active, sort_order')
+      .select('id, title, description, price, image_url, max_per_user, reward_tag_id, is_special, requires_item_ticket, special_label, is_active, sort_order')
       .single()
 
     if (error) {
@@ -119,7 +128,7 @@ async function handleSave(request: Request, mode: 'create' | 'update') {
     .from('illustrations')
     .update(values)
     .eq('id', id)
-    .select('id, title, description, price, image_url, max_per_user, reward_tag_id, is_active, sort_order')
+    .select('id, title, description, price, image_url, max_per_user, reward_tag_id, is_special, requires_item_ticket, special_label, is_active, sort_order')
     .single()
 
   if (error) {

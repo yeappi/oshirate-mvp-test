@@ -37,8 +37,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'フレームが見つかりません' }, { status: 404 })
   }
 
+  const { data: itemUnlock } = await supabase
+    .from('user_unlocked_avatar_frames')
+    .select('frame_id')
+    .eq('user_id', user.id)
+    .eq('frame_id', frame.id)
+    .maybeSingle()
+
   const totalSpentPoints = Number(profile.total_spent_points ?? 0)
-  if (Number(frame.required_spent_points ?? 0) > totalSpentPoints) {
+  if (Number(frame.required_spent_points ?? 0) > totalSpentPoints && !itemUnlock) {
     return NextResponse.json(
       { error: `このフレームは累計${Number(frame.required_spent_points).toLocaleString()}pt使用で解放されます` },
       { status: 403 }

@@ -26,12 +26,14 @@ type ErrorType =
   | 'insufficient_points'
   | 'purchase_limit_reached'
   | 'illustration_not_found'
+  | 'requires_item_ticket'
   | 'unknown'
 
 const ERROR_MSG: Record<ErrorType, string> = {
   insufficient_points:    'ポイントが足りません',
   purchase_limit_reached: 'これ以上購入できません',
   illustration_not_found: 'イラストが見つかりませんでした',
+  requires_item_ticket: 'このイラストは限定券でのみ入手できます',
   unknown:                'エラーが発生しました。もう一度お試しください',
 }
 
@@ -49,10 +51,11 @@ export default function PurchaseModal({
   const [rewardTag, setRewardTag] = useState<RewardTag | null>(null)
 
   const canAfford = userPoints >= card.price
+  const requiresTicket = !card.owned && card.requiresItemTicket
   const alreadyAtLimit = card.owned && card.max_per_user !== null && !card.canBuyMore
 
   const handlePurchase = async () => {
-    if (!canAfford || alreadyAtLimit) return
+    if (!canAfford || alreadyAtLimit || requiresTicket) return
     setPhase('loading')
 
     try {
@@ -124,6 +127,7 @@ export default function PurchaseModal({
             card={card}
             userPoints={userPoints}
             canAfford={canAfford}
+            requiresTicket={requiresTicket}
             alreadyAtLimit={alreadyAtLimit}
             loading={phase === 'loading'}
             onPurchase={handlePurchase}
@@ -161,6 +165,7 @@ function ConfirmView({
   card,
   userPoints,
   canAfford,
+  requiresTicket,
   alreadyAtLimit,
   loading,
   onPurchase,
@@ -169,12 +174,13 @@ function ConfirmView({
   card: IllustrationCard
   userPoints: number
   canAfford: boolean
+  requiresTicket: boolean
   alreadyAtLimit: boolean
   loading: boolean
   onPurchase: () => void
   onClose: () => void
 }) {
-  const blocked = !canAfford || alreadyAtLimit
+  const blocked = !canAfford || alreadyAtLimit || requiresTicket
   const isLimited = card.max_per_user !== null
 
   return (
@@ -265,6 +271,7 @@ function ConfirmView({
       >
         {loading
           ? 'PROCESSING...'
+          : requiresTicket ? '限定券が必要です'
           : alreadyAtLimit ? '購入上限に達しました'
           : !canAfford ? 'ポイント不足'
           : '応援する'}

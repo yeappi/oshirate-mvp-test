@@ -79,6 +79,9 @@ export async function getIllustrationCards(
       topBuyerLabel,
       isFavorite: favoriteOrder !== null,
       favoriteOrder,
+      isSpecial: Boolean(illust.is_special),
+      requiresItemTicket: Boolean(illust.requires_item_ticket),
+      specialLabel: illust.special_label ?? null,
     }
 
     if (qty > 0) {
@@ -101,6 +104,7 @@ export async function getIllustrationCards(
 }
 
 function compareIllustrationCards(a: IllustrationCard, b: IllustrationCard): number {
+  if (a.isSpecial !== b.isSpecial) return a.isSpecial ? -1 : 1
   if (a.owned !== b.owned) return a.owned ? -1 : 1
   if (a.price !== b.price) return b.price - a.price
   if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order

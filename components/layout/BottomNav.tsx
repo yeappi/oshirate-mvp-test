@@ -14,6 +14,7 @@ export default function BottomNav({ unreadCount }: Props) {
     { href: '/',              label: 'ホーム', icon: '⌂', activeIcon: '⌂' },
     { href: '/discover',      label: '探す',   icon: '⌕', activeIcon: '◉' },
     { href: '/following',     label: 'フォロー', icon: '☆', activeIcon: '★' },
+    { href: '/items',         label: 'もちもの', icon: '□', activeIcon: '■' },
     { href: '/notifications', label: '通知',   icon: '◇', activeIcon: '◆', badge: unreadCount },
   ]
 

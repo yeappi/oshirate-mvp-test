@@ -38,8 +38,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: '背景が見つかりません' }, { status: 404 })
   }
 
+  const { data: itemUnlock } = await supabase
+    .from('user_unlocked_backgrounds')
+    .select('background_id')
+    .eq('user_id', user.id)
+    .eq('background_id', background.id)
+    .maybeSingle()
+
   const userLevel = getUserLevel(Number(profile.charisma ?? 0))
-  if (background.required_level > userLevel.lv) {
+  if (background.required_level > userLevel.lv && !itemUnlock) {
     return NextResponse.json(
       { error: `この背景はLv${background.required_level}で解放されます` },
       { status: 403 }

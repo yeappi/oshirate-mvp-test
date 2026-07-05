@@ -4,20 +4,22 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import type { AvatarFrame } from '@/lib/avatarFrames'
 
-function isFrameUnlocked(frame: Pick<AvatarFrame, 'required_spent_points'>, totalSpentPoints: number): boolean {
-  return totalSpentPoints >= frame.required_spent_points
+function isFrameUnlocked(frame: Pick<AvatarFrame, 'id' | 'required_spent_points'>, totalSpentPoints: number, itemUnlockedIds: string[]): boolean {
+  return totalSpentPoints >= frame.required_spent_points || itemUnlockedIds.includes(frame.id)
 }
 
 type Props = {
   frames: AvatarFrame[]
   selectedFrameId: string
   totalSpentPoints: number
+  itemUnlockedIds: string[]
 }
 
 export default function FrameSelectForm({
   frames,
   selectedFrameId,
   totalSpentPoints,
+  itemUnlockedIds,
 }: Props) {
   const [selectedId, setSelectedId] = useState(selectedFrameId)
   const [savingId, setSavingId] = useState<string | null>(null)
@@ -28,7 +30,7 @@ export default function FrameSelectForm({
   }, [frames, totalSpentPoints])
 
   const handleSelect = async (frame: AvatarFrame) => {
-    if (!isFrameUnlocked(frame, totalSpentPoints)) return
+    if (!isFrameUnlocked(frame, totalSpentPoints, itemUnlockedIds)) return
 
     setSavingId(frame.id)
     setMessage(null)
@@ -80,7 +82,7 @@ export default function FrameSelectForm({
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
         {frames.map((frame) => {
-          const unlocked = isFrameUnlocked(frame, totalSpentPoints)
+          const unlocked = isFrameUnlocked(frame, totalSpentPoints, itemUnlockedIds)
           const selected = selectedId === frame.id
           const saving = savingId === frame.id
 
@@ -131,7 +133,7 @@ export default function FrameSelectForm({
                   color: 'var(--ink-faint)',
                   letterSpacing: '0.06em',
                 }}>
-                  {frame.required_spent_points.toLocaleString()}pt 使用で解放
+                  {itemUnlockedIds.includes(frame.id) ? 'アイテム解放済み' : `${frame.required_spent_points.toLocaleString()}pt 使用で解放`}
                 </span>
                 {frame.description && (
                   <span style={{
