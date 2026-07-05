@@ -79,7 +79,10 @@ export default async function AdminPage() {
 
   const backgroundOptions = (backgroundsRaw ?? []).map((b: any) => ({ id: String(b.id), label: String(b.name) }))
   const frameOptions = (framesRaw ?? []).map((f: any) => ({ id: String(f.id), label: String(f.name) }))
-  const illustrationOptions = illustrations.map((i) => ({ id: i.id, label: `${i.title} / ${Number(i.price).toLocaleString()}pt` }))
+  const illustrationOptions = illustrations.map((i) => ({
+    id: i.id,
+    label: `${i.is_special ? '★ ' : ''}${i.title} / ${Number(i.price).toLocaleString()}pt${i.requires_item_ticket ? ' / チケット限定' : ''}`,
+  }))
   const tagOptions = rewardTags.map((t) => ({ id: t.id, label: t.label }))
 
   return (

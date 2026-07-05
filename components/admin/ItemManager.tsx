@@ -94,6 +94,9 @@ export default function ItemManager({ users, initialItems, illustrations, backgr
     <div style={{ display: 'grid', gap: 14 }}>
       <section style={s.section}>
         <div style={s.sectionTitle}>ITEM CREATE</div>
+        <div style={{ marginTop: -4, marginBottom: 4, fontSize: 10, lineHeight: 1.7, color: 'var(--ink-soft)', fontWeight: 700 }}>
+          限定イラスト券を作ると、対象イラストは自動で「特別イラスト / チケット限定」になります。
+        </div>
         <div style={{ display: 'grid', gap: 10 }}>
           <div>
             <label style={s.label}>種別</label>
@@ -118,6 +121,11 @@ export default function ItemManager({ users, initialItems, illustrations, backgr
               <option value="">選択してください</option>
               {targetOptions.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
             </select>
+            <div style={{ marginTop: 5, fontSize: 9, lineHeight: 1.6, color: 'var(--ink-faint)', fontWeight: 700 }}>
+              {itemType === 'ILLUST_TICKET'
+                ? 'この対象イラストは保存時に金グロー表示・チケット限定購入へ自動設定されます。'
+                : '背景 / 枠 / タグ券は自分の所持解放に使われます。'}
+            </div>
           </div>
           {itemType === 'ILLUST_TICKET' && (
             <div>

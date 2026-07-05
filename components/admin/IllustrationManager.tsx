@@ -430,35 +430,48 @@ export default function IllustrationManager({ initialIllustrations, rewardTags }
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: 'var(--ink-soft)' }}>
-              <input
-                type="checkbox"
-                checked={form.is_special}
-                onChange={(e) => updateForm('is_special', e.target.checked)}
-              />
-              特別イラスト（金グロー）
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: 'var(--ink-soft)' }}>
-              <input
-                type="checkbox"
-                checked={form.requires_item_ticket}
-                onChange={(e) => updateForm('requires_item_ticket', e.target.checked)}
-              />
-              チケット限定
-            </label>
-          </div>
+          <div style={{ border: '1px solid rgba(0,0,0,0.08)', borderRadius: 16, padding: 12, background: 'rgba(255,255,255,0.72)', display: 'grid', gap: 10 }}>
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: '0.08em', color: 'var(--ink)' }}>限定設定</div>
+              <div style={{ marginTop: 4, fontSize: 9, lineHeight: 1.6, color: 'var(--ink-faint)', fontWeight: 700 }}>
+                特別イラストは一覧上部に金グローで表示。チケット限定にすると通常pt購入はできません。
+              </div>
+            </div>
 
-          <div>
-            <label style={s.label}>特別ラベル</label>
-            <input
-              type="text"
-              value={form.special_label}
-              onChange={(e) => updateForm('special_label', e.target.value)}
-              style={s.input}
-              maxLength={24}
-              placeholder="例: 初期限定"
-            />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: 'var(--ink-soft)' }}>
+                <input
+                  type="checkbox"
+                  checked={form.is_special}
+                  onChange={(e) => updateForm('is_special', e.target.checked)}
+                />
+                特別イラスト（金グロー）
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: 'var(--ink-soft)' }}>
+                <input
+                  type="checkbox"
+                  checked={form.requires_item_ticket}
+                  onChange={(e) => {
+                    const checked = e.target.checked
+                    updateForm('requires_item_ticket', checked)
+                    if (checked) updateForm('is_special', true)
+                  }}
+                />
+                チケット限定
+              </label>
+            </div>
+
+            <div>
+              <label style={s.label}>特別ラベル</label>
+              <input
+                type="text"
+                value={form.special_label}
+                onChange={(e) => updateForm('special_label', e.target.value)}
+                style={s.input}
+                maxLength={24}
+                placeholder="例: 初期限定"
+              />
+            </div>
           </div>
 
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 700, color: 'var(--ink-soft)' }}>

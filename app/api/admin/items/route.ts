@@ -63,6 +63,25 @@ export async function POST(request: Request) {
       console.error('[admin items create]', error)
       return NextResponse.json({ error: 'アイテム作成に失敗しました' }, { status: 500 })
     }
+
+    // 限定イラスト券を作った時点で、対象イラストも「特別 / チケット限定」に自動設定する。
+    // adminで「イラスト設定」と「アイテム設定」を別々に触らないで済むようにする。
+    if (itemType === 'ILLUST_TICKET') {
+      const { error: illustrationError } = await supabase
+        .from('illustrations')
+        .update({
+          is_special: true,
+          requires_item_ticket: true,
+          special_label: name.slice(0, 24) || '限定',
+        })
+        .eq('id', targetId)
+
+      if (illustrationError) {
+        console.error('[admin items mark illustration special]', illustrationError)
+        return NextResponse.json({ error: 'アイテムは作成しましたが、対象イラストの限定設定に失敗しました' }, { status: 500 })
+      }
+    }
+
     return NextResponse.json({ ok: true, item: data })
   }
 
