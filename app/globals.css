@@ -2458,3 +2458,254 @@ body {
   }
   .collection-grid { gap: 8px !important; }
 }
+
+/* ===== Phase4x: no-tail bubble, real bg effects, calmer motion ===== */
+/* 1) Speech bubble: no tail. Stable black outline pill. */
+.profile-comment,
+.profile-comment.empty {
+  width: min(86%, 330px) !important;
+  margin: 22px auto 22px !important;
+  padding: 15px 22px 16px !important;
+  border: 5px solid #111 !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  color: #111 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  text-align: center !important;
+  overflow: visible !important;
+}
+.profile-comment::before,
+.profile-comment::after,
+.profile-comment p::before,
+.profile-comment p::after,
+.profile-comment .comment-mark {
+  content: none !important;
+  display: none !important;
+}
+.profile-comment p {
+  margin: 0 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  font-family: 'Arial Narrow', 'Avenir Next Condensed', 'Roboto Condensed', 'Helvetica Neue', sans-serif !important;
+  font-size: 17px !important;
+  line-height: 1.28 !important;
+  font-weight: 900 !important;
+  letter-spacing: .015em !important;
+  transform: scaleX(.92) !important;
+  transform-origin: center !important;
+}
+.profile-comment.empty {
+  border-style: solid !important;
+  color: #555 !important;
+}
+
+/* 2) Profile background: no fake stripe/border shell. Let custom bg actually show. */
+.profile-bg-card {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  padding: 8px !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+}
+.profile-bg-card::before,
+.profile-bg-card::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  opacity: 0 !important;
+}
+.profile-bg-card::after {
+  background: none !important;
+  display: none !important;
+}
+.profile-inner-plate {
+  background: rgba(255, 255, 255, 0.56) !important;
+  outline: 0 !important;
+  border: 1px solid rgba(255,255,255,.48) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(14px) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(1.08) !important;
+}
+[data-profile-bg="neon_night"] .profile-inner-plate,
+[data-profile-bg="legend"] .profile-inner-plate {
+  background: rgba(255, 255, 255, 0.62) !important;
+}
+
+/* Background effects belong to the selected custom background, not the outer shell stripe. */
+.profile-bg-card[data-profile-bg="starter"]::before {
+  opacity: .62 !important;
+  background: radial-gradient(circle at 50% 8%, rgba(61,219,184,.16), transparent 36%) !important;
+  animation: bgStarterBreath 5.5s ease-in-out infinite !important;
+}
+.profile-bg-card[data-profile-bg="mint_glow"]::before {
+  opacity: .9 !important;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(61,219,184,.35), transparent 26%),
+    radial-gradient(circle at 80% 12%, rgba(255,255,255,.55), transparent 26%),
+    linear-gradient(120deg, transparent 15%, rgba(61,219,184,.18) 42%, transparent 66%) !important;
+  animation: bgMintFloat 4s ease-in-out infinite !important;
+}
+.profile-bg-card[data-profile-bg="neon_night"]::before {
+  opacity: .88 !important;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(61,219,184,.34), transparent 22%),
+    radial-gradient(circle at 78% 18%, rgba(255,77,166,.28), transparent 24%),
+    linear-gradient(110deg, transparent 18%, rgba(255,255,255,.16) 46%, transparent 72%) !important;
+  mix-blend-mode: screen !important;
+  animation: bgNeonSweep 3.3s linear infinite !important;
+}
+.profile-bg-card[data-profile-bg="gold_stage"]::before {
+  opacity: .82 !important;
+  background:
+    radial-gradient(circle at 30% 12%, rgba(255,209,102,.34), transparent 25%),
+    radial-gradient(circle at 72% 18%, rgba(255,245,190,.38), transparent 24%),
+    conic-gradient(from 0deg at 50% 50%, transparent, rgba(255,196,50,.16), transparent, rgba(255,245,190,.14), transparent) !important;
+  animation: bgGoldOrbit 5.2s linear infinite !important;
+}
+.profile-bg-card[data-profile-bg="aurora"]::before {
+  opacity: .82 !important;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(61,219,184,.28), transparent 28%),
+    radial-gradient(circle at 74% 18%, rgba(199,125,255,.26), transparent 28%),
+    radial-gradient(circle at 50% 8%, rgba(255,255,255,.5), transparent 30%) !important;
+  filter: blur(2px) !important;
+  animation: bgAuroraWave 4.8s ease-in-out infinite !important;
+}
+.profile-bg-card[data-profile-bg="legend"]::before {
+  opacity: .92 !important;
+  background:
+    conic-gradient(from 0deg at 50% 48%, rgba(255,77,109,.18), rgba(255,209,102,.2), rgba(61,219,184,.2), rgba(91,140,255,.18), rgba(199,125,255,.18), rgba(255,77,109,.18)),
+    radial-gradient(circle at 50% 8%, rgba(255,255,255,.56), transparent 32%) !important;
+  animation: bgLegendHolo 6.5s linear infinite !important;
+}
+@keyframes bgStarterBreath { 0%,100%{opacity:.42; transform:scale(1)} 50%{opacity:.7; transform:scale(1.03)} }
+@keyframes bgMintFloat { 0%,100%{transform:translate3d(-1%,0,0) scale(1)} 50%{transform:translate3d(1%,-1%,0) scale(1.035)} }
+@keyframes bgNeonSweep { from{transform:translateX(-10%)} to{transform:translateX(10%)} }
+@keyframes bgGoldOrbit { to{transform:rotate(360deg) scale(1.08)} }
+@keyframes bgAuroraWave { 0%,100%{transform:translateX(-2%) scale(1.02)} 50%{transform:translateX(2%) translateY(-1%) scale(1.06)} }
+@keyframes bgLegendHolo { to{transform:rotate(360deg) scale(1.12)} }
+
+/* 3) Avatar frame motion: default/black is still. Red uses stepped red-white dashed orbit. */
+.avatar-wrap[data-avatar-frame="black"]::before,
+.avatar-wrap[data-avatar-frame="black"]::after {
+  animation: none !important;
+}
+.avatar-wrap[data-avatar-frame="red"]::before {
+  border: 4px solid transparent !important;
+  background: repeating-conic-gradient(
+    from 0deg,
+    #ff4051 0deg 10deg,
+    transparent 10deg 16deg,
+    #ffffff 16deg 26deg,
+    transparent 26deg 32deg
+  ) border-box !important;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  mask-composite: exclude !important;
+  box-shadow: 0 0 16px rgba(255, 64, 81, .46), 0 0 28px rgba(255, 64, 81, .18) !important;
+  animation: frameRedStepOrbit 2.4s steps(12) infinite !important;
+}
+@keyframes frameRedStepOrbit { to { transform: rotate(360deg); } }
+
+/* Stronger but readable non-default frame motions. */
+.avatar-wrap[data-avatar-frame="blue"]::before {
+  animation-duration: 1.6s !important;
+  box-shadow: 0 0 18px rgba(45,118,255,.54), 0 0 36px rgba(45,118,255,.2) !important;
+}
+.avatar-wrap[data-avatar-frame="bronze"]::before { animation-duration: 4s !important; }
+.avatar-wrap[data-avatar-frame="silver"]::before { animation-duration: 2.4s !important; }
+.avatar-wrap[data-avatar-frame="gold"]::before { animation-duration: 3s, 1.8s !important; }
+
+/* 4) Favorite images: each tile gets a subtle, individual gold pulse. */
+.favorite-section .favorite-illust-card {
+  border-color: rgba(255, 196, 50, .34) !important;
+  box-shadow: 0 0 0 1px rgba(255, 209, 102, .1), 0 0 14px rgba(255, 196, 50, .22) !important;
+  animation: favoriteTileGoldPulse 2.8s ease-in-out infinite !important;
+}
+.favorite-section .favorite-illust-card:nth-child(2) { animation-delay: .35s !important; }
+.favorite-section .favorite-illust-card:nth-child(3) { animation-delay: .7s !important; }
+.favorite-section .favorite-illust-card::before {
+  display: none !important;
+  content: none !important;
+}
+@keyframes favoriteTileGoldPulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255, 209, 102, .08), 0 0 10px rgba(255, 196, 50, .16); }
+  50% { box-shadow: 0 0 0 1px rgba(255, 209, 102, .22), 0 0 20px rgba(255, 196, 50, .34); }
+}
+
+/* 5) Illustration collection: fixed 4-column grid. */
+.collection-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+/* 6) Level badge + rewards become one slim card. */
+.level-suite-card {
+  margin: 16px 0 0 !important;
+  padding: 14px !important;
+  border: 1px solid rgba(17,17,17,.08) !important;
+  border-radius: 16px !important;
+  background: rgba(255,255,255,.72) !important;
+  box-shadow: none !important;
+}
+.level-suite-card .level-badge-card,
+.level-suite-card .level-reward-card {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.level-suite-card .level-badge-card {
+  padding-bottom: 12px !important;
+  border-bottom: 1px solid rgba(17,17,17,.08) !important;
+}
+.level-suite-card .level-reward-section {
+  margin: 12px 0 0 !important;
+}
+.level-suite-card .level-reward-head {
+  margin-bottom: 8px !important;
+}
+.level-suite-card .reward-row {
+  min-height: 34px !important;
+  padding: 8px 10px !important;
+  border-radius: 10px !important;
+}
+.level-suite-card .reward-lock-mark {
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #aaa !important;
+  font-size: 15px !important;
+}
+.level-suite-card .reward-row.achieved .reward-lock-mark {
+  color: var(--mint) !important;
+}
+.level-suite-card .reward-row.locked .reward-lock-mark {
+  color: #aaa !important;
+}
+.level-suite-card .reward-row.locked .reward-lock-mark::before {
+  content: '🔒' !important;
+}
+.level-suite-card .reward-row.locked .reward-lock-mark {
+  font-size: 0 !important;
+}
+.level-suite-card .reward-row.locked .reward-lock-mark::before {
+  font-size: 15px !important;
+}
+.level-suite-card .reward-detail {
+  font-size: 10px !important;
+  color: #666 !important;
+}
+.level-suite-card .more-rewards summary {
+  margin-top: 8px !important;
+  padding: 8px 10px !important;
+  border-radius: 999px !important;
+}

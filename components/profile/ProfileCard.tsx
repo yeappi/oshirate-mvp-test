@@ -142,11 +142,13 @@ export default function ProfileCard({
       {/* 30分プレゼント */}
       {giftBox}
 
-      {/* Lv表示 */}
-      {userLevel && <LevelBadge userLevel={userLevel} />}
-
-      {/* Lv報酬 */}
-      {userLevel && <LevelRewards currentLv={userLevel.lv} />}
+      {/* Lv表示 + Lv報酬 */}
+      {userLevel && (
+        <section className="level-suite-card">
+          <LevelBadge userLevel={userLevel} />
+          <LevelRewards currentLv={userLevel.lv} />
+        </section>
+      )}
 
       {/* イラストコレクション */}
       <IllustCollection
