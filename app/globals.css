@@ -2255,3 +2255,113 @@ body {
 .profile-comment.empty p {
   color: #333333 !important;
 }
+
+/* ===== Phase4v: cleaner speech bubble + motion scope ===== */
+/* Lv報酬リスト自体のアニメーションは邪魔なので停止。装飾の動きは背景とアイコンフレームに限定する。 */
+.reward-row .reward-motion,
+.reward-row.achieved .reward-motion,
+.reward-row.achieved[data-reward-lv="10"] .reward-motion,
+.reward-row.achieved[data-reward-lv="15"] .reward-motion,
+.reward-row.achieved[data-reward-lv="20"] .reward-motion {
+  display: none !important;
+  opacity: 0 !important;
+  animation: none !important;
+  background: none !important;
+}
+
+.reward-row {
+  overflow: hidden !important;
+  isolation: auto !important;
+}
+
+/* コメント欄：黒太線の漫画吹き出し。ただし主張しすぎないサイズ/太さに戻す。 */
+.profile-comment {
+  position: relative !important;
+  margin: 16px auto 24px !important;
+  max-width: 334px !important;
+  width: min(86%, 334px) !important;
+  min-height: 58px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 13px 20px 14px !important;
+  border: 3px solid #111111 !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+  transform: none !important;
+}
+
+.profile-comment p {
+  position: relative !important;
+  z-index: 3 !important;
+  margin: 0 !important;
+  color: #111111 !important;
+  font-family: 'Hiragino Maru Gothic ProN', 'Yu Gothic', 'Yu Gothic UI', 'Noto Sans JP', system-ui, sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1.56 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.012em !important;
+  text-align: center !important;
+  text-shadow: none !important;
+}
+
+/* 括弧装飾は完全撤廃 */
+.profile-comment p::before,
+.profile-comment p::after,
+.profile-comment .comment-mark {
+  content: none !important;
+  display: none !important;
+}
+
+/* 尻尾の外枠：左寄せ。先端だけがアイコン方向に伸びる。 */
+.profile-comment::before,
+.profile-comment::after {
+  content: '' !important;
+  position: absolute !important;
+  pointer-events: none !important;
+  display: block !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  transform: none !important;
+}
+
+.profile-comment::before {
+  z-index: 1 !important;
+  top: -25px !important;
+  left: 38px !important;
+  width: 48px !important;
+  height: 29px !important;
+  background: #111111 !important;
+  clip-path: polygon(8% 0%, 100% 100%, 48% 100%);
+}
+
+.profile-comment::after {
+  z-index: 2 !important;
+  top: -18px !important;
+  left: 47px !important;
+  width: 34px !important;
+  height: 20px !important;
+  background: #ffffff !important;
+  clip-path: polygon(9% 0%, 100% 100%, 46% 100%);
+}
+
+/* しっぽの根元が本体の内側へ突き刺さって見えないよう、上辺を本体で軽く覆う */
+.profile-comment .comment-tail-mask,
+.profile-comment::selection {
+  background: transparent;
+}
+
+.profile-comment.empty {
+  color: #333333 !important;
+  background: #ffffff !important;
+  border-color: #111111 !important;
+}
+
+.profile-comment.empty p {
+  color: #333333 !important;
+  font-weight: 750 !important;
+}
