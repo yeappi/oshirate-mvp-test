@@ -9,6 +9,7 @@ import { getUserLevel } from '@/lib/level'
 import { getProfileBackgroundById } from '@/lib/backgrounds'
 import { getAvatarFrameById } from '@/lib/avatarFrames'
 import { getProfileDisplayTags } from '@/lib/tags'
+import { getCharismaRanking } from '@/lib/ranking'
 import ProfileCard from '@/components/profile/ProfileCard'
 import LogoutButton from '@/components/auth/LogoutButton'
 import GiftBox from '@/components/gift/GiftBox'
@@ -18,12 +19,13 @@ export default async function HomePage() {
   const user = await getUser()
   if (!user) redirect('/login')
 
-  const [profile, cards, activeDecorations, unreadCount, displayTags] = await Promise.all([
+  const [profile, cards, activeDecorations, unreadCount, displayTags, ranking] = await Promise.all([
     getProfile(user.id),
     getIllustrationCards(user.id, user.id),
     getActiveDecorations(user.id),
     getUnreadCount(user.id),
     getProfileDisplayTags(user.id),
+    getCharismaRanking(user.id),
   ])
 
   const userPoints = profile?.points ?? 0
@@ -56,6 +58,8 @@ export default async function HomePage() {
     // rank は ProfileCard 側で userLevel.tierName に一本化済みのため静的値のまま残す（表示には使わない）
     stats: {
       ...yapyProfile.stats,
+      ranking: ranking.rank,
+      rankingTotal: ranking.total.toLocaleString(),
       charisma: Number(profile?.charisma ?? 0).toLocaleString(),
     },
   }

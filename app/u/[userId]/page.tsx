@@ -6,6 +6,7 @@ import { getUserLevel } from '@/lib/level'
 import { getProfileBackgroundById } from '@/lib/backgrounds'
 import { getAvatarFrameById } from '@/lib/avatarFrames'
 import { getProfileDisplayTags } from '@/lib/tags'
+import { getCharismaRanking } from '@/lib/ranking'
 import { isFollowingUser } from '@/lib/follows'
 import { yapyProfile } from '@/lib/staticData'
 import ProfileCard from '@/components/profile/ProfileCard'
@@ -23,12 +24,13 @@ export default async function PublicProfilePage({ params }: Props) {
   const targetUserId = params.userId
   if (targetUserId === user.id) redirect('/')
 
-  const [viewerProfile, targetProfile, unreadCount, displayTags, isFollowing] = await Promise.all([
+  const [viewerProfile, targetProfile, unreadCount, displayTags, isFollowing, ranking] = await Promise.all([
     getProfile(user.id),
     getProfile(targetUserId),
     getUnreadCount(user.id),
     getProfileDisplayTags(targetUserId),
     isFollowingUser(user.id, targetUserId),
+    getCharismaRanking(targetUserId),
   ])
 
   if (!targetProfile) notFound()
@@ -50,6 +52,8 @@ export default async function PublicProfilePage({ params }: Props) {
     tags: displayTags.map((tag) => ({ label: tag.label, variant: tag.variant })),
     stats: {
       ...yapyProfile.stats,
+      ranking: ranking.rank,
+      rankingTotal: ranking.total.toLocaleString(),
       charisma: Number(targetProfile.charisma ?? 0).toLocaleString(),
     },
   }

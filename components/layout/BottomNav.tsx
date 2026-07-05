@@ -11,13 +11,10 @@ export default function BottomNav({ unreadCount }: Props) {
   const pathname = usePathname()
 
   const tabs = [
-    { href: '/',                   label: 'ホーム', icon: '⌂' },
-    { href: '/profile/background', label: '背景',   icon: '◌' },
-    { href: '/profile/tags',       label: 'タグ',   icon: '◇' },
-    { href: '/profile/frame',      label: '枠',     icon: '◎' },
-    { href: '/discover',           label: '探す',   icon: '⌕' },
-    { href: '/following',          label: 'フォロー', icon: '☆' },
-    { href: '/notifications',      label: '通知',   icon: '◈', badge: unreadCount },
+    { href: '/',              label: 'ホーム', icon: '⌂' },
+    { href: '/discover',      label: '探す',   icon: '⌕' },
+    { href: '/following',     label: 'フォロー', icon: '☆' },
+    { href: '/notifications', label: '通知',   icon: '◈', badge: unreadCount },
   ]
 
   return (

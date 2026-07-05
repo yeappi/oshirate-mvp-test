@@ -281,15 +281,7 @@ function GiftInner({
 // ============================================================
 function GiftCard({ children, gold }: { children: React.ReactNode; gold?: boolean }) {
   return (
-    <div style={{
-      borderRadius: 2,
-      background: gold
-        ? 'linear-gradient(155deg, rgba(255,248,220,0.7), rgba(255,215,0,0.08))'
-        : 'rgba(255,255,255,0.5)',
-      outline: `1px solid ${gold ? 'rgba(180,140,0,0.35)' : 'var(--hair)'}`,
-      outlineOffset: -1,
-      padding: '15px 18px 18px',
-    }}>
+    <div className={`present-box${gold ? ' gold' : ''}`}>
       {children}
     </div>
   )
@@ -316,25 +308,12 @@ function GiftOption({ onClick, disabled, gold }: { onClick: () => void; disabled
     <button
       onClick={onClick}
       disabled={disabled}
-      style={{
-        position: 'relative',
-        aspectRatio: '1',
-        border: `1px solid ${gold ? 'rgba(180,140,0,0.5)' : 'var(--hair-strong)'}`,
-        background: gold
-          ? 'linear-gradient(155deg, rgba(255,248,220,0.6), rgba(255,215,0,0.15))'
-          : 'linear-gradient(155deg, rgba(255,255,255,0.5), rgba(111,255,224,0.08))',
-        borderRadius: 2,
-        cursor: disabled ? 'wait' : 'pointer',
-        display: 'grid',
-        placeItems: 'center',
-        fontFamily: 'Orbitron, sans-serif',
-        fontSize: 22,
-        color: gold ? 'rgba(140,100,0,0.6)' : 'var(--ink-faint)',
-        transition: 'opacity 0.1s',
-        opacity: disabled ? 0.5 : 1,
-      }}
+      className={`present-card-back${gold ? ' gold' : ''}`}
+      style={{ opacity: disabled ? 0.55 : 1, cursor: disabled ? 'wait' : 'pointer' }}
     >
-      ✦
+      <span className="present-card-corner">OSHI</span>
+      <span className="present-card-mark">推</span>
+      <span className="present-card-line" />
     </button>
   )
 }

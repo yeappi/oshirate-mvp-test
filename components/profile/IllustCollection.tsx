@@ -9,6 +9,8 @@ type Props = {
   userPoints: number
   targetUserId: string
   canEditFavorites?: boolean
+  showFavorites?: boolean
+  showCollection?: boolean
   onPurchaseSuccess?: (illustrationId: string, price: number) => void
 }
 
@@ -19,6 +21,8 @@ export default function IllustCollection({
   userPoints,
   targetUserId,
   canEditFavorites = true,
+  showFavorites = true,
+  showCollection = true,
   onPurchaseSuccess,
 }: Props) {
   const [items, setItems] = useState(cards)
@@ -118,7 +122,8 @@ export default function IllustCollection({
 
   return (
     <>
-      <section className="collection-card" style={{ marginBottom: 12 }}>
+      {showFavorites && (
+      <section className="collection-card favorite-section" style={{ marginBottom: showCollection ? 12 : 0 }}>
         <div className="collection-head">
           <div className="collection-title">FAVORITE ILLUST</div>
           <div className="collection-count">{favorites.length}/{FAVORITE_LIMIT}</div>
@@ -150,7 +155,9 @@ export default function IllustCollection({
           </div>
         )}
       </section>
+      )}
 
+      {showCollection && (
       <section className="collection-card">
         <div className="collection-head">
           <div className="collection-title">ILLUST COLLECTION</div>
@@ -178,6 +185,7 @@ export default function IllustCollection({
           所有済み → 高額順 → 同価格内は管理順 / 未所有も同じルール
         </div>
       </section>
+      )}
 
       {selectedCard && (
         <PurchaseModal

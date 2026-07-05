@@ -1001,3 +1001,189 @@ body {
   mask-composite: exclude;
   box-shadow: 0 0 16px rgba(111,255,224,.55);
 }
+
+/* ===== MVP Design Cleanup 1 ===== */
+.profile-bg-card {
+  padding: 12px !important;
+  border-radius: 18px !important;
+}
+.profile-inner-plate {
+  border-radius: 16px;
+  padding: 10px 12px 14px;
+  background: rgba(255, 255, 255, 0.64);
+  backdrop-filter: blur(18px) saturate(1.12);
+  -webkit-backdrop-filter: blur(18px) saturate(1.12);
+  outline: 1px solid rgba(255, 255, 255, 0.54);
+  box-shadow:
+    inset 0 0 0 1px rgba(7, 17, 14, 0.045),
+    0 18px 44px rgba(7, 17, 14, 0.08);
+}
+[data-profile-bg="neon_night"] .profile-inner-plate,
+[data-profile-bg="legend"] .profile-inner-plate {
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.62),
+    0 18px 48px rgba(7, 17, 14, 0.16);
+}
+.profile-bg-card::after {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.34), transparent 42%),
+    linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.28));
+}
+
+/* Tags are now neutral profile labels. */
+.tag-chip,
+.tag-chip.rare,
+.tag-chip.high,
+.tag-chip.mid,
+.tag-chip.low {
+  border-radius: 999px !important;
+  background: rgba(7, 17, 14, 0.055) !important;
+  color: rgba(7, 17, 14, 0.58) !important;
+  border: 1px solid rgba(7, 17, 14, 0.13) !important;
+  box-shadow: none !important;
+}
+
+/* Keep the edit links compact after removing the temporary top nav. */
+.nav-btn a {
+  padding: 1px 0;
+}
+
+.points-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--hair);
+  margin-top: 14px;
+}
+.points-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+}
+.points-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+}
+.points-value span {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-left: 3px;
+}
+
+/* 30-minute present: keep the behavior, make it feel like an oshirate card. */
+.present-box {
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(111,255,224,0.18), transparent 38%),
+    linear-gradient(155deg, rgba(255,255,255,0.74), rgba(246,255,251,0.58));
+  outline: 1px solid rgba(7,17,14,0.11);
+  outline-offset: -1px;
+  padding: 15px 18px 18px;
+  box-shadow: 0 14px 32px rgba(7,17,14,0.07);
+}
+.present-box.gold {
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255,214,120,0.28), transparent 38%),
+    linear-gradient(155deg, rgba(255,250,224,0.8), rgba(255,255,255,0.58));
+  outline-color: rgba(180,140,0,0.22);
+}
+.present-card-back {
+  position: relative;
+  aspect-ratio: 0.72 / 1;
+  width: 100%;
+  border: 1px solid rgba(7,17,14,0.18);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 36%, rgba(255,255,255,0.78), transparent 18%),
+    repeating-linear-gradient(135deg, rgba(7,17,14,0.045) 0 6px, transparent 6px 12px),
+    linear-gradient(160deg, rgba(111,255,224,0.22), rgba(255,255,255,0.74));
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transition: transform 120ms ease, opacity 120ms ease;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 5px rgba(255,255,255,0.42), 0 8px 18px rgba(7,17,14,0.08);
+}
+.present-card-back:not(:disabled):active {
+  transform: translateY(1px) scale(0.99);
+}
+.present-card-back.gold {
+  background:
+    radial-gradient(circle at 50% 36%, rgba(255,255,255,0.86), transparent 18%),
+    repeating-linear-gradient(135deg, rgba(180,140,0,0.065) 0 6px, transparent 6px 12px),
+    linear-gradient(160deg, rgba(255,214,120,0.42), rgba(255,255,255,0.76));
+  border-color: rgba(180,140,0,0.28);
+}
+.present-card-corner {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: rgba(7,17,14,0.38);
+}
+.present-card-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(7,17,14,0.22);
+  background: rgba(255,255,255,0.56);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: rgba(7,17,14,0.58);
+  box-shadow: 0 0 0 8px rgba(255,255,255,0.2);
+}
+.present-card-line {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
+  height: 1px;
+  background: rgba(7,17,14,0.16);
+}
+
+/* Compact level rewards: only nearby rewards are expanded by default. */
+.more-rewards {
+  margin-top: 10px;
+  border-top: 1px solid var(--hair);
+  padding-top: 10px;
+}
+.more-rewards summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: rgba(255,255,255,0.42);
+}
+.more-rewards summary::-webkit-details-marker {
+  display: none;
+}
+.more-rewards summary::after {
+  content: '+';
+  font-family: 'Orbitron', sans-serif;
+}
+.more-rewards[open] summary::after {
+  content: '–';
+}
+
+/* Design cleanup: old unused profile blocks are kept in CSS for safety, but no longer rendered. */
+.favorite-section {
+  margin-top: 14px !important;
+}
