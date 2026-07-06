@@ -49,13 +49,13 @@ export default function IllustCollection({
   const handleSuccess = (illustrationId: string, price: number) => {
     setItems((current) => current.map((item) => {
       if (item.id !== illustrationId) return item
-      const nextQuantity = (item.quantity ?? 0) + 1
-      const atMax = item.max_per_user !== null && nextQuantity >= item.max_per_user
+      const nextQuantity = item.owned ? item.quantity + 1 : 1
+      const canBuyMore = item.max_per_user === null ? true : nextQuantity < item.max_per_user
       return {
         ...item,
         owned: true,
         quantity: nextQuantity,
-        canBuyMore: item.max_per_user === null ? item.canBuyMore : !atMax,
+        canBuyMore,
       } as IllustrationCard
     }))
     setCurrentUserPoints((current) => Math.max(0, current - price))
