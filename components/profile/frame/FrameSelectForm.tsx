@@ -30,24 +30,29 @@ export default function FrameSelectForm({
   }, [frames, charisma])
 
   const handleSelect = async (frame: AvatarFrame) => {
-    if (!isFrameUnlocked(frame, charisma, itemUnlockedIds)) return
+    if (savingId || !isFrameUnlocked(frame, charisma, itemUnlockedIds)) return
 
     setSavingId(frame.id)
     setMessage(null)
 
-    const res = await fetch('/api/profile/frame', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ frameId: frame.id }),
-    })
-    const json = await res.json()
-    setSavingId(null)
+    try {
+      const res = await fetch('/api/profile/frame', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ frameId: frame.id }),
+      })
+      const json = await res.json()
 
-    if (json.ok) {
-      setSelectedId(frame.id)
-      setMessage('✓ フレームを保存しました')
-    } else {
-      setMessage(`✗ ${json.error ?? '保存に失敗しました'}`)
+      if (json.ok) {
+        setSelectedId(frame.id)
+        setMessage('✓ フレームを保存しました')
+      } else {
+        setMessage(`✗ ${json.error ?? '保存に失敗しました'}`)
+      }
+    } catch {
+      setMessage('✗ 保存に失敗しました。通信状態を確認してください')
+    } finally {
+      setSavingId(null)
     }
   }
 
@@ -104,7 +109,7 @@ export default function FrameSelectForm({
                 background: selected ? 'rgba(111,255,224,0.09)' : 'rgba(255,255,255,0.38)',
                 color: 'var(--ink)',
                 opacity: unlocked ? 1 : 0.42,
-                cursor: unlocked && savingId === null ? 'pointer' : 'not-allowed',
+                cursor: savingId ? 'wait' : unlocked ? 'pointer' : 'not-allowed',
                 textAlign: 'left',
               }}
             >

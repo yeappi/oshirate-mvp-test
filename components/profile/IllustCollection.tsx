@@ -26,6 +26,7 @@ export default function IllustCollection({
   onPurchaseSuccess,
 }: Props) {
   const [items, setItems] = useState(cards)
+  const [currentUserPoints, setCurrentUserPoints] = useState(userPoints)
   const [selectedCard, setSelectedCard] = useState<IllustrationCard | null>(null)
   const [favoriteStatus, setFavoriteStatus] = useState<string | null>(null)
   const [favoriteLoadingId, setFavoriteLoadingId] = useState<string | null>(null)
@@ -46,7 +47,18 @@ export default function IllustCollection({
   )
 
   const handleSuccess = (illustrationId: string, price: number) => {
-    setSelectedCard(null)
+    setItems((current) => current.map((item) => {
+      if (item.id !== illustrationId) return item
+      const nextQuantity = (item.quantity ?? 0) + 1
+      const atMax = item.max_per_user !== null && nextQuantity >= item.max_per_user
+      return {
+        ...item,
+        owned: true,
+        quantity: nextQuantity,
+        canBuyMore: item.max_per_user === null ? item.canBuyMore : !atMax,
+      } as IllustrationCard
+    }))
+    setCurrentUserPoints((current) => Math.max(0, current - price))
     onPurchaseSuccess?.(illustrationId, price)
   }
 
@@ -168,7 +180,7 @@ export default function IllustCollection({
             <IllustPiece
               key={card.id}
               card={card}
-              userPoints={userPoints}
+              userPoints={currentUserPoints}
               onClick={() => setSelectedCard(card)}
               onFavoriteToggle={() => toggleFavorite(card)}
               favoriteBusy={favoriteLoadingId === card.id}
@@ -190,7 +202,7 @@ export default function IllustCollection({
       {selectedCard && (
         <PurchaseModal
           card={selectedCard}
-          userPoints={userPoints}
+          userPoints={currentUserPoints}
           targetUserId={targetUserId}
           onClose={() => setSelectedCard(null)}
           onSuccess={handleSuccess}

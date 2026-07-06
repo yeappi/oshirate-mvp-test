@@ -147,6 +147,7 @@ export default function ProfileEditForm({
   }
 
   const handleSave = async () => {
+    if (loading || imgStatus === 'compressing') return
     setLoading(true)
     setResult(null)
     setSaved(false)
@@ -183,20 +184,25 @@ export default function ProfileEditForm({
     const body: Record<string, string> = { name, profile_comment: comment }
     if (uploadedUrl) body.avatar_url = uploadedUrl
 
-    const res = await fetch('/api/profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-    const json = await res.json()
-    setLoading(false)
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const json = await res.json()
 
-    if (json.ok) {
-      setResult('✓ 保存しました')
-      setSaved(true)
-      setPendingBlob(null)
-    } else {
-      setResult(`✗ ${json.error}`)
+      if (json.ok) {
+        setResult('✓ 保存しました')
+        setSaved(true)
+        setPendingBlob(null)
+      } else {
+        setResult(`✗ ${json.error}`)
+      }
+    } catch {
+      setResult('✗ 保存に失敗しました。通信状態を確認してもう一度お試しください')
+    } finally {
+      setLoading(false)
     }
   }
 

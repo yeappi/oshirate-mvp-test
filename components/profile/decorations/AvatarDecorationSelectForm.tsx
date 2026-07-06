@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Avatar from '@/components/profile/Avatar'
@@ -69,11 +69,13 @@ function OptionCard({
   lv,
   selected,
   onSelect,
+  disabled,
 }: {
   asset: AvatarDecorationAsset
   lv: number
   selected: boolean
   onSelect: () => void
+  disabled?: boolean
 }) {
   const unlocked = isAvatarDecorationUnlocked(asset, lv)
 
@@ -82,7 +84,7 @@ function OptionCard({
       type="button"
       className={`avatar-decoration-option${selected ? ' selected' : ''}${unlocked ? '' : ' locked'}`}
       onClick={onSelect}
-      disabled={!unlocked}
+      disabled={!unlocked || disabled}
     >
       <span className="avatar-decoration-thumb">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -113,7 +115,7 @@ export default function AvatarDecorationSelectForm({
   const [crown, setCrown] = useState(normalizeInitial(initialCrown))
   const [frontFx, setFrontFx] = useState(normalizeInitial(initialFrontFx))
   const [message, setMessage] = useState('')
-  const [isPending, startTransition] = useTransition()
+  const [saving, setSaving] = useState(false)
 
   const selectedAssets = useMemo(() => {
     const selectedWing = wing === AUTO_DECORATION_VALUE
@@ -133,7 +135,9 @@ export default function AvatarDecorationSelectForm({
   const setters = { wing: setWing, crown: setCrown, frontFx: setFrontFx }
 
   async function handleSave() {
-    setMessage('')
+    if (saving) return
+    setSaving(true)
+    setMessage('保存中...')
 
     try {
       const res = await fetch('/api/profile/avatar-decoration', {
@@ -150,9 +154,11 @@ export default function AvatarDecorationSelectForm({
       if (!res.ok) throw new Error(json.error ?? '保存に失敗しました')
 
       setMessage('✓ 装飾を保存しました')
-      startTransition(() => router.refresh())
+      router.refresh()
     } catch (e) {
       setMessage(e instanceof Error ? e.message : '保存に失敗しました')
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -195,7 +201,8 @@ export default function AvatarDecorationSelectForm({
               <button
                 type="button"
                 className={`avatar-decoration-option special${value === AUTO_DECORATION_VALUE ? ' selected' : ''}`}
-                onClick={() => setValue(AUTO_DECORATION_VALUE)}
+                onClick={() => { if (!saving) setValue(AUTO_DECORATION_VALUE) }}
+                disabled={saving}
               >
                 <span className="avatar-decoration-thumb auto">AUTO</span>
                 <span className="avatar-decoration-option-body">
@@ -212,7 +219,8 @@ export default function AvatarDecorationSelectForm({
               <button
                 type="button"
                 className={`avatar-decoration-option special${value === NONE_DECORATION_VALUE ? ' selected' : ''}`}
-                onClick={() => setValue(NONE_DECORATION_VALUE)}
+                onClick={() => { if (!saving) setValue(NONE_DECORATION_VALUE) }}
+                disabled={saving}
               >
                 <span className="avatar-decoration-thumb none">OFF</span>
                 <span className="avatar-decoration-option-body">
@@ -229,6 +237,7 @@ export default function AvatarDecorationSelectForm({
                   lv={lv}
                   selected={currentAsset?.id === asset.id}
                   onSelect={() => setValue(asset.id)}
+                  disabled={saving}
                 />
               ))}
             </div>
@@ -237,8 +246,8 @@ export default function AvatarDecorationSelectForm({
       })}
 
       <div className="avatar-decoration-actions">
-        <button type="button" onClick={handleSave} disabled={isPending}>
-          {isPending ? '保存中...' : 'この組み合わせで保存'}
+        <button type="button" onClick={handleSave} disabled={saving}>
+          {saving ? '保存中...' : 'この組み合わせで保存'}
         </button>
         <Link href="/profile/edit">プロフィール編集へ戻る</Link>
       </div>

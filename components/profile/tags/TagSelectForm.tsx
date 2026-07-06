@@ -32,6 +32,7 @@ export default function TagSelectForm({ tags }: Props) {
   const [result, setResult] = useState<string | null>(null)
 
   const toggleTag = (tagId: string) => {
+    if (loading) return
     setResult(null)
     setSelectedIds((current) => {
       if (current.includes(tagId)) return current.filter((id) => id !== tagId)
@@ -44,21 +45,27 @@ export default function TagSelectForm({ tags }: Props) {
   }
 
   const save = async () => {
+    if (loading) return
     setLoading(true)
     setResult(null)
 
-    const res = await fetch('/api/profile/tags', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tagIds: selectedIds }),
-    })
-    const json = await res.json()
-    setLoading(false)
+    try {
+      const res = await fetch('/api/profile/tags', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tagIds: selectedIds }),
+      })
+      const json = await res.json()
 
-    if (json.ok) {
-      setResult('✓ 保存しました')
-    } else {
-      setResult(`✗ ${json.error ?? '保存に失敗しました'}`)
+      if (json.ok) {
+        setResult('✓ 保存しました')
+      } else {
+        setResult(`✗ ${json.error ?? '保存に失敗しました'}`)
+      }
+    } catch {
+      setResult('✗ 保存に失敗しました。通信状態を確認してください')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -103,6 +110,7 @@ export default function TagSelectForm({ tags }: Props) {
                 key={tag.id}
                 type="button"
                 onClick={() => toggleTag(tag.id)}
+                disabled={loading}
                 style={{
                   width: '100%',
                   border: selected ? '1px solid var(--mint)' : '1px solid var(--hair-strong)',
@@ -111,7 +119,7 @@ export default function TagSelectForm({ tags }: Props) {
                   color: 'var(--ink)',
                   padding: '12px 10px',
                   textAlign: 'left',
-                  cursor: 'pointer',
+                  cursor: loading ? 'wait' : 'pointer',
                   display: 'flex',
                   justifyContent: 'space-between',
                   gap: 10,

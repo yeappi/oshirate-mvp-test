@@ -26,24 +26,29 @@ export default function BackgroundSelectForm({
   const [message, setMessage] = useState<string | null>(null)
 
   const handleSelect = async (background: ProfileBackground) => {
-    if (!isBackgroundUnlocked(background, totalSpentPoints, itemUnlockedIds)) return
+    if (savingId || !isBackgroundUnlocked(background, totalSpentPoints, itemUnlockedIds)) return
 
     setSavingId(background.id)
     setMessage(null)
 
-    const res = await fetch('/api/profile/background', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ backgroundId: background.id }),
-    })
-    const json = await res.json()
-    setSavingId(null)
+    try {
+      const res = await fetch('/api/profile/background', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ backgroundId: background.id }),
+      })
+      const json = await res.json()
 
-    if (json.ok) {
-      setSelectedId(background.id)
-      setMessage('✓ 背景を保存しました')
-    } else {
-      setMessage(`✗ ${json.error ?? '保存に失敗しました'}`)
+      if (json.ok) {
+        setSelectedId(background.id)
+        setMessage('✓ 背景を保存しました')
+      } else {
+        setMessage(`✗ ${json.error ?? '保存に失敗しました'}`)
+      }
+    } catch {
+      setMessage('✗ 保存に失敗しました。通信状態を確認してください')
+    } finally {
+      setSavingId(null)
     }
   }
 
@@ -77,7 +82,7 @@ export default function BackgroundSelectForm({
                 background: selected ? 'rgba(111,255,224,0.09)' : 'rgba(255,255,255,0.38)',
                 color: 'var(--ink)',
                 opacity: unlocked ? 1 : 0.42,
-                cursor: unlocked && savingId === null ? 'pointer' : 'not-allowed',
+                cursor: savingId ? 'wait' : unlocked ? 'pointer' : 'not-allowed',
                 textAlign: 'left',
               }}
             >

@@ -55,7 +55,7 @@ export default function PurchaseModal({
   const alreadyAtLimit = card.owned && card.max_per_user !== null && !card.canBuyMore
 
   const handlePurchase = async () => {
-    if (!canAfford || alreadyAtLimit || requiresTicket) return
+    if (phase === 'loading' || !canAfford || alreadyAtLimit || requiresTicket) return
     setPhase('loading')
 
     try {
@@ -276,8 +276,8 @@ function ConfirmView({
           : !canAfford ? 'ポイント不足'
           : '応援する'}
       </ModalButton>
-      <ModalButton onClick={onClose} variant="ghost" style={{ marginTop: 8 }}>
-        キャンセル
+      <ModalButton onClick={onClose} disabled={loading} variant="ghost" style={{ marginTop: 8 }}>
+        {loading ? '処理中...' : 'キャンセル'}
       </ModalButton>
     </>
   )
@@ -513,10 +513,10 @@ function ModalButton({
   }
   if (variant === 'ghost') {
     return (
-      <button onClick={onClick} style={{
+      <button onClick={onClick} disabled={disabled} style={{
         ...base,
         background: 'transparent', color: 'var(--ink-faint)',
-        borderColor: 'var(--hair-strong)',
+        borderColor: 'var(--hair-strong)', opacity: disabled ? 0.45 : 1,
       }}>
         {children}
       </button>

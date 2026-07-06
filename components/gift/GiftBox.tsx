@@ -210,6 +210,7 @@ function GiftInner({
               key={i}
               onClick={() => onSelect(i)}
               disabled={submitting}
+              submitting={submitting}
               gold={isGold}
             />
           ))}
@@ -303,7 +304,7 @@ function SectionLabel({ children, gold }: { children: React.ReactNode; gold?: bo
   )
 }
 
-function GiftOption({ onClick, disabled, gold }: { onClick: () => void; disabled: boolean; gold: boolean }) {
+function GiftOption({ onClick, disabled, submitting, gold }: { onClick: () => void; disabled: boolean; submitting: boolean; gold: boolean }) {
   return (
     <button
       onClick={onClick}
@@ -312,7 +313,7 @@ function GiftOption({ onClick, disabled, gold }: { onClick: () => void; disabled
       style={{ opacity: disabled ? 0.55 : 1, cursor: disabled ? 'wait' : 'pointer' }}
     >
       <span className="present-card-corner">OSHI</span>
-      <span className="present-card-mark">推</span>
+      <span className="present-card-mark">{submitting ? '…' : '推'}</span>
       <span className="present-card-line" />
     </button>
   )

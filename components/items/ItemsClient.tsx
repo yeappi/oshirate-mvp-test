@@ -97,7 +97,7 @@ export default function ItemsClient({ initialItems, candidates }: Props) {
 
       {selected && (
         <div>
-          <div onClick={() => setSelected(null)} style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(7,17,14,0.55)' }} />
+          <div onClick={() => { if (!busyId) setSelected(null) }} style={{ position: 'fixed', inset: 0, zIndex: 100, background: 'rgba(7,17,14,0.55)' }} />
           <div style={{
             position: 'fixed', left: '50%', bottom: 0, transform: 'translateX(-50%)',
             width: 'min(100%, 420px)', zIndex: 101, background: 'var(--paper)',
@@ -158,9 +158,9 @@ export default function ItemsClient({ initialItems, candidates }: Props) {
             >
               {busyId === selected.userItemId ? 'USING...' : '使う'}
             </button>
-            <button type="button" onClick={() => setSelected(null)} style={{
+            <button type="button" onClick={() => setSelected(null)} disabled={Boolean(busyId)} style={{
               marginTop: 8, width: '100%', height: 42, border: '1px solid var(--hair-strong)', background: 'transparent', color: 'var(--ink-faint)',
-              fontWeight: 800, letterSpacing: '0.08em',
+              fontWeight: 800, letterSpacing: '0.08em', opacity: busyId ? 0.45 : 1, cursor: busyId ? 'wait' : 'pointer',
             }}>
               キャンセル
             </button>
@@ -203,7 +203,7 @@ function ItemGroup({
             width: '100%', display: 'grid', gridTemplateColumns: '56px 1fr auto', gap: 12, alignItems: 'center',
             border: item.itemType === 'ILLUST_TICKET' ? '1px solid rgba(204,152,45,0.65)' : '1px solid var(--hair-strong)',
             background: item.itemType === 'ILLUST_TICKET' ? 'linear-gradient(135deg, rgba(255,246,210,0.82), rgba(255,255,255,0.72))' : 'rgba(255,255,255,0.62)',
-            padding: 10, textAlign: 'left', opacity: muted ? 0.55 : 1, cursor: item.status === 'available' ? 'pointer' : 'default',
+            padding: 10, textAlign: 'left', opacity: muted ? 0.55 : busyId ? 0.72 : 1, cursor: busyId ? 'wait' : item.status === 'available' ? 'pointer' : 'default',
           }}
         >
           <span style={{
