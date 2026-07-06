@@ -143,8 +143,13 @@ export default function ProfileCard({
             <CommentDecoration decoration={activeDecorations.comment_decoration} />
             {isLongComment ? (
               <details className="profile-comment-details">
-                <summary>もっと見る</summary>
-                <p style={{ position: 'relative', zIndex: 1 }}>
+                <summary>
+                  <span className="profile-comment-preview">
+                    {renderCommentText()}
+                  </span>
+                  <span className="profile-comment-more">もっと見る</span>
+                </summary>
+                <p className="profile-comment-full" style={{ position: 'relative', zIndex: 1 }}>
                   {renderCommentText()}
                 </p>
               </details>

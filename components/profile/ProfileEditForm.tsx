@@ -299,7 +299,7 @@ export default function ProfileEditForm({
           placeholder="プロフィールに表示されるコメントを入力..."
           maxLength={140}
           rows={3}
-          style={{ ...inputStyle, height: 'auto', resize: 'vertical', padding: '8px 10px' }}
+          style={{ ...inputStyle, height: 'auto', minHeight: 86, resize: 'vertical', padding: '10px 12px', lineHeight: 1.45 }}
         />
         <div style={{ fontSize: 9, color: 'var(--ink-faint)', marginTop: 4, textAlign: 'right' }}>
           {comment.length}/140
@@ -402,7 +402,7 @@ const labelStyle: CSSProperties = {
 const inputStyle: CSSProperties = {
   width: '100%', height: 36,
   border: '1px solid var(--hair-strong)', borderRadius: 2,
-  padding: '0 10px', fontSize: 12,
+  padding: '0 10px', fontSize: 16,
   fontFamily: "'Noto Sans JP', sans-serif",
   color: 'var(--ink)', background: 'rgba(255,255,255,0.7)',
   outline: 'none', boxSizing: 'border-box',
