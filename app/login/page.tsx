@@ -1,13 +1,15 @@
 import { redirect } from 'next/navigation'
 import { getUser } from '@/lib/auth'
 import LoginButton from '@/components/auth/LoginButton'
+import { LoginGuideAutoOpen } from '@/components/guide/GuideModal'
 
 export default async function LoginPage() {
   const user = await getUser()
   if (user) redirect('/')
 
   return (
-    <main className="app" style={{ display: 'flex', minHeight: '100vh', alignItems: 'center' }}>
+    <main className="app" style={{ position: 'relative', display: 'flex', minHeight: '100vh', alignItems: 'center' }}>
+      <LoginGuideAutoOpen />
       <div className="card" style={{ width: '100%', textAlign: 'center', padding: '40px 24px' }}>
         <div className="logo" style={{ fontSize: '11px', marginBottom: '36px' }}>
           推されーと

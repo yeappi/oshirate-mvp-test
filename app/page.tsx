@@ -13,6 +13,7 @@ import { getCharismaRanking } from '@/lib/ranking'
 import ProfileCard from '@/components/profile/ProfileCard'
 import GiftBox from '@/components/gift/GiftBox'
 import BottomNav from '@/components/layout/BottomNav'
+import { GuideButton } from '@/components/guide/GuideModal'
 
 export default async function HomePage() {
   const user = await getUser()
@@ -65,6 +66,7 @@ export default async function HomePage() {
 
   return (
     <div className="profile-theme-page" data-profile-bg={selectedBackground?.css_key ?? 'starter'}>
+      <GuideButton kind="main" className="page-guide-button" />
       <div style={{ paddingBottom: 64 }}>
         <ProfileCard
           profile={mergedProfile}
