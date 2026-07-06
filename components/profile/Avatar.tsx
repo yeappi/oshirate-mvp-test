@@ -13,9 +13,10 @@ type Props = {
   avatarAround?: Decoration
   avatarFrame?: Decoration
   cssFrameKey?: string | null
+  avatarEffectKey?: string | null
 }
 
-export default function Avatar({ photoUrl, name, avatarAround, avatarFrame, cssFrameKey }: Props) {
+export default function Avatar({ photoUrl, name, avatarAround, avatarFrame, cssFrameKey, avatarEffectKey }: Props) {
   const [imgError, setImgError] = useState(false)
 
   // photoUrl が変わったらエラー状態をリセット
@@ -27,7 +28,10 @@ export default function Avatar({ photoUrl, name, avatarAround, avatarFrame, cssF
   const showImg = photoUrl && !imgError
 
   return (
-    <div className="avatar-wrap" data-avatar-frame={cssFrameKey ?? 'black'}>
+    <div className="avatar-wrap" data-avatar-frame={cssFrameKey ?? 'black'} data-avatar-effect={avatarEffectKey ?? 'none'}>
+      <div className="avatar-effect-base" />
+      <div className="avatar-effect-flame" />
+
       {/* avatar_around スロット */}
       <AvatarAroundDecoration decoration={avatarAround} />
 

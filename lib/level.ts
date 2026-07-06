@@ -78,6 +78,39 @@ export function getLevelTier(lv: number): LevelTier {
 
 export type AvatarAuraTier = 0 | 1 | 2 | 3 | 4 | 5 | 6
 
+export type AvatarEffectKey =
+  | 'none'
+  | 'soft_glow'
+  | 'blue_sign'
+  | 'red_heat'
+  | 'wavering_edge'
+  | 'heartbeat_ring'
+  | 'aura_line'
+  | 'live_glow'
+  | 'flame_blue'
+  | 'flame_green'
+  | 'flame_red'
+  | 'flame_gold'
+  | 'flame_rainbow'
+  | 'flame_legend'
+
+export function getAvatarEffectKey(lv: number): AvatarEffectKey {
+  if (lv >= 100) return 'flame_legend'
+  if (lv >= 98) return 'flame_rainbow'
+  if (lv >= 96) return 'flame_gold'
+  if (lv >= 94) return 'flame_red'
+  if (lv >= 92) return 'flame_green'
+  if (lv >= 90) return 'flame_blue'
+  if (lv >= 60) return 'live_glow'
+  if (lv >= 55) return 'aura_line'
+  if (lv >= 50) return 'heartbeat_ring'
+  if (lv >= 45) return 'wavering_edge'
+  if (lv >= 15) return 'red_heat'
+  if (lv >= 10) return 'blue_sign'
+  if (lv >= 5) return 'soft_glow'
+  return 'none'
+}
+
 export function getAvatarAuraTier(lv: number): AvatarAuraTier {
   if (lv >= 100) return 6
   if (lv >= 80) return 5
@@ -116,6 +149,7 @@ export type UserLevel = {
   tierName: string
   tier: LevelTier
   avatarAuraTier: AvatarAuraTier
+  avatarEffectKey: AvatarEffectKey
   currentRequired: number
   nextRequired: number | null
   progress: number
@@ -149,6 +183,7 @@ export function getUserLevel(charisma: number): UserLevel {
     tierName: getLevelTierName(lv),
     tier: getLevelTier(lv),
     avatarAuraTier: getAvatarAuraTier(lv),
+    avatarEffectKey: getAvatarEffectKey(lv),
     currentRequired,
     nextRequired,
     progress,

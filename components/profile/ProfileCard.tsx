@@ -105,6 +105,7 @@ export default function ProfileCard({
               avatarAround={activeDecorations.avatar_around}
               avatarFrame={activeDecorations.avatar_frame}
               cssFrameKey={selectedAvatarFrame?.css_key ?? 'black'}
+              avatarEffectKey={userLevel?.avatarEffectKey ?? 'none'}
             />
 
             <AboveNameDecoration decoration={activeDecorations.above_name} />
