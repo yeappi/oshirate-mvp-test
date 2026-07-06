@@ -89,11 +89,12 @@ Supabase Dashboard →「SQL Editor」を開き、以下のファイルの内容
 | 16 | `supabase/migration_phase4n_public_profile_illustrations.sql` | 公開プロフィールのイラスト所有修正 |
 | 17 | `supabase/migration_phase4r_items.sql` | もちもの/アイテム券 |
 | 18 | `supabase/migration_phase4s_hardening.sql` | ギフト/購入/ランキング安定化 |
-| 19 | `supabase/storage_avatars_policy.sql` | アバターStorage policy |
-| 20 | `supabase/storage_illustrations_policy.sql` | イラストStorage policy |
-| 21 | `supabase/seed_illustrations.sql` | 初期イラストデータ |
+| 19 | `supabase/migration_phase4zd_starter_rewards.sql` | 初期配布/タグ6個/使用pt帯マーク |
+| 20 | `supabase/storage_avatars_policy.sql` | アバターStorage policy |
+| 21 | `supabase/storage_illustrations_policy.sql` | イラストStorage policy |
+| 22 | `supabase/seed_illustrations.sql` | 初期イラストデータ |
 
-> 既存環境に追加適用する場合は、まだ実行していない migration だけを上から実行してください。最新の `purchase_illustration` RPC は `migration_phase4s_hardening.sql` が最終形です。
+> 既存環境に追加適用する場合は、まだ実行していない migration だけを上から実行してください。最新の `purchase_illustration` RPC は `migration_phase4s_hardening.sql` が最終形です。初期配布系は `migration_phase4zd_starter_rewards.sql` を最後に実行してください。
 
 ### 実行方法
 

@@ -69,6 +69,7 @@ export default async function PublicProfilePage({ params }: Props) {
           userLevel={userLevel}
           selectedBackground={selectedBackground}
           selectedAvatarFrame={selectedAvatarFrame}
+          totalSpentPoints={targetProfile.total_spent_points ?? 0}
           showUserPoints={false}
           isPublicView
           editLink={<FollowButton targetUserId={targetUserId} initialFollowing={isFollowing} compact />}

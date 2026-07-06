@@ -18,7 +18,7 @@ type Props = {
   tags: OwnedTag[]
 }
 
-const MAX_TAGS = 3
+const MAX_TAGS = 6
 
 export default function TagSelectForm({ tags }: Props) {
   const initialSelected = tags

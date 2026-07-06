@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 
-const MAX_TAGS = 3
+const MAX_TAGS = 6
 
 function firstRelation(value: any) {
   return Array.isArray(value) ? value[0] : value

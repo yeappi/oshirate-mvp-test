@@ -30,6 +30,17 @@ type Props = {
   userLevel?: UserLevel
   selectedBackground?: ProfileBackground | null
   selectedAvatarFrame?: AvatarFrame | null
+  totalSpentPoints?: number
+}
+
+
+function getSpentBadge(totalSpentPoints: number) {
+  const spent = Math.max(0, Number(totalSpentPoints || 0))
+  if (spent >= 200000) return { label: 'Ⅴ', className: 'tier-5' }
+  if (spent >= 50000) return { label: 'Ⅳ', className: 'tier-4' }
+  if (spent >= 10000) return { label: 'Ⅲ', className: 'tier-3' }
+  if (spent >= 1000) return { label: 'Ⅱ', className: 'tier-2' }
+  return { label: 'Ⅰ', className: 'tier-1' }
 }
 
 export default function ProfileCard({
@@ -44,6 +55,7 @@ export default function ProfileCard({
   userLevel,
   selectedBackground,
   selectedAvatarFrame,
+  totalSpentPoints = 0,
   showUserPoints = true,
   isPublicView = false,
 }: Props) {
@@ -56,6 +68,7 @@ export default function ProfileCard({
   } = profile
 
   const commentText = comment.trim()
+  const spendBadge = getSpentBadge(totalSpentPoints)
   const commentLines = commentText ? commentText.split('\n') : []
   const isLongComment = commentText.length > 58 || commentLines.length > 2
 
@@ -104,7 +117,12 @@ export default function ProfileCard({
 
             <AboveNameDecoration decoration={activeDecorations.above_name} />
 
-            <div className="name">{name}</div>
+            <div className="name">
+              <span>{name}</span>
+              <span className={`spent-tier-badge ${spendBadge.className}`} title={`累計使用 ${totalSpentPoints.toLocaleString()}pt`}>
+                {spendBadge.label}
+              </span>
+            </div>
             <div className="id-meta tag-row">
               {tags.map((tag) => (
                 <span key={tag.label} className={`tag-chip ${tag.variant}`}>

@@ -30,7 +30,7 @@ export default async function ProfileTagsPage() {
             fontWeight: 700,
             letterSpacing: '0.04em',
           }}>
-            所持タグからプロフィールに貼るタグを最大3個まで選べます。
+            所持タグからプロフィールに貼るタグを最大6個まで選べます。
           </p>
           <TagSelectForm tags={tags} />
         </div>

@@ -76,6 +76,7 @@ export default async function HomePage() {
           userLevel={userLevel}
           selectedBackground={selectedBackground}
           selectedAvatarFrame={selectedAvatarFrame}
+          totalSpentPoints={profile?.total_spent_points ?? 0}
           activeDecorations={activeDecorations}
           giftBox={<GiftBox />}
           editLink={

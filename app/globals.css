@@ -3281,3 +3281,44 @@ body {
     font-size: 19px;
   }
 }
+
+/* ===== Phase 4ZD: starter reward foundations ===== */
+.spent-tier-badge {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  border: 1.5px solid currentColor;
+  font-family: 'Orbitron', 'Noto Sans JP', sans-serif;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  transform: translateY(-1px);
+  background: #fff;
+}
+.spent-tier-badge.tier-1 { color: #8d949a; }
+.spent-tier-badge.tier-2 { color: #1f75d6; background: rgba(31, 117, 214, 0.06); }
+.spent-tier-badge.tier-3 { color: #00895f; background: rgba(0, 137, 95, 0.07); }
+.spent-tier-badge.tier-4 { color: #c51b1b; background: rgba(197, 27, 27, 0.07); }
+.spent-tier-badge.tier-5 {
+  color: #b98600;
+  background: linear-gradient(135deg, #fff9d9, #ffffff 48%, #f4c84a);
+  border-color: #b98600;
+}
+.id-meta.tag-row {
+  max-width: 286px;
+  margin-inline: auto;
+}
+.tag-chip,
+.tag-chip.rare,
+.tag-chip.high,
+.tag-chip.mid,
+.tag-chip.low {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 18px;
+  line-height: 1;
+}
