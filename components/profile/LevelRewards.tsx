@@ -4,8 +4,8 @@ type Props = {
   currentLv: number
 }
 
-function kindLabel(kind: 'background' | 'tag'): string {
-  return kind === 'background' ? '背景' : 'タグ'
+function kindLabel(kind: 'avatar'): string {
+  return kind === 'avatar' ? '装飾' : '装飾'
 }
 
 function RewardRow({ reward, currentLv }: { reward: (typeof LEVEL_REWARDS)[number]; currentLv: number }) {
@@ -53,8 +53,8 @@ export default function LevelRewards({ currentLv }: Props) {
     <section className="level-reward-section">
       <div className="collection-card level-reward-card">
         <div className="level-reward-head">
-          <div className="level-reward-title">LV REWARDS</div>
-          <div className="level-reward-sub">次の解放</div>
+          <div className="level-reward-title">AURA REWARDS</div>
+          <div className="level-reward-sub">魅力値で解放</div>
         </div>
 
         <div className="reward-list-slim">

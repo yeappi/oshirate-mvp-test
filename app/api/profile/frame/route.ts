@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('total_spent_points')
+    .select('charisma')
     .eq('id', user.id)
     .single()
 
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
   const { data: frame } = await supabase
     .from('avatar_frames')
-    .select('id, required_spent_points, is_active')
+    .select('id, required_charisma, is_active')
     .eq('id', frameId)
     .eq('is_active', true)
     .single()
@@ -44,10 +44,10 @@ export async function POST(request: Request) {
     .eq('frame_id', frame.id)
     .maybeSingle()
 
-  const totalSpentPoints = Number(profile.total_spent_points ?? 0)
-  if (Number(frame.required_spent_points ?? 0) > totalSpentPoints && !itemUnlock) {
+  const charisma = Number(profile.charisma ?? 0)
+  if (Number(frame.required_charisma ?? 0) > charisma && !itemUnlock) {
     return NextResponse.json(
-      { error: `このフレームは累計${Number(frame.required_spent_points).toLocaleString()}pt使用で解放されます` },
+      { error: `このフレームは${Number(frame.required_charisma).toLocaleString()}魅力値で解放されます` },
       { status: 403 }
     )
   }

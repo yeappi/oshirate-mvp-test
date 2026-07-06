@@ -4,21 +4,21 @@ import { useState } from 'react'
 import Link from 'next/link'
 import type { ProfileBackground } from '@/lib/backgrounds'
 
-function isBackgroundUnlocked(background: Pick<ProfileBackground, 'id' | 'required_level'>, currentLv: number, itemUnlockedIds: string[]): boolean {
-  return currentLv >= background.required_level || itemUnlockedIds.includes(background.id)
+function isBackgroundUnlocked(background: Pick<ProfileBackground, 'id' | 'required_spent_points'>, totalSpentPoints: number, itemUnlockedIds: string[]): boolean {
+  return totalSpentPoints >= background.required_spent_points || itemUnlockedIds.includes(background.id)
 }
 
 type Props = {
   backgrounds: ProfileBackground[]
   selectedBackgroundId: string
-  currentLv: number
+  totalSpentPoints: number
   itemUnlockedIds: string[]
 }
 
 export default function BackgroundSelectForm({
   backgrounds,
   selectedBackgroundId,
-  currentLv,
+  totalSpentPoints,
   itemUnlockedIds,
 }: Props) {
   const [selectedId, setSelectedId] = useState(selectedBackgroundId)
@@ -26,7 +26,7 @@ export default function BackgroundSelectForm({
   const [message, setMessage] = useState<string | null>(null)
 
   const handleSelect = async (background: ProfileBackground) => {
-    if (!isBackgroundUnlocked(background, currentLv, itemUnlockedIds)) return
+    if (!isBackgroundUnlocked(background, totalSpentPoints, itemUnlockedIds)) return
 
     setSavingId(background.id)
     setMessage(null)
@@ -50,12 +50,12 @@ export default function BackgroundSelectForm({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div style={{ fontSize: 11, color: 'var(--ink-soft)', lineHeight: 1.7, letterSpacing: '0.04em' }}>
-        Lvが上がると選べる背景が増えます。今は仮のCSS背景です。後で素材に差し替えできます。
+        累計使用ptに応じて、選べる背景が増えます。背景は自分らしさを出すカスタム要素です。
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
         {backgrounds.map((background) => {
-          const unlocked = isBackgroundUnlocked(background, currentLv, itemUnlockedIds)
+          const unlocked = isBackgroundUnlocked(background, totalSpentPoints, itemUnlockedIds)
           const selected = selectedId === background.id
           const saving = savingId === background.id
 
@@ -105,7 +105,7 @@ export default function BackgroundSelectForm({
                   color: 'var(--ink-faint)',
                   letterSpacing: '0.06em',
                 }}>
-                  {itemUnlockedIds.includes(background.id) ? 'アイテム解放済み' : `Lv${background.required_level} 解放`}
+                  {itemUnlockedIds.includes(background.id) ? 'アイテム解放済み' : `${background.required_spent_points.toLocaleString()}pt 使用で解放`}
                 </span>
                 {background.description && (
                   <span style={{

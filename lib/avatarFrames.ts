@@ -5,6 +5,7 @@ export type AvatarFrame = {
   name: string
   css_key: string
   required_spent_points: number
+  required_charisma: number
   description: string | null
   sort_order: number
   is_active: boolean
@@ -13,10 +14,10 @@ export type AvatarFrame = {
 export const DEFAULT_AVATAR_FRAME_ID = 'black'
 
 export function isAvatarFrameUnlocked(
-  frame: Pick<AvatarFrame, 'required_spent_points'>,
-  totalSpentPoints: number
+  frame: Pick<AvatarFrame, 'required_charisma'>,
+  charisma: number
 ): boolean {
-  return Number(totalSpentPoints ?? 0) >= Number(frame.required_spent_points ?? 0)
+  return Number(charisma ?? 0) >= Number(frame.required_charisma ?? 0)
 }
 
 export async function getAvatarFrames(): Promise<AvatarFrame[]> {
@@ -25,7 +26,7 @@ export async function getAvatarFrames(): Promise<AvatarFrame[]> {
     .from('avatar_frames')
     .select('*')
     .eq('is_active', true)
-    .order('required_spent_points', { ascending: true })
+    .order('required_charisma', { ascending: true })
     .order('sort_order', { ascending: true })
 
   if (error || !data) return []
@@ -47,7 +48,7 @@ export async function getAvatarFrameById(frameId?: string | null): Promise<Avata
   return data as AvatarFrame
 }
 
-export async function getUnlockedAvatarFrames(totalSpentPoints: number): Promise<AvatarFrame[]> {
+export async function getUnlockedAvatarFrames(charisma: number): Promise<AvatarFrame[]> {
   const frames = await getAvatarFrames()
-  return frames.filter((frame) => isAvatarFrameUnlocked(frame, totalSpentPoints))
+  return frames.filter((frame) => isAvatarFrameUnlocked(frame, charisma))
 }

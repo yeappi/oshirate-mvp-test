@@ -16,7 +16,7 @@ export default async function ProfileFramePage() {
   ])
 
   const selectedFrameId = profile?.selected_avatar_frame_id ?? DEFAULT_AVATAR_FRAME_ID
-  const totalSpentPoints = Number(profile?.total_spent_points ?? 0)
+  const charisma = Number(profile?.charisma ?? 0)
 
   return (
     <main className="app">
@@ -33,7 +33,7 @@ export default async function ProfileFramePage() {
           <FrameSelectForm
             frames={frames}
             selectedFrameId={selectedFrameId}
-            totalSpentPoints={totalSpentPoints}
+            charisma={charisma}
             itemUnlockedIds={Array.from(itemUnlockedIds)}
           />
         </div>

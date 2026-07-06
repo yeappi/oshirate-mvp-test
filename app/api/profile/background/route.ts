@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
-import { getUserLevel } from '@/lib/level'
 
 export async function POST(request: Request) {
   const supabase = createSupabaseServerClient()
@@ -19,7 +18,7 @@ export async function POST(request: Request) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('charisma')
+    .select('total_spent_points')
     .eq('id', user.id)
     .single()
 
@@ -29,7 +28,7 @@ export async function POST(request: Request) {
 
   const { data: background } = await supabase
     .from('profile_backgrounds')
-    .select('id, required_level, is_active')
+    .select('id, required_spent_points, is_active')
     .eq('id', backgroundId)
     .eq('is_active', true)
     .single()
@@ -45,10 +44,10 @@ export async function POST(request: Request) {
     .eq('background_id', background.id)
     .maybeSingle()
 
-  const userLevel = getUserLevel(Number(profile.charisma ?? 0))
-  if (background.required_level > userLevel.lv && !itemUnlock) {
+  const totalSpentPoints = Number(profile.total_spent_points ?? 0)
+  if (Number(background.required_spent_points ?? 0) > totalSpentPoints && !itemUnlock) {
     return NextResponse.json(
-      { error: `この背景はLv${background.required_level}で解放されます` },
+      { error: `この背景は累計${Number(background.required_spent_points).toLocaleString()}pt使用で解放されます` },
       { status: 403 }
     )
   }

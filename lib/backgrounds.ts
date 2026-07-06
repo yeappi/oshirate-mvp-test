@@ -7,6 +7,7 @@ export type ProfileBackground = {
   css_key: string
   image_url: string | null
   required_level: number
+  required_spent_points: number
   sort_order: number
   is_active: boolean
 }
@@ -19,6 +20,7 @@ export async function getProfileBackgrounds(): Promise<ProfileBackground[]> {
     .from('profile_backgrounds')
     .select('*')
     .eq('is_active', true)
+    .order('required_spent_points', { ascending: true })
     .order('sort_order', { ascending: true })
 
   if (error || !data) return []
@@ -42,8 +44,8 @@ export async function getProfileBackgroundById(
 }
 
 export function isBackgroundUnlocked(
-  background: Pick<ProfileBackground, 'required_level'>,
-  currentLv: number
+  background: Pick<ProfileBackground, 'required_spent_points'>,
+  totalSpentPoints: number
 ): boolean {
-  return currentLv >= background.required_level
+  return Number(totalSpentPoints ?? 0) >= Number(background.required_spent_points ?? 0)
 }

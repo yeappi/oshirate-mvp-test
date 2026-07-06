@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getUser, getProfile } from '@/lib/auth'
-import { getUserLevel } from '@/lib/level'
 import { DEFAULT_BACKGROUND_ID, getProfileBackgrounds } from '@/lib/backgrounds'
 import { getUserUnlockedBackgroundIds } from '@/lib/items'
 import BackgroundSelectForm from '@/components/profile/background/BackgroundSelectForm'
@@ -16,8 +15,8 @@ export default async function ProfileBackgroundPage() {
     getUserUnlockedBackgroundIds(user.id),
   ])
 
-  const userLevel = getUserLevel(profile?.charisma ?? 0)
   const selectedBackgroundId = profile?.selected_background_id ?? DEFAULT_BACKGROUND_ID
+  const totalSpentPoints = Number(profile?.total_spent_points ?? 0)
 
   return (
     <main className="app">
@@ -41,17 +40,17 @@ export default async function ProfileBackgroundPage() {
             alignItems: 'baseline',
           }}>
             <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--ink-soft)', letterSpacing: '0.1em' }}>
-              CURRENT LV
+累計使用PT
             </span>
             <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 18, fontWeight: 800 }}>
-              Lv{userLevel.lv}
+{totalSpentPoints.toLocaleString()}pt
             </span>
           </div>
 
           <BackgroundSelectForm
             backgrounds={backgrounds}
             selectedBackgroundId={selectedBackgroundId}
-            currentLv={userLevel.lv}
+            totalSpentPoints={totalSpentPoints}
             itemUnlockedIds={Array.from(itemUnlockedIds)}
           />
         </div>

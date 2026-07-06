@@ -5,6 +5,7 @@ import type { ActiveDecorations } from '@/lib/decorationTypes'
 import type { UserLevel } from '@/lib/level'
 import type { ProfileBackground } from '@/lib/backgrounds'
 import type { AvatarFrame } from '@/lib/avatarFrames'
+import { getSpentTier } from '@/lib/spentTier'
 import Avatar from './Avatar'
 import StatsRow from './StatsRow'
 import LevelBadge from './LevelBadge'
@@ -34,15 +35,6 @@ type Props = {
 }
 
 
-function getSpentBadge(totalSpentPoints: number) {
-  const spent = Math.max(0, Number(totalSpentPoints || 0))
-  if (spent >= 200000) return { label: 'Ⅴ', className: 'tier-5' }
-  if (spent >= 50000) return { label: 'Ⅳ', className: 'tier-4' }
-  if (spent >= 10000) return { label: 'Ⅲ', className: 'tier-3' }
-  if (spent >= 1000) return { label: 'Ⅱ', className: 'tier-2' }
-  return { label: 'Ⅰ', className: 'tier-1' }
-}
-
 export default function ProfileCard({
   profile,
   cards,
@@ -68,7 +60,7 @@ export default function ProfileCard({
   } = profile
 
   const commentText = comment.trim()
-  const spendBadge = getSpentBadge(totalSpentPoints)
+  const spendBadge = getSpentTier(totalSpentPoints)
   const commentLines = commentText ? commentText.split('\n') : []
   const isLongComment = commentText.length > 58 || commentLines.length > 2
 
@@ -120,7 +112,7 @@ export default function ProfileCard({
             <div className="name">
               <span>{name}</span>
               <span className={`spent-tier-badge ${spendBadge.className}`} title={`累計使用 ${totalSpentPoints.toLocaleString()}pt`}>
-                {spendBadge.label}
+                {spendBadge.roman}
               </span>
             </div>
             <div className="id-meta tag-row">

@@ -4,21 +4,21 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import type { AvatarFrame } from '@/lib/avatarFrames'
 
-function isFrameUnlocked(frame: Pick<AvatarFrame, 'id' | 'required_spent_points'>, totalSpentPoints: number, itemUnlockedIds: string[]): boolean {
-  return totalSpentPoints >= frame.required_spent_points || itemUnlockedIds.includes(frame.id)
+function isFrameUnlocked(frame: Pick<AvatarFrame, 'id' | 'required_charisma'>, charisma: number, itemUnlockedIds: string[]): boolean {
+  return charisma >= frame.required_charisma || itemUnlockedIds.includes(frame.id)
 }
 
 type Props = {
   frames: AvatarFrame[]
   selectedFrameId: string
-  totalSpentPoints: number
+  charisma: number
   itemUnlockedIds: string[]
 }
 
 export default function FrameSelectForm({
   frames,
   selectedFrameId,
-  totalSpentPoints,
+  charisma,
   itemUnlockedIds,
 }: Props) {
   const [selectedId, setSelectedId] = useState(selectedFrameId)
@@ -26,11 +26,11 @@ export default function FrameSelectForm({
   const [message, setMessage] = useState<string | null>(null)
 
   const nextFrame = useMemo(() => {
-    return frames.find((frame) => frame.required_spent_points > totalSpentPoints) ?? null
-  }, [frames, totalSpentPoints])
+    return frames.find((frame) => frame.required_charisma > charisma) ?? null
+  }, [frames, charisma])
 
   const handleSelect = async (frame: AvatarFrame) => {
-    if (!isFrameUnlocked(frame, totalSpentPoints, itemUnlockedIds)) return
+    if (!isFrameUnlocked(frame, charisma, itemUnlockedIds)) return
 
     setSavingId(frame.id)
     setMessage(null)
@@ -54,8 +54,8 @@ export default function FrameSelectForm({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div style={{ fontSize: 11, color: 'var(--ink-soft)', lineHeight: 1.7, letterSpacing: '0.04em' }}>
-        イラスト購入で使った累計ptに応じて、アイコンフレームが解放されます。
-        所持ptではなく「使用したpt」の合計です。
+        魅力値に応じて、アイコンフレームが解放されます。
+        フレームは「推されているオーラ」の土台になります。
       </div>
 
       <div style={{
@@ -68,21 +68,21 @@ export default function FrameSelectForm({
         alignItems: 'baseline',
       }}>
         <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--ink-soft)', letterSpacing: '0.1em' }}>
-          累計使用PT
+          魅力値
         </span>
         <span style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 18, fontWeight: 800 }}>
-          {totalSpentPoints.toLocaleString()}pt
+          {charisma.toLocaleString()}
         </span>
         {nextFrame && (
           <span style={{ gridColumn: '1 / -1', fontSize: 9, color: 'var(--ink-faint)', letterSpacing: '0.05em' }}>
-            次の「{nextFrame.name}」まであと {(nextFrame.required_spent_points - totalSpentPoints).toLocaleString()}pt
+            次の「{nextFrame.name}」まであと {(nextFrame.required_charisma - charisma).toLocaleString()} 魅力値
           </span>
         )}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
         {frames.map((frame) => {
-          const unlocked = isFrameUnlocked(frame, totalSpentPoints, itemUnlockedIds)
+          const unlocked = isFrameUnlocked(frame, charisma, itemUnlockedIds)
           const selected = selectedId === frame.id
           const saving = savingId === frame.id
 
@@ -133,7 +133,7 @@ export default function FrameSelectForm({
                   color: 'var(--ink-faint)',
                   letterSpacing: '0.06em',
                 }}>
-                  {itemUnlockedIds.includes(frame.id) ? 'アイテム解放済み' : `${frame.required_spent_points.toLocaleString()}pt 使用で解放`}
+                  {itemUnlockedIds.includes(frame.id) ? 'アイテム解放済み' : `${frame.required_charisma.toLocaleString()} 魅力値で解放`}
                 </span>
                 {frame.description && (
                   <span style={{
