@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { Decoration } from '@/lib/decorationTypes'
+import type { AvatarDecorationAsset } from '@/lib/avatarDecorations'
 import {
   AvatarAroundDecoration,
   AvatarFrameDecoration,
@@ -14,9 +15,37 @@ type Props = {
   avatarFrame?: Decoration
   cssFrameKey?: string | null
   avatarEffectKey?: string | null
+  wingAsset?: AvatarDecorationAsset | null
+  crownAsset?: AvatarDecorationAsset | null
+  frontFxAsset?: AvatarDecorationAsset | null
 }
 
-export default function Avatar({ photoUrl, name, avatarAround, avatarFrame, cssFrameKey, avatarEffectKey }: Props) {
+function AvatarAssetLayer({ asset, slot }: { asset?: AvatarDecorationAsset | null; slot: 'back' | 'crown' | 'front' }) {
+  if (!asset) return null
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={asset.src}
+      alt=""
+      aria-hidden="true"
+      className={`avatar-asset-layer avatar-asset-${slot} ${asset.className}`}
+      draggable={false}
+    />
+  )
+}
+
+export default function Avatar({
+  photoUrl,
+  name,
+  avatarAround,
+  avatarFrame,
+  cssFrameKey,
+  avatarEffectKey,
+  wingAsset,
+  crownAsset,
+  frontFxAsset,
+}: Props) {
   const [imgError, setImgError] = useState(false)
 
   // photoUrl が変わったらエラー状態をリセット
@@ -29,6 +58,8 @@ export default function Avatar({ photoUrl, name, avatarAround, avatarFrame, cssF
 
   return (
     <div className="avatar-wrap" data-avatar-frame={cssFrameKey ?? 'black'} data-avatar-effect={avatarEffectKey ?? 'none'}>
+      <AvatarAssetLayer asset={wingAsset} slot="back" />
+
       <div className="avatar-effect-base" />
       <div className="avatar-effect-flame" />
 
@@ -61,6 +92,8 @@ export default function Avatar({ photoUrl, name, avatarAround, avatarFrame, cssF
 
       {/* avatar_frame スロット */}
       <AvatarFrameDecoration decoration={avatarFrame} />
+      <AvatarAssetLayer asset={crownAsset} slot="crown" />
+      <AvatarAssetLayer asset={frontFxAsset} slot="front" />
 
       <span className="avatar-tick n" />
       <span className="avatar-tick s" />

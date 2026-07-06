@@ -3,6 +3,7 @@ import type { ProfileData } from '@/lib/staticData'
 import type { IllustrationCard } from '@/lib/illustrationTypes'
 import type { ActiveDecorations } from '@/lib/decorationTypes'
 import type { UserLevel } from '@/lib/level'
+import { resolveAvatarDecorationAsset } from '@/lib/avatarDecorations'
 import type { ProfileBackground } from '@/lib/backgrounds'
 import type { AvatarFrame } from '@/lib/avatarFrames'
 import { getSpentTier } from '@/lib/spentTier'
@@ -32,6 +33,9 @@ type Props = {
   selectedBackground?: ProfileBackground | null
   selectedAvatarFrame?: AvatarFrame | null
   totalSpentPoints?: number
+  selectedWingAsset?: string | null
+  selectedCrownAsset?: string | null
+  selectedFrontFxAsset?: string | null
 }
 
 
@@ -48,6 +52,9 @@ export default function ProfileCard({
   selectedBackground,
   selectedAvatarFrame,
   totalSpentPoints = 0,
+  selectedWingAsset,
+  selectedCrownAsset,
+  selectedFrontFxAsset,
   showUserPoints = true,
   isPublicView = false,
 }: Props) {
@@ -63,6 +70,10 @@ export default function ProfileCard({
   const spendBadge = getSpentTier(totalSpentPoints)
   const commentLines = commentText ? commentText.split('\n') : []
   const isLongComment = commentText.length > 58 || commentLines.length > 2
+  const lv = userLevel?.lv ?? 1
+  const wingAsset = resolveAvatarDecorationAsset('wing', selectedWingAsset, lv)
+  const crownAsset = resolveAvatarDecorationAsset('crown', selectedCrownAsset, lv)
+  const frontFxAsset = resolveAvatarDecorationAsset('front_fx', selectedFrontFxAsset, lv)
 
   const renderCommentText = () => (
     commentText ? (
@@ -106,6 +117,9 @@ export default function ProfileCard({
               avatarFrame={activeDecorations.avatar_frame}
               cssFrameKey={selectedAvatarFrame?.css_key ?? 'black'}
               avatarEffectKey={userLevel?.avatarEffectKey ?? 'none'}
+              wingAsset={wingAsset}
+              crownAsset={crownAsset}
+              frontFxAsset={frontFxAsset}
             />
 
             <AboveNameDecoration decoration={activeDecorations.above_name} />

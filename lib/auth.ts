@@ -7,6 +7,9 @@ export type Profile = {
   profile_comment: string | null
   selected_background_id: string | null
   selected_avatar_frame_id: string | null
+  selected_wing_asset: string | null
+  selected_crown_asset: string | null
+  selected_front_fx_asset: string | null
   total_spent_points: number
   is_admin: boolean
   points: number

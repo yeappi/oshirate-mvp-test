@@ -348,3 +348,10 @@ create trigger profiles_updated_at
 create trigger announcements_updated_at
   before update on public.announcements
   for each row execute function public.handle_updated_at();
+
+-- Phase4zg: selectable avatar decoration columns
+-- null = auto, '__none__' = hidden for that slot
+alter table public.profiles
+  add column if not exists selected_wing_asset text,
+  add column if not exists selected_crown_asset text,
+  add column if not exists selected_front_fx_asset text;

@@ -356,6 +356,17 @@ export default function ProfileEditForm({
         フレームを選ぶ →
       </Link>
 
+      <Link href="/profile/decorations" style={{
+        display: 'block', textAlign: 'center',
+        fontSize: 11, fontWeight: 700,
+        color: 'var(--ink-soft)', textDecoration: 'none',
+        letterSpacing: '0.08em',
+        border: '1px solid var(--hair-strong)',
+        borderRadius: 2, padding: '10px 0',
+      }}>
+        アイコン装飾を変える →
+      </Link>
+
       <Link href="/profile/tags" style={{
         display: 'block', textAlign: 'center',
         fontSize: 11, fontWeight: 700,

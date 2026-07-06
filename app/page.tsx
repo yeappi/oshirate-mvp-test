@@ -77,6 +77,9 @@ export default async function HomePage() {
           selectedBackground={selectedBackground}
           selectedAvatarFrame={selectedAvatarFrame}
           totalSpentPoints={profile?.total_spent_points ?? 0}
+          selectedWingAsset={profile?.selected_wing_asset}
+          selectedCrownAsset={profile?.selected_crown_asset}
+          selectedFrontFxAsset={profile?.selected_front_fx_asset}
           activeDecorations={activeDecorations}
           giftBox={<GiftBox />}
           editLink={
